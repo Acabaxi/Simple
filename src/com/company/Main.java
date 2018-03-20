@@ -9,6 +9,9 @@ import net.wimpi.modbus.io.*;
 import net.wimpi.modbus.net.*;
 import net.wimpi.modbus.util.*;
 
+/*JAVA is cool
+ */
+
 public class Main{
 
 
