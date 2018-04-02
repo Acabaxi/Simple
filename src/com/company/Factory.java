@@ -1,6 +1,8 @@
 package com.company;
 
-public class Factory {
+
+public final class Factory {
+
 }
 
 

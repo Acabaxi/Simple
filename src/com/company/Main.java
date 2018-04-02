@@ -14,8 +14,15 @@ import net.wimpi.modbus.util.*;
 
 public class Main{
 
+    static LinearConveyor T1 = new LinearConveyor(0,1,0);
+    LinearConveyor T2 = new LinearConveyor(2,3,1);
+    LinearConveyor T3 = new LinearConveyor(4,5,2);
+
+
 
     public static void main(String args[]){
+
+        T1.moveBack();
 
         Parser.parseXML();
 
