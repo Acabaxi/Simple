@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="jamod">
     <CLASSES>
-      <root url="jar://$USER_HOME$/Desktop/Beremiz/II/jamod.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jamod.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
