@@ -43,7 +43,7 @@ public class Main{
 
         System.out.println(addr.getHostName()+ "  "+addr.getHostAddress());
 
-        int port = 5502;
+        int port = 5503;
         int ref = 0; //the reference; offset where to start reading from
         int count = 0; //the number of DI's to read
 
@@ -88,3 +88,13 @@ public class Main{
     }
 
 }
+
+//Codigo protótipo para enviar sinais Move_Forward e Move_Backward
+/*
+    while(true){
+        try{
+            req = new
+        }
+    }
+
+ */

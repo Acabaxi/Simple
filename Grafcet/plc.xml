@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2018-04-02T01:08:32"/>
-  <contentHeader name="Unnamed" modificationDateTime="2018-04-03T16:01:47">
+  <contentHeader name="Beremiz" modificationDateTime="2018-04-03T16:55:11">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>
@@ -17,519 +17,20 @@
   <types>
     <dataTypes/>
     <pous>
-      <pou name="LinearConveyor" pouType="functionBlock">
-        <interface>
-          <inputVars>
-            <variable name="Back_signal">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="true"/>
-              </initialValue>
-            </variable>
-            <variable name="Forward_signal">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="moveForward">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-            <variable name="moveBack">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-          </outputVars>
-          <inputVars>
-            <variable name="Reached_sensor">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-            <variable name="Reached_next">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-          </inputVars>
-          <outputVars>
-            <variable name="isIdle">
-              <type>
-                <BOOL/>
-              </type>
-              <initialValue>
-                <simpleValue value="false"/>
-              </initialValue>
-            </variable>
-          </outputVars>
-        </interface>
-        <body>
-          <SFC>
-            <step localId="1" name="Step1" initialStep="true" height="52" width="90" executionOrderId="0">
-              <position x="183" y="0"/>
-              <connectionPointOut formalParameter="">
-                <relPosition x="45" y="52"/>
-              </connectionPointOut>
-            </step>
-            <selectionDivergence localId="3" height="1" width="40">
-              <position x="264" y="92"/>
-              <connectionPointIn>
-                <relPosition x="20" y="0"/>
-                <connection refLocalId="1">
-                  <position x="284" y="92"/>
-                  <position x="284" y="72"/>
-                  <position x="228" y="72"/>
-                  <position x="228" y="52"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut formalParameter="">
-                <relPosition x="0" y="1"/>
-              </connectionPointOut>
-              <connectionPointOut formalParameter="">
-                <relPosition x="40" y="1"/>
-              </connectionPointOut>
-            </selectionDivergence>
-            <transition localId="4" height="2" width="20" executionOrderId="0">
-              <position x="597" y="110"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="3">
-                  <position x="607" y="110"/>
-                  <position x="607" y="100"/>
-                  <position x="455" y="100"/>
-                  <position x="455" y="103"/>
-                  <position x="304" y="103"/>
-                  <position x="304" y="93"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Forward_signal]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <transition localId="5" height="2" width="20" executionOrderId="0">
-              <position x="158" y="125"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="3">
-                  <position x="168" y="125"/>
-                  <position x="168" y="113"/>
-                  <position x="231" y="113"/>
-                  <position x="231" y="114"/>
-                  <position x="264" y="114"/>
-                  <position x="264" y="93"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Back_signal]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <step localId="7" name="Step2" initialStep="false" height="48" width="86" executionOrderId="0">
-              <position x="124" y="199"/>
-              <connectionPointIn>
-                <relPosition x="43" y="0"/>
-                <connection refLocalId="5">
-                  <position x="167" y="199"/>
-                  <position x="167" y="163"/>
-                  <position x="168" y="163"/>
-                  <position x="168" y="127"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut formalParameter="">
-                <relPosition x="43" y="48"/>
-              </connectionPointOut>
-              <connectionPointOutAction formalParameter="">
-                <relPosition x="86" y="24"/>
-              </connectionPointOutAction>
-            </step>
-            <step localId="8" name="Step3" initialStep="false" height="48" width="86" executionOrderId="0">
-              <position x="565" y="150"/>
-              <connectionPointIn>
-                <relPosition x="43" y="0"/>
-                <connection refLocalId="4">
-                  <position x="608" y="150"/>
-                  <position x="608" y="140"/>
-                  <position x="607" y="140"/>
-                  <position x="607" y="112"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut formalParameter="">
-                <relPosition x="43" y="48"/>
-              </connectionPointOut>
-              <connectionPointOutAction formalParameter="">
-                <relPosition x="86" y="24"/>
-              </connectionPointOutAction>
-            </step>
-            <transition localId="9" height="2" width="20">
-              <position x="165" y="471"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="13">
-                  <position x="175" y="471"/>
-                  <position x="175" y="461"/>
-                  <position x="148" y="461"/>
-                  <position x="148" y="468"/>
-                  <position x="116" y="468"/>
-                  <position x="116" y="435"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Reached_next]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <selectionConvergence localId="10" height="1" width="111">
-              <position x="367" y="528"/>
-              <connectionPointIn>
-                <relPosition x="0" y="0"/>
-                <connection refLocalId="9">
-                  <position x="367" y="528"/>
-                  <position x="367" y="500"/>
-                  <position x="175" y="500"/>
-                  <position x="175" y="473"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointIn>
-                <relPosition x="111" y="0"/>
-                <connection refLocalId="2">
-                  <position x="478" y="528"/>
-                  <position x="478" y="493"/>
-                  <position x="573" y="493"/>
-                  <position x="573" y="459"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="56" y="1"/>
-              </connectionPointOut>
-            </selectionConvergence>
-            <transition localId="2" height="2" width="20" executionOrderId="0">
-              <position x="563" y="457"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="14">
-                  <position x="573" y="457"/>
-                  <position x="573" y="411"/>
-                  <position x="614" y="411"/>
-                  <position x="614" y="365"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Reached_next]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <jumpStep localId="11" targetName="Step1" height="13" width="12">
-              <position x="416" y="556"/>
-              <connectionPointIn>
-                <relPosition x="6" y="0"/>
-                <connection refLocalId="10">
-                  <position x="422" y="556"/>
-                  <position x="422" y="540"/>
-                  <position x="423" y="540"/>
-                  <position x="423" y="529"/>
-                </connection>
-              </connectionPointIn>
-            </jumpStep>
-            <transition localId="12" height="2" width="20">
-              <position x="126" y="329"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="7">
-                  <position x="136" y="329"/>
-                  <position x="136" y="288"/>
-                  <position x="167" y="288"/>
-                  <position x="167" y="247"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Reached_sensor]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <transition localId="6" height="2" width="20" executionOrderId="0">
-              <position x="608" y="265"/>
-              <connectionPointIn>
-                <relPosition x="10" y="0"/>
-                <connection refLocalId="8">
-                  <position x="618" y="265"/>
-                  <position x="618" y="231"/>
-                  <position x="608" y="231"/>
-                  <position x="608" y="198"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut>
-                <relPosition x="10" y="2"/>
-              </connectionPointOut>
-              <condition>
-                <inline name="">
-                  <ST>
-                    <xhtml:p><![CDATA[Reached_sensor]]></xhtml:p>
-                  </ST>
-                </inline>
-              </condition>
-            </transition>
-            <step localId="13" name="Step0" initialStep="false" height="48" width="95">
-              <position x="69" y="387"/>
-              <connectionPointIn>
-                <relPosition x="47" y="0"/>
-                <connection refLocalId="12">
-                  <position x="116" y="387"/>
-                  <position x="116" y="359"/>
-                  <position x="136" y="359"/>
-                  <position x="136" y="331"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut formalParameter="">
-                <relPosition x="47" y="48"/>
-              </connectionPointOut>
-              <connectionPointOutAction formalParameter="">
-                <relPosition x="95" y="24"/>
-              </connectionPointOutAction>
-            </step>
-            <step localId="14" name="Step4" initialStep="false" height="48" width="86">
-              <position x="571" y="317"/>
-              <connectionPointIn>
-                <relPosition x="43" y="0"/>
-                <connection refLocalId="6">
-                  <position x="614" y="317"/>
-                  <position x="614" y="292"/>
-                  <position x="618" y="292"/>
-                  <position x="618" y="267"/>
-                </connection>
-              </connectionPointIn>
-              <connectionPointOut formalParameter="">
-                <relPosition x="43" y="48"/>
-              </connectionPointOut>
-            </step>
-            <actionBlock localId="15" height="43" width="215">
-              <position x="357" y="224"/>
-              <connectionPointIn>
-                <relPosition x="0" y="15"/>
-                <connection refLocalId="7">
-                  <position x="357" y="239"/>
-                  <position x="283" y="239"/>
-                  <position x="283" y="223"/>
-                  <position x="210" y="223"/>
-                </connection>
-              </connectionPointIn>
-              <action localId="0" qualifier="S">
-                <relPosition x="0" y="0"/>
-                <reference name="moveForward"/>
-              </action>
-            </actionBlock>
-            <actionBlock localId="16" height="43" width="215">
-              <position x="342" y="396"/>
-              <connectionPointIn>
-                <relPosition x="0" y="15"/>
-                <connection refLocalId="13">
-                  <position x="342" y="411"/>
-                  <position x="164" y="411"/>
-                </connection>
-              </connectionPointIn>
-              <action localId="0" qualifier="R">
-                <relPosition x="0" y="0"/>
-                <reference name="moveForward"/>
-              </action>
-            </actionBlock>
-          </SFC>
-        </body>
-        <documentation>
-          <xhtml:p><![CDATA[]]></xhtml:p>
-        </documentation>
-      </pou>
-      <pou name="program2" pouType="program">
+      <pou name="FunctionBlockTest" pouType="program">
         <interface>
           <localVars>
-            <variable name="T1">
-              <type>
-                <derived name="LinearConveyor"/>
-              </type>
-            </variable>
-          </localVars>
-          <localVars>
-            <variable name="a0" address="%IX0.0.0.0">
+            <variable name="FS_MES" address="%IX0.1.0.0">
               <type>
                 <BOOL/>
               </type>
             </variable>
-            <variable name="s0" address="%QX0.0.1.0">
+            <variable name="BS_MES" address="%IX0.1.0.1">
               <type>
                 <BOOL/>
               </type>
             </variable>
-            <variable name="s1" address="%QX0.0.1.1">
-              <type>
-                <BOOL/>
-              </type>
-            </variable>
-          </localVars>
-        </interface>
-        <body>
-          <FBD>
-            <block localId="1" typeName="LinearConveyor" instanceName="T1" executionOrderId="0" height="100" width="402">
-              <position x="156" y="235"/>
-              <inputVariables>
-                <variable formalParameter="Back_signal">
-                  <connectionPointIn>
-                    <relPosition x="0" y="30"/>
-                  </connectionPointIn>
-                </variable>
-                <variable formalParameter="Forward_signal">
-                  <connectionPointIn>
-                    <relPosition x="0" y="50"/>
-                  </connectionPointIn>
-                </variable>
-                <variable formalParameter="Reached_sensor">
-                  <connectionPointIn>
-                    <relPosition x="0" y="70"/>
-                    <connection refLocalId="2">
-                      <position x="156" y="305"/>
-                      <position x="144" y="305"/>
-                      <position x="144" y="156"/>
-                      <position x="156" y="156"/>
-                      <position x="156" y="144"/>
-                      <position x="146" y="144"/>
-                    </connection>
-                  </connectionPointIn>
-                </variable>
-                <variable formalParameter="Reached_next">
-                  <connectionPointIn>
-                    <relPosition x="0" y="90"/>
-                  </connectionPointIn>
-                </variable>
-              </inputVariables>
-              <inOutVariables/>
-              <outputVariables>
-                <variable formalParameter="moveForward">
-                  <connectionPointOut>
-                    <relPosition x="402" y="30"/>
-                  </connectionPointOut>
-                </variable>
-                <variable formalParameter="moveBack">
-                  <connectionPointOut>
-                    <relPosition x="402" y="50"/>
-                  </connectionPointOut>
-                </variable>
-                <variable formalParameter="isIdle">
-                  <connectionPointOut>
-                    <relPosition x="402" y="70"/>
-                  </connectionPointOut>
-                </variable>
-              </outputVariables>
-            </block>
-            <inVariable localId="2" executionOrderId="0" height="48" width="41" negated="false">
-              <position x="105" y="120"/>
-              <connectionPointOut>
-                <relPosition x="41" y="24"/>
-              </connectionPointOut>
-              <expression>a0</expression>
-            </inVariable>
-            <outVariable localId="3" executionOrderId="0" height="48" width="40" negated="false">
-              <position x="561" y="89"/>
-              <connectionPointIn>
-                <relPosition x="0" y="24"/>
-                <connection refLocalId="1" formalParameter="moveForward">
-                  <position x="561" y="113"/>
-                  <position x="551" y="113"/>
-                  <position x="551" y="107"/>
-                  <position x="661" y="107"/>
-                  <position x="661" y="265"/>
-                  <position x="558" y="265"/>
-                </connection>
-              </connectionPointIn>
-              <expression>s1</expression>
-            </outVariable>
-            <outVariable localId="4" executionOrderId="0" height="48" width="40" negated="false">
-              <position x="544" y="132"/>
-              <connectionPointIn>
-                <relPosition x="0" y="24"/>
-                <connection refLocalId="1" formalParameter="moveBack">
-                  <position x="544" y="156"/>
-                  <position x="512" y="156"/>
-                  <position x="512" y="133"/>
-                  <position x="661" y="133"/>
-                  <position x="661" y="285"/>
-                  <position x="558" y="285"/>
-                </connection>
-              </connectionPointIn>
-              <expression>s0</expression>
-            </outVariable>
-          </FBD>
-        </body>
-      </pou>
-      <pou name="program0" pouType="program">
-        <interface>
-          <localVars>
-            <variable name="var1">
-              <type>
-                <DINT/>
-              </type>
-            </variable>
-          </localVars>
-          <localVars>
             <variable name="s0" address="%IX0.0.0.0">
-              <type>
-                <BOOL/>
-              </type>
-            </variable>
-            <variable name="s1" address="%IX0.0.0.1">
-              <type>
-                <BOOL/>
-              </type>
-            </variable>
-            <variable name="s2" address="%IX0.0.0.2">
               <type>
                 <BOOL/>
               </type>
@@ -544,22 +45,16 @@
                 <BOOL/>
               </type>
             </variable>
-            <variable name="a2" address="%QX0.0.1.2">
+          </localVars>
+          <localVars>
+            <variable name="LinearConveyor_ST0">
               <type>
-                <BOOL/>
+                <derived name="LinearConveyor_ST"/>
               </type>
             </variable>
-            <variable name="a3" address="%QX0.0.1.3">
-              <type>
-                <BOOL/>
-              </type>
-            </variable>
-            <variable name="a4" address="%QX0.0.1.4">
-              <type>
-                <BOOL/>
-              </type>
-            </variable>
-            <variable name="a5" address="%QX0.0.1.5">
+          </localVars>
+          <localVars>
+            <variable name="s1" address="%IX0.0.0.1">
               <type>
                 <BOOL/>
               </type>
@@ -567,8 +62,208 @@
           </localVars>
         </interface>
         <body>
+          <FBD>
+            <outVariable localId="3" executionOrderId="0" height="48" width="41" negated="false">
+              <position x="1037" y="263"/>
+              <connectionPointIn>
+                <relPosition x="0" y="24"/>
+                <connection refLocalId="7" formalParameter="Move_Forward">
+                  <position x="1037" y="287"/>
+                  <position x="917" y="287"/>
+                  <position x="917" y="262"/>
+                  <position x="844" y="262"/>
+                </connection>
+              </connectionPointIn>
+              <expression>a1</expression>
+            </outVariable>
+            <outVariable localId="4" executionOrderId="0" height="48" width="41" negated="false">
+              <position x="1020" y="379"/>
+              <connectionPointIn>
+                <relPosition x="0" y="24"/>
+                <connection refLocalId="7" formalParameter="Move_Backward">
+                  <position x="1020" y="403"/>
+                  <position x="908" y="403"/>
+                  <position x="908" y="357"/>
+                  <position x="844" y="357"/>
+                </connection>
+              </connectionPointIn>
+              <expression>a0</expression>
+            </outVariable>
+            <inVariable localId="5" executionOrderId="0" height="48" width="208" negated="false">
+              <position x="0" y="271"/>
+              <connectionPointOut>
+                <relPosition x="208" y="24"/>
+              </connectionPointOut>
+              <expression>FS_MES</expression>
+            </inVariable>
+            <inVariable localId="6" executionOrderId="0" height="48" width="120" negated="false">
+              <position x="18" y="137"/>
+              <connectionPointOut>
+                <relPosition x="120" y="24"/>
+              </connectionPointOut>
+              <expression>BS_MES</expression>
+            </inVariable>
+            <block localId="7" typeName="LinearConveyor_ST" instanceName="LinearConveyor_ST0" executionOrderId="0" height="495" width="535">
+              <position x="309" y="100"/>
+              <inputVariables>
+                <variable formalParameter="Back_Signal">
+                  <connectionPointIn>
+                    <relPosition x="0" y="67"/>
+                    <connection refLocalId="6">
+                      <position x="309" y="167"/>
+                      <position x="223" y="167"/>
+                      <position x="223" y="161"/>
+                      <position x="138" y="161"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="Reach_Sensor_Previous">
+                  <connectionPointIn>
+                    <relPosition x="0" y="162"/>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="Forward_Signal">
+                  <connectionPointIn>
+                    <relPosition x="0" y="257"/>
+                    <connection refLocalId="5">
+                      <position x="309" y="357"/>
+                      <position x="258" y="357"/>
+                      <position x="258" y="295"/>
+                      <position x="208" y="295"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="Reach_Sensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="352"/>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="Reach_Sensor_Next">
+                  <connectionPointIn>
+                    <relPosition x="0" y="447"/>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="OUT">
+                  <connectionPointOut>
+                    <relPosition x="535" y="67"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="Move_Forward">
+                  <connectionPointOut>
+                    <relPosition x="535" y="162"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="Move_Backward">
+                  <connectionPointOut>
+                    <relPosition x="535" y="257"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="isIdle">
+                  <connectionPointOut>
+                    <relPosition x="535" y="352"/>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+            </block>
+          </FBD>
+        </body>
+      </pou>
+      <pou name="LinearConveyor_ST" pouType="functionBlock">
+        <interface>
+          <returnType>
+            <BOOL/>
+          </returnType>
+          <inputVars>
+            <variable name="Back_Signal">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+            <variable name="Reach_Sensor_Previous">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+            <variable name="Forward_Signal">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="Move_Forward">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+            <variable name="Move_Backward">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+          </outputVars>
+          <inputVars>
+            <variable name="Reach_Sensor">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+            <variable name="Reach_Sensor_Next">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="false"/>
+              </initialValue>
+            </variable>
+          </inputVars>
+          <outputVars>
+            <variable name="isIdle">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="true"/>
+              </initialValue>
+            </variable>
+          </outputVars>
+        </interface>
+        <body>
           <ST>
-            <xhtml:p><![CDATA[var1:=1;]]></xhtml:p>
+            <xhtml:p><![CDATA[IF Reach_Sensor THEN
+  isIdle := FALSE;
+  IF Back_Signal THEN
+    Move_Backward := true;
+  ELSIF Forward_Signal THEN
+    Move_Forward := true;
+  END_IF;
+END_IF;
+
+isIdle := TRUE;
+  
+    
+    ]]></xhtml:p>
           </ST>
         </body>
       </pou>
@@ -579,7 +274,7 @@
       <configuration name="config">
         <resource name="resource1">
           <task name="task0" priority="0" interval="T#20ms"/>
-          <pouInstance name="instance0" typeName="program2"/>
+          <pouInstance name="instance0" typeName="FunctionBlockTest"/>
         </resource>
       </configuration>
     </configurations>
