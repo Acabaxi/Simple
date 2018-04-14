@@ -41,7 +41,7 @@ public class Parser {
 
                         } else if (qName.equalsIgnoreCase("Unload")) {
                             Unload unLoad = new Unload(number);
-                            System.out.println("unLoad");
+                            System.out.println("Type : unLoad");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -60,7 +60,7 @@ public class Parser {
                             System.out.println("quantity: " + unLoad.getQuantity());
                         } else if (qName.equalsIgnoreCase("Load")) {
                             Load load = new Load(number);
-                            System.out.println("Load");
+                            System.out.println("Type : Load");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -76,7 +76,7 @@ public class Parser {
                             }
                         } else if (qName.equalsIgnoreCase("Transform")) {
                             Transform transform = new Transform(number);
-                            System.out.println("Transform");
+                            System.out.println("Type : Transform");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();

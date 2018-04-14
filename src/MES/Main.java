@@ -13,8 +13,27 @@ public class Main{
 
     public static void main(String args[]){
 
+        //Start UDP connection
+        //Receive XML Orders
+        //Parse
+        //While order received Parse and create object of order type
         Parser p = new Parser();
         Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
+
+        //Start ModBus connection
+        //Get inventory
+        //Update Stock
+        //Send Restart Line Command
+
+        //Start scheduler for orders
+        //Define commands to send to PLC
+
+        //Send Commands
+        //Receive command completed response
+
+        //Connect to Data Base
+        //Upload relevant info to Data Base
+
         /*
         // Important variables and Objects
         TCPMasterConnection con = null; //the connection
