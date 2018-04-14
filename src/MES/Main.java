@@ -1,7 +1,6 @@
-package com.company;
+package MES;
 import java.net.*;
 import java.io.*;
-
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import net.wimpi.modbus.*;
@@ -12,26 +11,18 @@ import net.wimpi.modbus.util.*;
 
 public class Main{
 
-    /*
-    static LinearConveyor T1 = new LinearConveyor(0,1,0);
-    LinearConveyor T2 = new LinearConveyor(2,3,1);
-    LinearConveyor T3 = new LinearConveyor(4,5,2);
-    */
-
-
     public static void main(String args[]){
 
-        //T1.moveBack();
-
-        //Comentado até haver ficheiro XML
-        //Parser.parseXML();
-
-        /* The important instances of the classes mentioned before */
+        Parser p = new Parser();
+        Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
+        /*
+        // Important variables and Objects
         TCPMasterConnection con = null; //the connection
         ModbusTCPTransaction trans = null; //the transaction
         WriteCoilRequest reqWCoil = null; //the request
         ReadCoilsRequest reqRCoil = null;
         ReadCoilsResponse CoilResp = null;
+        int port = 5503;
 
         InetAddress addr = null; //the slave's address
         try {
@@ -41,18 +32,8 @@ public class Main{
             System.exit(1);
         }
 
-        System.out.println(addr.getHostName()+ "  "+addr.getHostAddress());
-
-        int port = 5503;
-
-        //Not used yet
-        int ref = 0; //the reference; offset where to start reading from
-        int count = 0; //the number of DI's to read
-
         con = new TCPMasterConnection(addr);
         con.setPort(port);
-
-        System.out.println(con.getPort());
 
         try {
             con.connect();
@@ -65,6 +46,11 @@ public class Main{
 
         trans = new ModbusTCPTransaction(con);
 
+        // Print address and port number used
+        System.out.println(addr.getHostName()+ "  "+addr.getHostAddress());
+        System.out.println(con.getPort());
+
+        // Test code to write and read coils
         while(true){
             try {
                 //Write Coil
@@ -82,12 +68,6 @@ public class Main{
                 System.exit(1);
             }
 
-        }
-
-
+        }  */
     }
-
 }
-
-//Branch Test Joel
-//Test
