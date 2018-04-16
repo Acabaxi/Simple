@@ -1,53 +1,53 @@
 package MES;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 
-public class UDPServer extends Thread {
-    private DatagramSocket socket;
+public class UDPServer implements Runnable{
+    private DatagramSocket udpSocket;
+    private int port;
     private boolean running;
-    private byte[] buf = new byte[256];
 
-    public UDPServer() {
-        try {
-            socket = new DatagramSocket(4445);
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
+    private Thread receive, process;
 
     public void run() {
         running = true;
+        System.out.println("Server started on port " + port);
+    }
 
-        while (running) {
-            DatagramPacket packet
-                    = new DatagramPacket(buf, buf.length);
+    //Initialize Server
+    public UDPServer(int port) throws IOException {
+        this.port = port;
+        this.udpSocket = new DatagramSocket(this.port);
+        process = new Thread(this, "server_process");
+        process.start();
+    }
+
+    public void listen() throws Exception {
+        receive = new Thread("receive_thread"){
+        public void run() {
             try {
-                socket.receive(packet);
-            } catch (IOException e) {
+                System.out.println("-- Running Server at " + InetAddress.getLocalHost() + "--");
+            } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
+            String msg;
 
-            InetAddress address = packet.getAddress();
-            int port = packet.getPort();
-            packet = new DatagramPacket(buf, buf.length, address, port);
-            String received
-                    = new String(packet.getData(), 0, packet.getLength());
+            while(running) {
+                byte[] buf = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(buf, buf.length);
 
-            if (received.equals("end")) {
-                running = false;
-                continue;
+                // blocks until a packet is received
+                try {
+                    udpSocket.receive(packet);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                msg = new String(packet.getData()).trim();
+                System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
             }
-            try {
-                socket.send(packet);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
-        socket.close();
+        };
+        receive.start();
     }
 }
-

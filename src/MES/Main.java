@@ -15,10 +15,21 @@ public class Main{
 
         //Start UDP connection
         //Receive XML Orders
+        //UDP Server working in thread
+        try {
+                UDPServer server = new UDPServer(54322);
+                server.listen();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
         //Parse
         //While order received Parse and create object of order type
-        Parser p = new Parser();
-        Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
+        //Parser p = new Parser();
+        //Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
 
         //Start ModBus connection
         //Get inventory
