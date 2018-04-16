@@ -1,13 +1,11 @@
 package MES;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Iterator;
 
 import javax.xml.stream.XMLEventReader;
@@ -18,12 +16,11 @@ import javax.xml.stream.events.*;
 
 public class Parser {
     @SuppressWarnings({ "unchecked", "null" })
-    public Order parseFile(String pathToFile) {
+    public Order parseFile(String xml) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
-            InputStream in = new FileInputStream(pathToFile);
-            XMLEventReader eventReader =
-                    factory.createXMLEventReader(in);
+            InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+            XMLEventReader eventReader = factory.createXMLEventReader(in);
             String number = "number";
             while (eventReader.hasNext()) {
                 XMLEvent event = eventReader.nextEvent();
@@ -41,7 +38,7 @@ public class Parser {
 
                         } else if (qName.equalsIgnoreCase("Unload")) {
                             Unload unLoad = new Unload(number);
-                            System.out.println("Type : unLoad");
+                            System.out.println("Do : unLoad");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -60,7 +57,7 @@ public class Parser {
                             System.out.println("quantity: " + unLoad.getQuantity());
                         } else if (qName.equalsIgnoreCase("Load")) {
                             Load load = new Load(number);
-                            System.out.println("Type : Load");
+                            System.out.println("Do : Load");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -74,9 +71,12 @@ public class Parser {
                                     load.setQuantity(attribute.getValue());
                                 }
                             }
+                            System.out.println("type: " + load.getType());
+                            System.out.println("destination: " + load.getFrom());
+                            System.out.println("quantity: " + load.getQuantity());
                         } else if (qName.equalsIgnoreCase("Transform")) {
                             Transform transform = new Transform(number);
-                            System.out.println("Type : Transform");
+                            System.out.println("Do : Transform");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -90,12 +90,13 @@ public class Parser {
                                     transform.setQuantity(attribute.getValue());
                                 }
                             }
+                            System.out.println("type: " + transform.getFrom());
+                            System.out.println("destination: " + transform.getTo());
+                            System.out.println("quantity: " + transform.getQuantity());
                         }
                         break;
                 }
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }

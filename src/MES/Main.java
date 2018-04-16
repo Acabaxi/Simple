@@ -17,7 +17,7 @@ public class Main{
         //Receive XML Orders
         //UDP Server working in thread
         try {
-                UDPServer server = new UDPServer(54322);
+                UDPServer server = new UDPServer(54321);
                 server.listen();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -25,16 +25,39 @@ public class Main{
                 e.printStackTrace();
             }
 
-
         //Parse
         //While order received Parse and create object of order type
         //Parser p = new Parser();
         //Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
-
         //Start ModBus connection
+        //Modbus mb = new Modbus();
+        //mb.trans = new ModbusTCPTransaction(mb.con);
+
         //Get inventory
         //Update Stock
         //Send Restart Line Command
+
+        //Test Code
+
+        /*
+        while(true){
+            try {
+                //Write Coil
+                mb.reqWCoil = new WriteCoilRequest(0,true);
+                mb.trans.setRequest(mb.reqWCoil);
+                mb.trans.execute();
+                //Read Coil
+                mb.reqRCoil = new ReadCoilsRequest(1, 1);
+                mb.trans.setRequest(mb.reqRCoil);
+                mb.trans.execute();
+                mb.CoilResp = (ReadCoilsResponse)mb.trans.getResponse();
+                System.out.println("Response : "+mb.CoilResp.getCoils().toString());
+            } catch(ModbusException md){
+                System.out.println("Failed to send request");
+                System.exit(1);
+            }
+
+        } */
 
         //Start scheduler for orders
         //Define commands to send to PLC
@@ -44,60 +67,5 @@ public class Main{
 
         //Connect to Data Base
         //Upload relevant info to Data Base
-
-        /*
-        // Important variables and Objects
-        TCPMasterConnection con = null; //the connection
-        ModbusTCPTransaction trans = null; //the transaction
-        WriteCoilRequest reqWCoil = null; //the request
-        ReadCoilsRequest reqRCoil = null;
-        ReadCoilsResponse CoilResp = null;
-        int port = 5503;
-
-        InetAddress addr = null; //the slave's address
-        try {
-            addr = InetAddress.getByName("localhost"); //the slave's address
-        } catch (UnknownHostException e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        con = new TCPMasterConnection(addr);
-        con.setPort(port);
-
-        try {
-            con.connect();
-        } catch(Exception langException){
-
-            System.out.println("Failed to connect");
-            langException.printStackTrace();
-            System.exit(1);
-        }
-
-        trans = new ModbusTCPTransaction(con);
-
-        // Print address and port number used
-        System.out.println(addr.getHostName()+ "  "+addr.getHostAddress());
-        System.out.println(con.getPort());
-
-        // Test code to write and read coils
-        while(true){
-            try {
-                //Write Coil
-                reqWCoil = new WriteCoilRequest(0,true);
-                trans.setRequest(reqWCoil);
-                trans.execute();
-                //Read Coil
-                reqRCoil = new ReadCoilsRequest(1, 1);
-                trans.setRequest(reqRCoil);
-                trans.execute();
-                CoilResp = (ReadCoilsResponse)trans.getResponse();
-                System.out.println("Response : "+CoilResp.getCoils().toString());
-            } catch(ModbusException md){
-                System.out.println("Failed to send request");
-                System.exit(1);
-            }
-
-        }  */
     }
 }

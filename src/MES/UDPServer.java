@@ -44,7 +44,11 @@ public class UDPServer implements Runnable{
                     e.printStackTrace();
                 }
                 msg = new String(packet.getData()).trim();
-                System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
+                Parser p = new Parser();
+                msg = msg.split("([?>]\"?>)")[2];
+                Order newOrder = p.parseFile(msg);
+                //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
+                //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
             }
             }
         };
