@@ -1,4 +1,4 @@
-package MES;
+package Communication;
 import java.net.*;
 import java.io.*;
 
@@ -8,17 +8,22 @@ import net.wimpi.modbus.msg.*;
 import net.wimpi.modbus.io.*;
 import net.wimpi.modbus.net.*;
 import net.wimpi.modbus.util.*;
+import net.wimpi.modbus.procimg.*;
 
 public class Modbus {
-    TCPMasterConnection con = null; //the connection
-    ModbusTCPTransaction trans = null; //the transaction
-    WriteCoilRequest reqWCoil = null; //the request
-    ReadCoilsRequest reqRCoil = null;
-    ReadCoilsResponse CoilResp = null;
+    private TCPMasterConnection con = null; //the connection
+    private ModbusTCPTransaction trans = null; //the transaction
+    /*
+    private WriteCoilRequest reqWCoil = null; //the request
+    private ReadCoilsRequest reqRCoil = null;
+    private ReadCoilsResponse CoilResp = null;
+    */
     int port = 5503;
 
-    public Modbus() {
+
+    public void connect() throws UnknownHostException, Exception {
         InetAddress addr = null; //the slave's address
+
         try {
             addr = InetAddress.getByName("localhost"); //the slave's address
         } catch (UnknownHostException e){
@@ -38,4 +43,8 @@ public class Modbus {
             System.exit(1);
         }
     }
+    public void close() {
+        con.close();
+    }
 }
+

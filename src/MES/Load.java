@@ -1,6 +1,6 @@
 package MES;
 
-public class Load extends Order{
+public class Load extends Order {
     private String type;
     private String from;
     private String quantity;

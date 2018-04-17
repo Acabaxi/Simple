@@ -2,10 +2,6 @@ package MES;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.io.FileNotFoundException;
 import java.util.Iterator;
 
 import javax.xml.stream.XMLEventReader;
@@ -15,6 +11,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
 public class Parser {
+
+    public Parser(){}
+
     @SuppressWarnings({ "unchecked", "null" })
     public Order parseFile(String xml) {
         try {
@@ -55,6 +54,7 @@ public class Parser {
                             System.out.println("type: " + unLoad.getType());
                             System.out.println("destination: " + unLoad.getDestination());
                             System.out.println("quantity: " + unLoad.getQuantity());
+                            return unLoad;
                         } else if (qName.equalsIgnoreCase("Load")) {
                             Load load = new Load(number);
                             System.out.println("Do : Load");
@@ -72,8 +72,9 @@ public class Parser {
                                 }
                             }
                             System.out.println("type: " + load.getType());
-                            System.out.println("destination: " + load.getFrom());
+                            System.out.println("from: " + load.getFrom());
                             System.out.println("quantity: " + load.getQuantity());
+                            return load;
                         } else if (qName.equalsIgnoreCase("Transform")) {
                             Transform transform = new Transform(number);
                             System.out.println("Do : Transform");
@@ -90,9 +91,10 @@ public class Parser {
                                     transform.setQuantity(attribute.getValue());
                                 }
                             }
-                            System.out.println("type: " + transform.getFrom());
-                            System.out.println("destination: " + transform.getTo());
+                            System.out.println("from: " + transform.getFrom());
+                            System.out.println("to: " + transform.getTo());
                             System.out.println("quantity: " + transform.getQuantity());
+                            return transform;
                         }
                         break;
                 }

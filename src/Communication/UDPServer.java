@@ -1,4 +1,8 @@
-package MES;
+package Communication;
+
+import MES.Main;
+import MES.Order;
+import MES.Parser;
 
 import java.io.IOException;
 import java.net.*;
@@ -23,7 +27,7 @@ public class UDPServer implements Runnable{
         process.start();
     }
 
-    public void listen() throws Exception {
+    public void listen() throws Exception {Parser p = new Parser();
         receive = new Thread("receive_thread"){
         public void run() {
             try {
@@ -44,9 +48,12 @@ public class UDPServer implements Runnable{
                     e.printStackTrace();
                 }
                 msg = new String(packet.getData()).trim();
+                msg = msg.split("]>")[1];
                 Parser p = new Parser();
-                msg = msg.split("([?>]\"?>)")[2];
-                Order newOrder = p.parseFile(msg);
+                Order o = p.parseFile(msg);
+                Main.ordersReceived.add(o);
+                //Order o1 = Main.ordersReceived.peek();
+                //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
             }

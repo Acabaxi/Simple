@@ -1,38 +1,37 @@
 package MES;
-import java.net.*;
-import java.io.*;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-import net.wimpi.modbus.*;
-import net.wimpi.modbus.msg.*;
-import net.wimpi.modbus.io.*;
-import net.wimpi.modbus.net.*;
-import net.wimpi.modbus.util.*;
+import Communication.Modbus;
+import Communication.UDPServer;
+
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 
 public class Main{
+    public static Queue<Order> ordersReceived= new LinkedList<Order>();
+    public static final Modbus modbus = new Modbus();
 
     public static void main(String args[]){
 
-        //Start UDP connection
-        //Receive XML Orders
-        //UDP Server working in thread
+        //Start UDP connection DONE
+        //Receive XML Orders DONE
+        //UDP Server working in thread DONE
+        boolean check = false;
         try {
                 UDPServer server = new UDPServer(54321);
                 server.listen();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
+        } catch (Exception e) {
                 e.printStackTrace();
             }
+        //Parse DONE
+        //While order received Parse and create object of order type DONE
 
-        //Parse
-        //While order received Parse and create object of order type
-        //Parser p = new Parser();
-        //Order newOrder = p.parseFile("/home/sobaca/Documents/XMLFiles/Command.xml");
-        //Start ModBus connection
-        //Modbus mb = new Modbus();
-        //mb.trans = new ModbusTCPTransaction(mb.con);
-
+        //Start ModBus connection DONE
+        try {
+            modbus.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //Get inventory
         //Update Stock
         //Send Restart Line Command
