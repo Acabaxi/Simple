@@ -156,10 +156,10 @@ static server_node_t		server_nodes[NUMBER_OF_SERVER_NODES] = {
 u16 *__IX0_0_0_0 = &client_requests[0].plcv_buffer[0];
 u16 *__IX0_0_0_1 = &client_requests[0].plcv_buffer[1];
 u16 *__IX0_0_0_2 = &client_requests[0].plcv_buffer[2];
-u16 *__QX0_0_1_0 = &client_requests[1].plcv_buffer[0];
 u16 *__QX0_0_1_1 = &client_requests[1].plcv_buffer[1];
-u16 *__QX0_0_1_2 = &client_requests[1].plcv_buffer[2];
 u16 *__QX0_0_1_3 = &client_requests[1].plcv_buffer[3];
-u16 *__QX0_0_1_4 = &client_requests[1].plcv_buffer[4];
 u16 *__QX0_0_1_5 = &client_requests[1].plcv_buffer[5];
+u16 *__QX0_0_1_0 = &client_requests[1].plcv_buffer[0];
+u16 *__QX0_0_1_2 = &client_requests[1].plcv_buffer[2];
+u16 *__QX0_0_1_4 = &client_requests[1].plcv_buffer[4];
 
