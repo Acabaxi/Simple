@@ -13,5 +13,5 @@ public class Order {
         return this.number;
     }
 
-    public String getType(){return this.orderType;}
+    public String getDo(){return this.orderType;}
 }

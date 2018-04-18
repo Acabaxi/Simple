@@ -73,7 +73,7 @@ public class Main{
 
     public void MainMenu(){
         Scanner ss = new Scanner(System.in);
-        System.out.println("Choose an option: ");
+        System.out.println("\nChoose an option: ");
         System.out.println("1 - Start UDP");
         System.out.println("2 - Check next order");
         System.out.println("3 - Start ModBus");
@@ -108,18 +108,23 @@ public class Main{
 
     public void CheckFirst(){
         Order o1 = ordersReceived.poll();
-        switch (o1.getType()){
-            case "U": Unload u = (Unload)o1;
+        switch (o1.getDo()){
+            case "U":
+                System.out.println("here");
+                Unload u = (Unload)o1;
+                System.out.println("Order number " + u.getNumber() + " - unload");
                 System.out.println("type: " + u.getType());
                 System.out.println("destination: " + u.getDestination());
                 System.out.println("quantity: " + u.getQuantity());
                 break;
             case "T": Transform t = (Transform)o1;
+                System.out.println("Order number " + t.getNumber() + " - transform");
                 System.out.println("from: " + t.getFrom());
                 System.out.println("to: " + t.getTo());
                 System.out.println("quantity: " + t.getQuantity());
                 break;
             case "L": Load l = (Load)o1;
+                System.out.println("Order number " + l.getNumber() + " - load");
                 System.out.println("type: " + l.getType());
                 System.out.println("from: " + l.getFrom());
                 System.out.println("quantity: " + l.getQuantity());
