@@ -19,6 +19,11 @@ public class UDPServer implements Runnable{
         System.out.println("Server started on port " + port);
     }
 
+    public void notRunning(){
+        running = false;
+        System.out.println("Server closed");
+    }
+
     //Initialize Server
     public UDPServer(int port) throws IOException {
         this.port = port;

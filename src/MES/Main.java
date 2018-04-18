@@ -3,6 +3,7 @@ package MES;
 import Communication.Modbus;
 import Communication.UDPServer;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -11,11 +12,13 @@ import java.util.concurrent.TimeUnit;
 public class Main{
     public static Queue<Order> ordersReceived= new LinkedList<Order>();
     public static final Modbus modbus = new Modbus();
+    public static boolean UDPopened = false;
 
-    public static void main(String args[]){
+    public static void main(String args[]) throws IOException {
 
         Main m = new Main();
-        m.MainMenu();
+        UDPServer server = new UDPServer(54321);
+        m.MainMenu(server);
 
         //Start UDP connection DONE
         //Receive XML Orders DONE
@@ -71,42 +74,54 @@ public class Main{
         //Upload relevant info to Data Base
     }
 
-    public void MainMenu(){
+    public void MainMenu(UDPServer server){
         Scanner ss = new Scanner(System.in);
         System.out.println("\nChoose an option: ");
-        System.out.println("1 - Start UDP");
+        if(!UDPopened){
+            System.out.println("1 - Start UDP");
+        }
+        else {
+            System.out.println("1 - Close UDP");
+        }
+
         System.out.println("2 - Check next order");
         System.out.println("3 - Start ModBus");
         String resp = ss.next();
         switch (resp){
-            case "1": StartUDP();
+            case "1": ControlUDP(server);
             break;
-            case "2": CheckFirst();
+            case "2": CheckFirst(server);
             break;
-            case "3": StartModBus();
+            case "3": StartModBus(server);
         }
     }
 
-    public void StartUDP(){
+    public void ControlUDP(UDPServer server){
+        if(!UDPopened) {
+            try {
+                server.listen();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            UDPopened = true;
+        }
+        else{
+            server.close();
+            UDPopened = false;
+        }
+        MainMenu(server);
+    }
+
+    public void StartModBus(UDPServer server){
         try {
-            UDPServer server = new UDPServer(54321);
-            server.listen();
+            modbus.connect(5503);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MainMenu();
+        MainMenu(server);
     }
 
-    public void StartModBus(){
-        try {
-            modbus.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        MainMenu();
-    }
-
-    public void CheckFirst(){
+    public void CheckFirst(UDPServer server){
         Order o1 = ordersReceived.poll();
         switch (o1.getDo()){
             case "U":
@@ -130,6 +145,6 @@ public class Main{
                 System.out.println("quantity: " + l.getQuantity());
                 break;
         }
-        MainMenu();
+        MainMenu(server);
     }
 }
