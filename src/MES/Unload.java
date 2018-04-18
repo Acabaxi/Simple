@@ -5,8 +5,8 @@ public class Unload extends Order{
     private String destination;
     private String quantity;
 
-    public Unload(String number){
-        super(number);
+    public Unload(String number, String oType){
+        super(number, oType);
     }
 
     public void setType(String type){

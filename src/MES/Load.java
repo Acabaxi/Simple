@@ -5,8 +5,8 @@ public class Load extends Order {
     private String from;
     private String quantity;
 
-    public Load(String number){
-        super(number);
+    public Load(String number, String oType){
+        super(number, oType);
     }
 
     public void setType(String type){

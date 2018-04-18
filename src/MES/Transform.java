@@ -5,8 +5,8 @@ public class Transform extends Order{
     private String to;
     private String quantity;
 
-    public Transform(String number){
-        super(number);
+    public Transform(String number, String oType){
+        super(number, oType);
     }
 
     public void setFrom(String from){

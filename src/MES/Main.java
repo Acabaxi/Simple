@@ -5,6 +5,7 @@ import Communication.UDPServer;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main{
@@ -13,29 +14,31 @@ public class Main{
 
     public static void main(String args[]){
 
+        Main m = new Main();
+        m.MainMenu();
+
         //Start UDP connection DONE
         //Receive XML Orders DONE
         //UDP Server working in thread DONE
-        boolean check = false;
-        try {
-                UDPServer server = new UDPServer(54321);
-                server.listen();
-        } catch (Exception e) {
-                e.printStackTrace();
-            }
-        //Parse DONE -
+        //try {
+        //        UDPServer server = new UDPServer(54321);
+        //        server.listen();
+        //} catch (Exception e) {
+        //        e.printStackTrace();
+        //    }
+        //Parse DONE
         //While order received Parse and create object of order type DONE
-
+        //Scheduler FIFO in list
         //Start ModBus connection DONE
-        try {
-            modbus.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //try {
+        //    modbus.connect();
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //}
         //Get inventory
         //Update Stock
         //Send Restart Line Command
-
+        //Send Commands
         //Test Code
 
         /*
@@ -66,5 +69,62 @@ public class Main{
 
         //Connect to Data Base
         //Upload relevant info to Data Base
+    }
+
+    public void MainMenu(){
+        Scanner ss = new Scanner(System.in);
+        System.out.println("Choose an option: ");
+        System.out.println("1 - Start UDP");
+        System.out.println("2 - Check next order");
+        System.out.println("3 - Start ModBus");
+        String resp = ss.next();
+        switch (resp){
+            case "1": StartUDP();
+            break;
+            case "2": CheckFirst();
+            break;
+            case "3": StartModBus();
+        }
+    }
+
+    public void StartUDP(){
+        try {
+            UDPServer server = new UDPServer(54321);
+            server.listen();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MainMenu();
+    }
+
+    public void StartModBus(){
+        try {
+            modbus.connect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MainMenu();
+    }
+
+    public void CheckFirst(){
+        Order o1 = ordersReceived.poll();
+        switch (o1.getType()){
+            case "U": Unload u = (Unload)o1;
+                System.out.println("type: " + u.getType());
+                System.out.println("destination: " + u.getDestination());
+                System.out.println("quantity: " + u.getQuantity());
+                break;
+            case "T": Transform t = (Transform)o1;
+                System.out.println("from: " + t.getFrom());
+                System.out.println("to: " + t.getTo());
+                System.out.println("quantity: " + t.getQuantity());
+                break;
+            case "L": Load l = (Load)o1;
+                System.out.println("type: " + l.getType());
+                System.out.println("from: " + l.getFrom());
+                System.out.println("quantity: " + l.getQuantity());
+                break;
+        }
+        MainMenu();
     }
 }
