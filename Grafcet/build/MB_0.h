@@ -133,14 +133,14 @@ static client_node_t		client_nodes[NUMBER_OF_CLIENT_NODES] = {
 
 static client_request_t	client_requests[NUMBER_OF_CLIENT_REQTS] = {
 /*request 0_0_0*/
-{"0_0_0", 0, 1, req_input, 2, 0 , 3,
+{"0_0_0", 0, 1, req_input, 2, 0 , 111,
 DEF_REQ_SEND_RETRIES, 0 /* error_code */, 0 /* prev_code */, {0, 10000000} /* timeout */,
-{0,0,0}, {0,0,0}},
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}},
 
 /*request 0_0_1*/
-{"0_0_1", 0, 1, req_output, 15, 0 , 6,
+{"0_0_1", 0, 1, req_output, 15, 0 , 152,
 DEF_REQ_SEND_RETRIES, 0 /* error_code */, 0 /* prev_code */, {0, 10000000} /* timeout */,
-{0,0,0,0,0,0}, {0,0,0,0,0,0}}
+{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}}
 };
 
 
@@ -154,12 +154,18 @@ static server_node_t		server_nodes[NUMBER_OF_SERVER_NODES] = {
 /*******************/
 
 u16 *__IX0_0_0_0 = &client_requests[0].plcv_buffer[0];
-u16 *__IX0_0_0_1 = &client_requests[0].plcv_buffer[1];
 u16 *__IX0_0_0_2 = &client_requests[0].plcv_buffer[2];
+u16 *__IX0_0_0_3 = &client_requests[0].plcv_buffer[3];
+u16 *__IX0_0_0_23 = &client_requests[0].plcv_buffer[23];
+u16 *__IX0_0_0_5 = &client_requests[0].plcv_buffer[5];
+u16 *__IX0_0_0_4 = &client_requests[0].plcv_buffer[4];
 u16 *__QX0_0_1_1 = &client_requests[1].plcv_buffer[1];
-u16 *__QX0_0_1_3 = &client_requests[1].plcv_buffer[3];
-u16 *__QX0_0_1_5 = &client_requests[1].plcv_buffer[5];
+u16 *__QX0_0_1_6 = &client_requests[1].plcv_buffer[6];
+u16 *__QX0_0_1_8 = &client_requests[1].plcv_buffer[8];
+u16 *__QX0_0_1_38 = &client_requests[1].plcv_buffer[38];
+u16 *__QX0_0_1_10 = &client_requests[1].plcv_buffer[10];
+u16 *__QX0_0_1_9 = &client_requests[1].plcv_buffer[9];
 u16 *__QX0_0_1_0 = &client_requests[1].plcv_buffer[0];
-u16 *__QX0_0_1_2 = &client_requests[1].plcv_buffer[2];
-u16 *__QX0_0_1_4 = &client_requests[1].plcv_buffer[4];
+u16 *__QX0_0_1_5 = &client_requests[1].plcv_buffer[5];
+u16 *__QX0_0_1_7 = &client_requests[1].plcv_buffer[7];
 

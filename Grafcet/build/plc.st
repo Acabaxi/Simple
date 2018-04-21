@@ -221,8 +221,6 @@ FUNCTION_BLOCK LinearConveyor
     forwardMotor : BOOL;
     backMotor : BOOL;
     isBusy : BOOL;
-    moveNextBack : BOOL;
-    moveNextFront : BOOL;
   END_VAR
   VAR
     TON0 : TON;
@@ -245,7 +243,6 @@ FUNCTION_BLOCK LinearConveyor
 
   STEP moveFront:
     forwardMotor(N);
-    isBusy(S);
   END_STEP
 
   TRANSITION FROM moveFront TO notBusyFront
@@ -253,6 +250,7 @@ FUNCTION_BLOCK LinearConveyor
   END_TRANSITION
 
   STEP notBusyFront:
+    isBusy(S);
   END_STEP
 
   TRANSITION FROM notBusyFront TO moveFrontStep
@@ -260,7 +258,6 @@ FUNCTION_BLOCK LinearConveyor
   END_TRANSITION
 
   STEP moveFrontStep:
-    moveNextFront(S);
     forwardTimerOn(N);
     forwardMotor(S);
   END_STEP
@@ -271,7 +268,6 @@ FUNCTION_BLOCK LinearConveyor
 
   STEP turnOffFront:
     forwardMotor(R);
-    moveNextFront(R);
   END_STEP
 
   TRANSITION FROM turnOffFront TO initLinearStep
@@ -288,7 +284,6 @@ FUNCTION_BLOCK LinearConveyor
 
   STEP moveBack:
     backMotor(N);
-    isBusy(S);
   END_STEP
 
   TRANSITION FROM moveBack TO notBusyBack
@@ -296,6 +291,7 @@ FUNCTION_BLOCK LinearConveyor
   END_TRANSITION
 
   STEP notBusyBack:
+    isBusy(S);
   END_STEP
 
   TRANSITION FROM notBusyBack TO moveBackStep
@@ -303,7 +299,6 @@ FUNCTION_BLOCK LinearConveyor
   END_TRANSITION
 
   STEP moveBackStep:
-    moveNextBack(S);
     forwardTimerOn(N);
     backMotor(S);
   END_STEP
@@ -314,7 +309,6 @@ FUNCTION_BLOCK LinearConveyor
 
   STEP turnOffBack:
     backMotor(R);
-    moveNextBack(R);
   END_STEP
 
   TRANSITION FROM turnOffBack TO initLinearStep
@@ -327,210 +321,344 @@ FUNCTION_BLOCK LinearConveyor
 
 END_FUNCTION_BLOCK
 
+FUNCTION_BLOCK RotaryConveyor
+  VAR_INPUT
+    backSignal : BOOL;
+  END_VAR
+  VAR
+    forwardTimerOn : BOOL;
+  END_VAR
+  VAR_INPUT
+    forwardSignal : BOOL;
+    sendDownSignal : BOOL;
+    sendUpSignal : BOOL;
+    sensorRotRight : BOOL;
+    sensorRotLeft : BOOL;
+    backNotBusy : BOOL;
+    frontNotBusy : BOOL;
+    downNotBusy : BOOL;
+    upNotBusy : BOOL;
+    reachedSensorFront : BOOL;
+    reachedSensorBack : BOOL;
+    reachedSensor : BOOL;
+  END_VAR
+  VAR_OUTPUT
+    forwardMotor : BOOL;
+    backMotor : BOOL;
+    rightRotMotor : BOOL;
+    leftRotMotor : BOOL;
+    isBusy : BOOL;
+  END_VAR
+  VAR
+    TON0 : TON;
+    TON1 : TON;
+    TON2 : TON;
+    TON3 : TON;
+  END_VAR
+
+  INITIAL_STEP initLinearStep:
+    isBusy(R);
+    COMPUTE_FUNCTION_BLOCKS(S);
+  END_STEP
+
+  ACTION COMPUTE_FUNCTION_BLOCKS:
+    TON1(IN := forwardTimerOn, PT := T#10s);
+    TON0(IN := forwardTimerOn, PT := T#10s);
+    TON3(IN := forwardTimerOn, PT := T#10s);
+    TON2(IN := forwardTimerOn, PT := T#10s);
+  END_ACTION
+
+  TRANSITION FROM initLinearStep TO moveFront
+    := forwardSignal;
+  END_TRANSITION
+
+  STEP moveFront:
+    forwardMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveFront TO notBusyFront
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP notBusyFront:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyFront TO moveFrontStep
+    := frontNotBusy;
+  END_TRANSITION
+
+  STEP moveFrontStep:
+    forwardTimerOn(N);
+    forwardMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveFrontStep TO turnOffFront
+    := reachedSensorFront;
+  END_TRANSITION
+
+  STEP turnOffFront:
+    forwardMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffFront TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveFrontStep TO turnOffFront
+    := TON0.Q;
+  END_TRANSITION
+
+  TRANSITION FROM initLinearStep TO moveBack
+    := backSignal;
+  END_TRANSITION
+
+  STEP moveBack:
+    backMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveBack TO notBusyBack
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP notBusyBack:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyBack TO moveBackStep
+    := backNotBusy;
+  END_TRANSITION
+
+  STEP moveBackStep:
+    forwardTimerOn(N);
+    backMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveBackStep TO turnOffBack
+    := reachedSensorBack;
+  END_TRANSITION
+
+  STEP turnOffBack:
+    backMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffBack TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveBackStep TO turnOffBack
+    := TON1.Q;
+  END_TRANSITION
+
+  TRANSITION FROM initLinearStep TO moveFront1
+    := sendUpSignal;
+  END_TRANSITION
+
+  STEP moveFront1:
+    backMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveFront1 TO rotatingLeft
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP rotatingLeft:
+    leftRotMotor(N);
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM rotatingLeft TO notBusyBack0
+    := sensorRotLeft;
+  END_TRANSITION
+
+  STEP notBusyBack0:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyBack0 TO moveBackStep0
+    := upNotBusy;
+  END_TRANSITION
+
+  STEP moveBackStep0:
+    forwardTimerOn(N);
+    backMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveBackStep0 TO turnOffBack0
+    := reachedSensorBack;
+  END_TRANSITION
+
+  STEP turnOffBack0:
+    backMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffBack0 TO resetRotate0
+    := true;
+  END_TRANSITION
+
+  STEP resetRotate0:
+    rightRotMotor(N);
+  END_STEP
+
+  TRANSITION FROM resetRotate0 TO resetDoneL
+    := sensorRotRight;
+  END_TRANSITION
+
+  STEP resetDoneL:
+  END_STEP
+
+  TRANSITION FROM resetDoneL TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveBackStep0 TO turnOffBack0
+    := TON3.Q;
+  END_TRANSITION
+
+  TRANSITION FROM initLinearStep TO moveFront0
+    := sendDownSignal;
+  END_TRANSITION
+
+  STEP moveFront0:
+    forwardMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveFront0 TO rotatingRight
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP rotatingRight:
+    rightRotMotor(N);
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM rotatingRight TO notBusyFront0
+    := sensorRotRight;
+  END_TRANSITION
+
+  STEP notBusyFront0:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyFront0 TO moveFrontStep0
+    := downNotBusy;
+  END_TRANSITION
+
+  STEP moveFrontStep0:
+    forwardTimerOn(N);
+    forwardMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveFrontStep0 TO turnOffFront0
+    := reachedSensorFront;
+  END_TRANSITION
+
+  STEP turnOffFront0:
+    forwardMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffFront0 TO resetRotate
+    := true;
+  END_TRANSITION
+
+  STEP resetRotate:
+    leftRotMotor(N);
+  END_STEP
+
+  TRANSITION FROM resetRotate TO resetDoneR
+    := sensorRotLeft;
+  END_TRANSITION
+
+  STEP resetDoneR:
+  END_STEP
+
+  TRANSITION FROM resetDoneR TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveFrontStep0 TO turnOffFront0
+    := TON2.Q;
+  END_TRANSITION
+
+END_FUNCTION_BLOCK
+
 PROGRAM program0
   VAR
     AT1 : LinearConveyor;
+    SaT1 : LinearConveyor;
+    SaT2 : RotaryConveyor;
   END_VAR
   VAR_EXTERNAL
     ii : BOOL;
   END_VAR
   VAR
     sensorAT1 AT %IX0.0.0.0 : BOOL;
-    sensorSaT1 AT %IX0.0.0.1 : BOOL;
-    sensorSaT2 AT %IX0.0.0.2 : BOOL;
+    sensorSaT1 AT %IX0.0.0.2 : BOOL;
+    sensorSaT2 AT %IX0.0.0.3 : BOOL;
+    sensorSbT1 AT %IX0.0.0.23 : BOOL;
+    sensorRotRightSaT3 AT %IX0.0.0.5 : BOOL;
+    sensorRotLeftSaT3 AT %IX0.0.0.4 : BOOL;
     forwardAT1 AT %QX0.0.1.1 : BOOL;
-    forwardSaT1 AT %QX0.0.1.3 : BOOL;
-    forwardSaT2 AT %QX0.0.1.5 : BOOL;
+    forwardSaT1 AT %QX0.0.1.6 : BOOL;
+    forwardSaT2 AT %QX0.0.1.8 : BOOL;
+    forwardSbT1 AT %QX0.0.1.38 : BOOL;
+    rightRotSaT3 AT %QX0.0.1.10 : BOOL;
+    leftRotSaT3 AT %QX0.0.1.9 : BOOL;
     backAT1 AT %QX0.0.1.0 : BOOL;
-    backSaT2 AT %QX0.0.1.2 : BOOL;
-    backSaT3 AT %QX0.0.1.4 : BOOL;
-  END_VAR
-  VAR
-    SaT1 : LinearConveyor;
-    SaT2 : LinearConveyor;
-    TP0 : TP;
+    backSaT1 AT %QX0.0.1.5 : BOOL;
+    backSaT2 AT %QX0.0.1.7 : BOOL;
   END_VAR
   VAR_EXTERNAL
     sensorAT1_ex : BOOL;
+    sensorSaT1_ex : BOOL;
+    sensorSaT2_ex : BOOL;
+    sensorSbT1_ex : BOOL;
+    runFrontAT1_ex : BOOL;
+    runFrontSaT1_ex : BOOL;
+    runFrontSaT2_ex : BOOL;
+    runFrontSbT1_ex : BOOL;
+    sendDownSaT2_ex : BOOL;
   END_VAR
   VAR
-    NOT5_OUT : BOOL;
-    NOT4_OUT : BOOL;
-    NOT6_OUT : BOOL;
+    SbT1 : LinearConveyor;
+    NOT40_OUT : BOOL;
+    NOT32_OUT : BOOL;
+    NOT31_OUT : BOOL;
   END_VAR
 
+  sensorSaT1_ex := sensorSaT1;
+  sensorSaT2_ex := sensorSaT2;
   sensorAT1_ex := sensorAT1;
-  NOT5_OUT := NOT(SaT1.isBusy);
-  SaT2(forwardSignal := SaT1.moveNextFront, backNotBusy := NOT5_OUT, frontNotBusy := true, reachedSensorBack := sensorSaT1, reachedSensor := sensorSaT2);
-  NOT4_OUT := NOT(SaT1.isBusy);
-  AT1(backSignal := SaT1.moveNextBack, forwardSignal := ii, backNotBusy := false, frontNotBusy := NOT4_OUT, reachedSensorFront := sensorSaT1, reachedSensorBack := false, reachedSensor := sensorAT1);
-  NOT6_OUT := NOT(SaT2.isBusy);
-  SaT1(backSignal := SaT2.moveNextBack, forwardSignal := AT1.moveNextFront, backNotBusy := AT1.isBusy, frontNotBusy := NOT6_OUT, reachedSensorFront := sensorSaT2, reachedSensorBack := sensorAT1, reachedSensor := sensorSaT1);
-  backSaT2 := SaT1.backMotor;
-  backAT1 := AT1.backMotor;
-  backSaT3 := SaT2.backMotor;
-  forwardSaT1 := SaT1.forwardMotor;
+  sensorSbT1_ex := sensorSbT1;
+  SbT1(forwardSignal := runFrontSbT1_ex, reachedSensor := sensorSbT1);
+  NOT40_OUT := NOT(SbT1.isBusy);
+  SaT2(forwardSignal := runFrontSaT2_ex, sendDownSignal := sendDownSaT2_ex, sensorRotRight := sensorRotRightSaT3, sensorRotLeft := sensorRotLeftSaT3, frontNotBusy := NOT40_OUT, reachedSensor := sensorSaT2);
   forwardSaT2 := SaT2.forwardMotor;
+  forwardSbT1 := SbT1.forwardMotor;
+  NOT32_OUT := NOT(SaT2.isBusy);
+  SaT1(forwardSignal := runFrontSaT1_ex, frontNotBusy := NOT32_OUT, reachedSensorFront := sensorSaT2, reachedSensor := sensorSaT1);
+  NOT31_OUT := NOT(SaT1.isBusy);
+  AT1(forwardSignal := runFrontAT1_ex, frontNotBusy := NOT31_OUT, reachedSensorFront := sensorSaT1, reachedSensor := sensorAT1);
   forwardAT1 := AT1.forwardMotor;
-  TP0(IN := true, PT := T#200ms);
+  forwardSaT1 := SaT1.forwardMotor;
+  rightRotSaT3 := SaT2.rightRotMotor;
+  backAT1 := AT1.backMotor;
+  backSaT1 := SaT1.backMotor;
+  leftRotSaT3 := SaT2.leftRotMotor;
 END_PROGRAM
-
-FUNCTION_BLOCK RotaryConveyor
-  VAR_INPUT
-    backSignal : BOOL;
-    forwardSignal : BOOL;
-    reachedSensor : BOOL;
-    backNotBusy : BOOL;
-    frontNotBusy : BOOL;
-    reachedSensorBack : BOOL;
-    reachedSensorFront : BOOL;
-    rotateLeftSignal : BOOL;
-    rotateRightSignal : BOOL;
-    doneRotateRight : BOOL;
-    doneRotateLeft : BOOL;
-  END_VAR
-  VAR_OUTPUT
-    rotateRight : BOOL;
-    rotateLeft : BOOL;
-    isBusy : BOOL;
-    backMotor : BOOL;
-    forwardMotor : BOOL;
-    moveNextBack : BOOL;
-    moveNextFront : BOOL;
-  END_VAR
-
-  INITIAL_STEP initLinearStep0:
-    isBusy(R);
-  END_STEP
-
-  TRANSITION FROM initLinearStep0 TO moveFront0
-    := forwardSignal;
-  END_TRANSITION
-
-  STEP moveFront0:
-    forwardMotor(S);
-    isBusy(S);
-  END_STEP
-
-  TRANSITION FROM moveFront0 TO waitForNotBusyFront0
-    := reachedSensor;
-  END_TRANSITION
-
-  STEP waitForNotBusyFront0:
-    forwardMotor(R);
-  END_STEP
-
-  TRANSITION FROM waitForNotBusyFront0 TO moveNextFrontStep0
-    := frontNotBusy;
-  END_TRANSITION
-
-  STEP moveNextFrontStep0:
-    moveNextFront(S);
-    forwardMotor(S);
-  END_STEP
-
-  TRANSITION FROM moveNextFrontStep0 TO turnOffFront0
-    := reachedSensorFront;
-  END_TRANSITION
-
-  STEP turnOffFront0:
-    forwardMotor(R);
-    isBusy(R);
-  END_STEP
-
-  TRANSITION FROM turnOffFront0 TO initLinearStep0
-    := true;
-  END_TRANSITION
-
-  TRANSITION FROM initLinearStep0 TO moveBack0
-    := backSignal;
-  END_TRANSITION
-
-  STEP moveBack0:
-    backMotor(S);
-    isBusy(S);
-  END_STEP
-
-  TRANSITION FROM moveBack0 TO waitForNotBusyBack0
-    := reachedSensor;
-  END_TRANSITION
-
-  STEP waitForNotBusyBack0:
-    backMotor(R);
-  END_STEP
-
-  TRANSITION FROM waitForNotBusyBack0 TO moveNextBackStep0
-    := backNotBusy;
-  END_TRANSITION
-
-  STEP moveNextBackStep0:
-    moveNextBack(S);
-    backMotor(S);
-  END_STEP
-
-  TRANSITION FROM moveNextBackStep0 TO turnOffBack0
-    := reachedSensorBack;
-  END_TRANSITION
-
-  STEP turnOffBack0:
-    backMotor(R);
-    isBusy(R);
-  END_STEP
-
-  TRANSITION FROM turnOffBack0 TO initLinearStep0
-    := true;
-  END_TRANSITION
-
-  TRANSITION FROM initLinearStep0 TO rotatingRight
-    := rotateRightSignal;
-  END_TRANSITION
-
-  STEP rotatingRight:
-    rotateRight(S);
-    isBusy(S);
-  END_STEP
-
-  TRANSITION FROM rotatingRight TO Step0
-    := doneRotateRight;
-  END_TRANSITION
-
-  STEP Step0:
-    rotateRight(R);
-    isBusy(R);
-  END_STEP
-
-  TRANSITION FROM Step0 TO initLinearStep0
-    := true;
-  END_TRANSITION
-
-  TRANSITION FROM initLinearStep0 TO rotatingLeft
-    := rotateLeftSignal;
-  END_TRANSITION
-
-  STEP rotatingLeft:
-    rotateLeft(S);
-    isBusy(S);
-  END_STEP
-
-  TRANSITION FROM rotatingLeft TO Step1
-    := doneRotateLeft;
-  END_TRANSITION
-
-  STEP Step1:
-    rotateLeft(R);
-    isBusy(R);
-  END_STEP
-
-  TRANSITION FROM Step1 TO initLinearStep0
-    := true;
-  END_TRANSITION
-
-END_FUNCTION_BLOCK
 
 PROGRAM program1
   VAR_EXTERNAL
     ii : BOOL;
+    runFrontAT1_ex : BOOL;
+    runFrontSaT1_ex : BOOL;
+    runFrontSaT2_ex : BOOL;
+    runFrontSbT1_ex : BOOL;
+    sendDownSaT2_ex : BOOL;
     sensorAT1_ex : BOOL;
+    sensorSaT1_ex : BOOL;
+    sensorSaT2_ex : BOOL;
+    sensorSbT1_ex : BOOL;
   END_VAR
 
   INITIAL_STEP Step0:
@@ -541,18 +669,48 @@ PROGRAM program1
   END_TRANSITION
 
   STEP Step1:
-    ii(N);
+    runFrontAT1_ex(N);
   END_STEP
 
-  TRANSITION FROM Step1 TO Step2
+  TRANSITION FROM Step1 TO (Step2, Step6)
     := sensorAT1_ex;
   END_TRANSITION
 
   STEP Step2:
+    runFrontSaT1_ex(N);
   END_STEP
 
-  TRANSITION FROM Step2 TO Step0
+  TRANSITION FROM Step2 TO Step4
+    := NOT sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step4:
+  END_STEP
+
+  TRANSITION FROM Step4 TO Step3
+    := sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step3:
+    sendDownSaT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step3 TO Step5
+    := not sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step5:
+  END_STEP
+
+  TRANSITION FROM Step5 TO Step0
     := false;
+  END_TRANSITION
+
+  STEP Step6:
+  END_STEP
+
+  TRANSITION FROM Step6 TO Step0
+    := true;
   END_TRANSITION
 
 END_PROGRAM
@@ -561,10 +719,15 @@ END_PROGRAM
 CONFIGURATION config
   VAR_GLOBAL
     ii : BOOL;
-    forwardAT1 : BOOL;
-    forwardSaT2 : BOOL;
-    forwardSaT1 : BOOL;
+    runFrontAT1_ex : BOOL;
+    runFrontSaT1_ex : BOOL;
+    runFrontSaT2_ex : BOOL;
+    runFrontSbT1_ex : BOOL;
+    sendDownSaT2_ex : BOOL;
     sensorAT1_ex : BOOL;
+    sensorSaT1_ex : BOOL;
+    sensorSaT2_ex : BOOL;
+    sensorSbT1_ex : BOOL;
   END_VAR
 
   RESOURCE resource1 ON PLC
