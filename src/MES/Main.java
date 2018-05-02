@@ -2,19 +2,23 @@ package MES;
 
 import Communication.Modbus;
 import Communication.UDPServer;
+import Communication.SendOrder;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class Main{
-    public static Queue<Order> ordersReceived= new LinkedList<Order>();
+    public static Vector<Unload> unloadReceived= new Vector<>();
+    public static Vector<Transform> transformReceived= new Vector<>();
     public static final Modbus modbus = new Modbus();
-    public static boolean UDPopened = false;
+    public static final SendOrder sendOrder = new SendOrder();
 
-    public static void main(String args[]) throws IOException {
+
+    public static void main(String args[]) throws Exception {
 
         Main m = new Main();
         UDPServer server = new UDPServer(54321);
@@ -45,6 +49,12 @@ public class Main{
         //Test Code
 
         /*
+        READ COIL TEST CODE
+
+        */
+
+
+        /*
         while(true){
             try {
                 //Write Coil
@@ -61,7 +71,6 @@ public class Main{
                 System.out.println("Failed to send request");
                 System.exit(1);
             }
-
         } */
 
         //Start scheduler for orders
@@ -77,37 +86,33 @@ public class Main{
     public void MainMenu(UDPServer server){
         Scanner ss = new Scanner(System.in);
         System.out.println("\nChoose an option: ");
-        if(!UDPopened){
-            System.out.println("1 - Start UDP");
-        }
-        else {
-            System.out.println("1 - Close UDP");
-        }
-
-        System.out.println("2 - Check next order");
+        System.out.println("1 - Start UDP");
+        System.out.println("2 - Choose First");
         System.out.println("3 - Start ModBus");
+        System.out.println("4 - Send Orders");
+
         String resp = ss.next();
-        switch (resp){
-            case "1": ControlUDP(server);
-            break;
-            case "2": CheckFirst(server);
-            break;
-            case "3": StartModBus(server);
+        switch (resp) {
+            case "1":
+                ControlUDP(server);
+                break;
+            case "2":
+                ChooseFirst(server);
+                break;
+            case "3":
+                StartModBus(server);
+                break;
+            case "4":
+                SendOrders(server);
+                break;
         }
     }
 
     public void ControlUDP(UDPServer server){
-        if(!UDPopened) {
-            try {
-                server.listen();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            UDPopened = true;
-        }
-        else{
-            server.close();
-            UDPopened = false;
+        try {
+            server.listen();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         MainMenu(server);
     }
@@ -115,14 +120,20 @@ public class Main{
     public void StartModBus(UDPServer server){
         try {
             modbus.connect(5503);
+            System.out.println("-- Running Server Modbus at " + InetAddress.getLocalHost() + "--");
         } catch (Exception e) {
             e.printStackTrace();
         }
         MainMenu(server);
     }
 
-    public void CheckFirst(UDPServer server){
-        Order o1 = ordersReceived.poll();
+    public void ChooseFirst(UDPServer server){
+        Order o1 = null;
+        if (!transformReceived.isEmpty()){
+            o1 = transformReceived.firstElement();
+        }
+        else if (!unloadReceived.isEmpty())
+            o1 = unloadReceived.firstElement();
         switch (o1.getDo()){
             case "U":
                 System.out.println("here");
@@ -131,6 +142,8 @@ public class Main{
                 System.out.println("type: " + u.getType());
                 System.out.println("destination: " + u.getDestination());
                 System.out.println("quantity: " + u.getQuantity());
+                int quantity = Integer.parseInt(u.getQuantity());
+                System.out.println("quantity integer: " + quantity);
                 break;
             case "T": Transform t = (Transform)o1;
                 System.out.println("Order number " + t.getNumber() + " - transform");
@@ -138,13 +151,17 @@ public class Main{
                 System.out.println("to: " + t.getTo());
                 System.out.println("quantity: " + t.getQuantity());
                 break;
-            case "L": Load l = (Load)o1;
-                System.out.println("Order number " + l.getNumber() + " - load");
-                System.out.println("type: " + l.getType());
-                System.out.println("from: " + l.getFrom());
-                System.out.println("quantity: " + l.getQuantity());
-                break;
         }
         MainMenu(server);
     }
-}
+
+    public void SendOrders(UDPServer server){
+        try {
+            sendOrder.SendLoop();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        MainMenu(server);
+    }
+
+    }
