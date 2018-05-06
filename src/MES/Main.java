@@ -12,8 +12,8 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class Main{
-    public static Vector<Unload> unloadReceived= new Vector<>();
-    public static Vector<Transform> transformReceived= new Vector<>();
+    public static Vector<Unload> unloadReceived = new Vector<>();
+    public static Vector<Transform> transformReceived = new Vector<>();
     public static final Modbus modbus = new Modbus();
     public static final SendOrder sendOrder = new SendOrder();
 
@@ -88,8 +88,7 @@ public class Main{
         System.out.println("\nChoose an option: ");
         System.out.println("1 - Start UDP");
         System.out.println("2 - Choose First");
-        System.out.println("3 - Start ModBus");
-        System.out.println("4 - Send Orders");
+        System.out.println("3 - Send Orders");
 
         String resp = ss.next();
         switch (resp) {
@@ -100,27 +99,13 @@ public class Main{
                 ChooseFirst(server);
                 break;
             case "3":
-                StartModBus(server);
-                break;
-            case "4":
                 SendOrders(server);
                 break;
         }
     }
-
     public void ControlUDP(UDPServer server){
         try {
             server.listen();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        MainMenu(server);
-    }
-
-    public void StartModBus(UDPServer server){
-        try {
-            modbus.connect(5503);
-            System.out.println("-- Running Server Modbus at " + InetAddress.getLocalHost() + "--");
         } catch (Exception e) {
             e.printStackTrace();
         }

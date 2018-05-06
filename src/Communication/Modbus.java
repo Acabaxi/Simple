@@ -11,35 +11,34 @@ import net.wimpi.modbus.util.*;
 import net.wimpi.modbus.procimg.*;
 
 public class Modbus {
-    private TCPMasterConnection con = null; //the connection
+    private TCPMasterConnection con; //the connection
 
     int port = 5503;
 
-    public void connect(int port) throws UnknownHostException, Exception {
+    public TCPMasterConnection connect(int port) throws UnknownHostException, Exception {
         this.port = port;
         InetAddress adr = null; //the slave's address
-
         try {
             adr = InetAddress.getByName("localhost"); //the slave's address
         } catch (UnknownHostException e){
             e.printStackTrace();
             System.exit(1);
         }
-
         this.con = new TCPMasterConnection(adr);
         con.setPort(this.port);
 
         try {
             con.connect();
         } catch(Exception langException){
-
             System.out.println("Failed to connect");
             langException.printStackTrace();
             System.exit(1);
         }
+        return con;
     }
-    public void close() {
-        con.close();
+
+    public TCPMasterConnection getCon() {
+        return con;
     }
 }
 
