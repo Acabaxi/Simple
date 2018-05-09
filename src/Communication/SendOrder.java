@@ -10,6 +10,7 @@ import net.wimpi.modbus.net.TCPMasterConnection;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Vector;
 
 public class SendOrder extends Modbus implements Runnable {
     private ModbusTCPTransaction trans = null; //the transaction
@@ -26,7 +27,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 
     private boolean runningOrders;
-    private boolean loop = true;
+    private boolean loop = true; //stop creating useless trash xD
 
     private Thread work;
     private int coilNumber;
@@ -41,19 +42,55 @@ public class SendOrder extends Modbus implements Runnable {
             public void run() {
                 System.out.println("Sending Orders");
 
-                int i = 0;
+                int i = 0; //why?
 
-                if(i == 0){
+                if(i == 0){ //for what?
                     try {
                         trans = new ModbusTCPTransaction(connect(5503));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    i = 1;
+                    i = 1; //just try/catch doesn't work? what are you trying to do? maybe you wanted 'while'?
                 }
+                
+                
 
-                while (loop) {
+                while (loop) { //why not just while(true) ??? 
                     //Do stuff :)
+                	Transform t = null;
+                	Unload u = null;
+                	//get first orders of each type
+                	if (!Main.transformReceived.isEmpty()) {
+                		t = Main.transformReceived.get(0);
+                	}
+                	if (!Main.unloadReceived.isEmpty()) {
+                		u = Main.unloadReceived.get(0);
+                	}
+                	//if we have transform
+                	if (t != null) {
+                		//send this order or do what you need
+                		//remove after sending
+                		Main.transformReceived.remove(t);
+                	}
+                	else if (u != null) { //if we don't have any transform order, check if we have unload
+                		//send this order
+                		//remove after sending
+                		Main.unloadReceived.remove(u);
+                	}
+                	
+                	/* if you will need orders after sending then it's better to create other vectors 
+                	 * and put them there after sending. You can create them in this class or in Main (probably better), wherever you want
+                	 * something like this:
+                	 * 
+                	 * public static Vector<Unload> unloadSent = new Vector<>();
+                	 * public static Vector<Transform> transformSent = new Vector<>();
+                	 * 
+                	 * and then after sending order you first put it to another vector and then remove:
+                	 * 
+                	 * Main.transformSent.add(t);
+                	 * Main.transformReceived.remove(t);
+                	 *  */
+                	
 
                     //Request State on idle status
                     coilNumber = 0;
