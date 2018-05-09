@@ -27,7 +27,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 
     private boolean runningOrders;
-    private boolean loop = true; //stop creating useless trash xD
+    private boolean loop = true; //stop creating useless trash xD 
 
     private Thread work;
     private int coilNumber;
