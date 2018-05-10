@@ -48,7 +48,7 @@ public class Parser {
                                     unLoad.setDestination(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    unLoad.setQuantity(attribute.getValue());
+                                    unLoad.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
                             //System.out.println("type: " + unLoad.getType());
@@ -88,7 +88,7 @@ public class Parser {
                                     transform.setTo(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    transform.setQuantity(attribute.getValue());
+                                    transform.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
                             //System.out.println("from: " + transform.getFrom());

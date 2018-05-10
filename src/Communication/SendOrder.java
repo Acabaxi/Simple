@@ -26,7 +26,6 @@ public class SendOrder extends Modbus implements Runnable {
     private int quantity = 0;
 
     private boolean runningOrders;
-    private boolean loop = true; //stop creating useless trash xD 
 
     private Thread work;
     private int coilNumber;
@@ -41,19 +40,16 @@ public class SendOrder extends Modbus implements Runnable {
             public void run() {
                 System.out.println("Sending Orders");
 
-                int i = 0; //why?
-
                 try {
                     trans = new ModbusTCPTransaction(connect(5503));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                while (true) { //why not just while(true) ???
+                while (true) {
                     //Do stuff :)
                 	Transform t = null;
                 	Unload u = null;
-                	//get first orders of each type
 
                     //Check if idle ie available to receive orders
                     coilNumber = 0;
@@ -84,7 +80,7 @@ public class SendOrder extends Modbus implements Runnable {
                             //send this order or do what you need
                             //remove after sending
                             if(i == 0) {
-                                quantity = Integer.parseInt(t.getQuantity());
+                                quantity = t.getQuantity();
                                 i = 1;
                             }
                             if(quantity >= 0){

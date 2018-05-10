@@ -3,7 +3,7 @@ package MES;
 public class Unload extends Order{
     private String type;
     private String destination;
-    private String quantity;
+    private int quantity;
 
     public Unload(String number, String oType){
         super(number, oType);
@@ -17,7 +17,7 @@ public class Unload extends Order{
         this.destination = destination;
     }
 
-    public void setQuantity(String quantity){
+    public void setQuantity(int quantity){
         this.quantity = quantity;
     }
 
@@ -29,7 +29,7 @@ public class Unload extends Order{
         return destination;
     }
 
-    public String getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 }
