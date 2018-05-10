@@ -16,13 +16,14 @@ public class SendOrder extends Modbus implements Runnable {
     private ModbusTCPTransaction trans = null; //the transaction
     private WriteCoilRequest WCoil = null; //the request
     private ReadCoilsRequest reqRCoilIdle = null;
-    private ReadCoilsRequest reqRCoilComplete = null;
+    private ReadCoilsRequest reqRCoilCompleteTransform = null;
 
     private ReadCoilsResponse CoilRespIdle = null;
-    private ReadCoilsResponse CoilRespComplete = null;
+    private ReadCoilsResponse CoilRespCompleteTransform = null;
 
     private int idle = 0;
-
+    private int i = 0;
+    private int quantity = 0;
 
     private boolean runningOrders;
     private boolean loop = true; //stop creating useless trash xD 
@@ -82,8 +83,10 @@ public class SendOrder extends Modbus implements Runnable {
                         if (t != null) {
                             //send this order or do what you need
                             //remove after sending
-                            int quantity = Integer.parseInt(t.getQuantity());
-                            System.out.println("Quantity to transform: " + quantity);
+                            if(i == 0) {
+                                quantity = Integer.parseInt(t.getQuantity());
+                                i = 1;
+                            }
                             if(quantity >= 0){
                                 WCoil = new WriteCoilRequest(1, true);
                                 trans.setRequest(WCoil);
@@ -101,17 +104,16 @@ public class SendOrder extends Modbus implements Runnable {
 
 
                                 coilNumber = 2;
-                                reqRCoilComplete = new ReadCoilsRequest(coilNumber, 1);
-                                trans.setRequest(reqRCoilComplete);
+                                reqRCoilCompleteTransform = new ReadCoilsRequest(coilNumber, 1);
+                                trans.setRequest(reqRCoilCompleteTransform);
                                 try {
                                     trans.execute();
                                 } catch (ModbusException e) {
                                     e.printStackTrace();
                                 }
-                                CoilRespComplete = (ReadCoilsResponse)trans.getResponse();
-                                int complete = Integer.parseInt(CoilRespComplete.getCoils().toString().trim());
-                                System.out.println("Result of boolean complete part one: " + complete);
-
+                                CoilRespCompleteTransform = (ReadCoilsResponse)trans.getResponse();
+                                int complete = Integer.parseInt(CoilRespCompleteTransform.getCoils().toString().trim());
+                                System.out.println("Result of boolean complete: " + complete);
                                 try {
                                     sleep(30);
                                 } catch (InterruptedException e) {
@@ -120,10 +122,12 @@ public class SendOrder extends Modbus implements Runnable {
 
                                 if(complete == 1) {
                                     quantity = quantity - 1;
+                                    System.out.println("Result of int quantity: " + quantity);
                                 }
                             }
                             if(quantity == 0) {
                                 Main.transformReceived.remove(t);
+                                i = 0;
                                 //Add time stamp;
                                 //Send to data base completed order
                             }
