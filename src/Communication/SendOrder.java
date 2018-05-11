@@ -10,7 +10,7 @@ import net.wimpi.modbus.net.TCPMasterConnection;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Vector;
+import java.util.*;
 
 public class SendOrder extends Modbus implements Runnable {
     private ModbusTCPTransaction trans = null; //the transaction
@@ -51,7 +51,7 @@ public class SendOrder extends Modbus implements Runnable {
                 	Transform t = null;
                 	Unload u = null;
 
-                    //Check if idle ie available to receive orders
+                    //Check if idle is available to receive orders
                     coilNumber = 0;
                     reqRCoilIdle = new ReadCoilsRequest(coilNumber, 1);
                     trans.setRequest(reqRCoilIdle);
@@ -83,7 +83,7 @@ public class SendOrder extends Modbus implements Runnable {
                                 quantity = t.getQuantity();
                                 i = 1;
                             }
-                            if(quantity >= 0){
+                            if(quantity >= 0){ //why >= ? if 0 you shouldn't do anything. Maybe just > ?
                                 WCoil = new WriteCoilRequest(1, true);
                                 trans.setRequest(WCoil);
                                 try {
@@ -122,6 +122,9 @@ public class SendOrder extends Modbus implements Runnable {
                                 }
                             }
                             if(quantity == 0) {
+                            	Date timeFinished = new Date();
+                            	t.setTimeFinished(timeFinished);
+                            	//send data to database
                                 Main.transformReceived.remove(t);
                                 i = 0;
                                 //Add time stamp;

@@ -3,7 +3,6 @@ package MES;
 public class Transform extends Order{
     private String from;
     private String to;
-    private int quantity;
 
     public Transform(String number, String oType){
         super(number, oType);
@@ -17,10 +16,6 @@ public class Transform extends Order{
         this.to = to;
     }
 
-    public void setQuantity(int quantity){
-        this.quantity = quantity;
-    }
-
     public String getFrom() {
         return from;
     }
@@ -28,8 +23,5 @@ public class Transform extends Order{
     public String getTo() {
         return to;
     }
-
-    public int getQuantity() {
-        return quantity;
-    }
+    
 }

@@ -4,6 +4,7 @@ import MES.*;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.*;
 
 public class UDPServer implements Runnable{
     private DatagramSocket udpSocket;
@@ -55,9 +56,10 @@ public class UDPServer implements Runnable{
                     e.printStackTrace();
                 }
                 msg = new String(packet.getData()).trim();
+                Date timeReceived = new Date();
                 msg = msg.split("]>")[1];
                 Parser p = new Parser();
-                Order o = p.parseFile(msg);
+                Order o = p.parseFile(msg, timeReceived);
                 if (o.getDo().equals("U"))
                     Main.unloadReceived.add((Unload) o);
                 else if (o.getDo().equals("T"))

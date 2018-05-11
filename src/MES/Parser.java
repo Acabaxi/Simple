@@ -2,7 +2,7 @@ package MES;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -15,7 +15,7 @@ public class Parser {
     public Parser(){}
 
     @SuppressWarnings({ "unchecked", "null" })
-    public Order parseFile(String xml) {
+    public Order parseFile(String xml, Date timeReceived) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
@@ -37,6 +37,7 @@ public class Parser {
 
                         } else if (qName.equalsIgnoreCase("Unload")) {
                             Unload unLoad = new Unload(number, "U");
+                            unLoad.setTimeReceived(timeReceived);
                             //System.out.println("Do : unLoad");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
@@ -57,6 +58,7 @@ public class Parser {
                             return unLoad;
                         } else if (qName.equalsIgnoreCase("Load")) {
                             Load load = new Load(number, "L");
+                            load.setTimeReceived(timeReceived);
                             //System.out.println("Do : Load");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
@@ -68,7 +70,7 @@ public class Parser {
                                     load.setFrom(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    load.setQuantity(attribute.getValue());
+                                    load.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
                             //System.out.println("type: " + load.getType());
@@ -77,6 +79,7 @@ public class Parser {
                             return load;
                         } else if (qName.equalsIgnoreCase("Transform")) {
                             Transform transform = new Transform(number, "T");
+                            transform.setTimeReceived(timeReceived);
                             //System.out.println("Do : Transform");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {

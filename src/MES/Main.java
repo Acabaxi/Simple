@@ -127,7 +127,7 @@ public class Main{
                 System.out.println("type: " + u.getType());
                 System.out.println("destination: " + u.getDestination());
                 System.out.println("quantity: " + u.getQuantity());
-                int quantity = Integer.parseInt(u.getQuantity());
+                int quantity = u.getQuantity();
                 System.out.println("quantity integer: " + quantity);
                 break;
             case "T": Transform t = (Transform)o1;
