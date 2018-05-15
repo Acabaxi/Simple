@@ -19,7 +19,7 @@ public class Modbus {
         this.port = port;
         InetAddress adr = null; //the slave's address
         try {
-            adr = InetAddress.getByName("localhost"); //the slave's address
+            adr = InetAddress.getByName("172.30.23.26"); //the slave's address
         } catch (UnknownHostException e){
             e.printStackTrace();
             System.exit(1);

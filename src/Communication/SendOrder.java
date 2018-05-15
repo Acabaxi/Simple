@@ -21,7 +21,7 @@ public class SendOrder extends Modbus implements Runnable {
     private ReadCoilsRequest reqRCoilCompleteTransform = null;
 
     private WriteSingleRegisterRequest singleUnload = null;
-    private SimpleRegister reg = new SimpleRegister(1);
+    private SimpleRegister reg = new SimpleRegister(4);
 
     private ReadCoilsResponse CoilRespIdle = null;
     private ReadCoilsResponse CoilRespCompleteTransform = null;
@@ -56,10 +56,11 @@ public class SendOrder extends Modbus implements Runnable {
                 	Transform t = null;
                 	Unload u = null;
 
-                	//Write Register Example
+
+                    //Write Register Example
                     singleUnload = new WriteSingleRegisterRequest();
                     singleUnload.setReference(0);
-                    reg.setValue(1);
+                    reg.setValue(4);
                     singleUnload.setRegister(reg);
                     trans.setRequest(singleUnload);
                     try {
