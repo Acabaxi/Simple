@@ -349,6 +349,7 @@ typedef struct {
   __DECLARE_VAR(BOOL,ENO)
   __DECLARE_VAR(BOOL,REACHEDSENSOR)
   __DECLARE_VAR(BOOL,USETOOL)
+  __DECLARE_VAR(BOOL,READYTOSEND)
   __DECLARE_VAR(INT,INITIALPIECE)
   __DECLARE_VAR(INT,CURRENTPIECE)
   __DECLARE_VAR(INT,FINALPIECE)
@@ -388,12 +389,12 @@ typedef struct {
   TON TON5;
   TON TON6;
   TON TON7;
-  STEP __step_list[43];
+  STEP __step_list[45];
   UINT __nb_steps;
-  ACTION __action_list[21];
+  ACTION __action_list[22];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[54];
-  __IEC_BOOL_t __debug_transition_list[54];
+  __IEC_BOOL_t __transition_list[56];
+  __IEC_BOOL_t __debug_transition_list[56];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -409,6 +410,8 @@ typedef struct {
 
   // PROGRAM private variables - TEMP, private and located variables
   LINEARCONVEYOR AT1;
+  __DECLARE_EXTERNAL(BOOL,WAREHOUSEBUSY)
+  __DECLARE_LOCATED(BOOL,WAREHOUSEBUSYCOMM)
   LINEARCONVEYOR SAT1;
   ROTARYCONVEYOR SAT2;
   LINEARCONVEYOR SBT1;

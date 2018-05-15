@@ -568,6 +568,7 @@ FUNCTION_BLOCK Machine
   END_VAR
   VAR_OUTPUT
     useTool : BOOL;
+    readyToSend : BOOL;
   END_VAR
   VAR
     toolTimerOn : BOOL;
@@ -811,7 +812,6 @@ FUNCTION_BLOCK Machine
 
   STEP Step0:
     toolPlus(N);
-    incrementToolNumber(N);
   END_STEP
 
   TRANSITION FROM Step0 TO Step8
@@ -898,7 +898,6 @@ FUNCTION_BLOCK Machine
 
   STEP Step18:
     toolPlus(N);
-    incrementToolNumber(N);
   END_STEP
 
   TRANSITION FROM Step18 TO Step17
@@ -928,6 +927,7 @@ FUNCTION_BLOCK Machine
 
   STEP sendToNext:
     motorUp(N);
+    readyToSend(N);
     motorLeft(N);
   END_STEP
 
@@ -936,6 +936,21 @@ FUNCTION_BLOCK Machine
   END_TRANSITION
 
   STEP Step3:
+  END_STEP
+
+  TRANSITION FROM Step3 TO Step10
+    := not frontNotBusy;
+  END_TRANSITION
+
+  STEP Step10:
+    forwardMotor(N);
+  END_STEP
+
+  TRANSITION FROM Step10 TO Step26
+    := reachedSensorFront;
+  END_TRANSITION
+
+  STEP Step26:
   END_STEP
 
   TRANSITION FROM checkIfFinalA TO sendToNext
@@ -1023,7 +1038,6 @@ FUNCTION_BLOCK Machine
 
   STEP Step23:
     toolPlus(N);
-    incrementToolNumber(N);
   END_STEP
 
   TRANSITION FROM Step23 TO Step22
@@ -1067,7 +1081,6 @@ FUNCTION_BLOCK Machine
 
   STEP Step31:
     toolPlus(N);
-    incrementToolNumber(N);
   END_STEP
 
   TRANSITION FROM Step31 TO Step30
@@ -1108,6 +1121,14 @@ END_FUNCTION_BLOCK
 PROGRAM program0
   VAR
     AT1 : LinearConveyor;
+  END_VAR
+  VAR_EXTERNAL
+    warehouseBusy : BOOL;
+  END_VAR
+  VAR
+    warehouseBusyCOMM AT %QX0.1.0.0 : BOOL;
+  END_VAR
+  VAR
     SaT1 : LinearConveyor;
     SaT2 : RotaryConveyor;
     SbT1 : LinearConveyor;
@@ -1541,6 +1562,7 @@ PROGRAM program0
   leftRotMT2 := MT2.leftRotMotor;
   sensorSaT3_ex := sensorSaT3;
   useToolSaT3 := SaT3.useTool;
+  warehouseBusyCOMM := warehouseBusy;
   toolPlusSaT3 := SaT3.toolPlus;
   toolMinusSaT3 := SaT3.toolMinus;
   sensorCT4_ex := sensorCT4;

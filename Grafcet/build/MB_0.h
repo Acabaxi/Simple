@@ -91,14 +91,14 @@ typedef struct{
 
 
 /* The total number of nodes, needed to support _all_ instances of the modbus plugin */
-#define TOTAL_TCPNODE_COUNT       11
+#define TOTAL_TCPNODE_COUNT       12
 #define TOTAL_RTUNODE_COUNT       0
 #define TOTAL_ASCNODE_COUNT       0
 
 /* Values for instance 0 of the modbus plugin */
 #define MAX_NUMBER_OF_TCPCLIENTS  10
 
-#define NUMBER_OF_TCPSERVER_NODES 0
+#define NUMBER_OF_TCPSERVER_NODES 1
 #define NUMBER_OF_TCPCLIENT_NODES 1
 #define NUMBER_OF_TCPCLIENT_REQTS 3
 
@@ -150,7 +150,8 @@ DEF_REQ_SEND_RETRIES, 0 /* error_code */, 0 /* prev_code */, {0, 10000000} /* ti
 
 
 static server_node_t		server_nodes[NUMBER_OF_SERVER_NODES] = {
-
+/*node 0.1*/
+{"0.1", 0, {naf_tcp, {.tcp = {"127.0.0.1", "5503", DEF_CLOSE_ON_SILENCE}}}, -1 /* mb_nd */, 0 /* init_state */}
 }
 ;
 
@@ -403,4 +404,5 @@ u16 *__QX0_0_1_58 = &client_requests[1].plcv_buffer[58];
 u16 *__QX0_0_1_79 = &client_requests[1].plcv_buffer[79];
 u16 *__QX0_0_1_90 = &client_requests[1].plcv_buffer[90];
 u16 *__IW0_0_2_0 = &client_requests[2].plcv_buffer[0];
+u16 *__QX0_1_0_0 = &server_nodes[0].mem_area.rw_bits[0];
 

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2018-04-02T01:08:32"/>
-  <contentHeader name="Unnamed" modificationDateTime="2018-05-15T14:46:00">
+  <contentHeader name="Unnamed" modificationDateTime="2018-05-15T16:25:18">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>
@@ -6937,6 +6937,22 @@ end_if;]]></xhtml:p>
                 <derived name="LinearConveyor"/>
               </type>
             </variable>
+          </localVars>
+          <externalVars>
+            <variable name="warehouseBusy">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </externalVars>
+          <localVars>
+            <variable name="warehouseBusyCOMM" address="%QX0.1.0.0">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </localVars>
+          <localVars>
             <variable name="SaT1">
               <type>
                 <derived name="LinearConveyor"/>
@@ -14817,6 +14833,26 @@ end_if;]]></xhtml:p>
               </connectionPointIn>
               <expression>useToolSaT3</expression>
             </outVariable>
+            <inVariable localId="277" executionOrderId="0" height="27" width="114" negated="false">
+              <position x="856" y="714"/>
+              <connectionPointOut>
+                <relPosition x="114" y="13"/>
+              </connectionPointOut>
+              <expression>warehouseBusy</expression>
+            </inVariable>
+            <outVariable localId="278" executionOrderId="0" height="27" width="160" negated="false">
+              <position x="1130" y="703"/>
+              <connectionPointIn>
+                <relPosition x="0" y="13"/>
+                <connection refLocalId="277">
+                  <position x="1130" y="716"/>
+                  <position x="1050" y="716"/>
+                  <position x="1050" y="727"/>
+                  <position x="970" y="727"/>
+                </connection>
+              </connectionPointIn>
+              <expression>warehouseBusyCOMM</expression>
+            </outVariable>
           </FBD>
         </body>
       </pou>
@@ -17764,8 +17800,8 @@ end_if;]]></xhtml:p>
                 <connection refLocalId="145">
                   <position x="1352" y="281"/>
                   <position x="1352" y="271"/>
-                  <position x="1391" y="271"/>
-                  <position x="1391" y="210"/>
+                  <position x="1394" y="271"/>
+                  <position x="1394" y="210"/>
                 </connection>
               </connectionPointIn>
               <connectionPointOut formalParameter="">
@@ -17823,12 +17859,12 @@ end_if;]]></xhtml:p>
               </condition>
             </transition>
             <step localId="145" name="Step52" initialStep="false" height="27" width="57">
-              <position x="1363" y="183"/>
+              <position x="1366" y="183"/>
               <connectionPointIn>
                 <relPosition x="28" y="0"/>
                 <connection refLocalId="144">
-                  <position x="1391" y="183"/>
-                  <position x="1391" y="164"/>
+                  <position x="1394" y="183"/>
+                  <position x="1394" y="164"/>
                   <position x="1399" y="164"/>
                   <position x="1399" y="146"/>
                 </connection>
@@ -19249,7 +19285,7 @@ end_if;]]></xhtml:p>
                   <position x="1514" y="191"/>
                   <position x="1467" y="191"/>
                   <position x="1467" y="196"/>
-                  <position x="1420" y="196"/>
+                  <position x="1423" y="196"/>
                 </connection>
               </connectionPointIn>
               <action localId="0" qualifier="S">
