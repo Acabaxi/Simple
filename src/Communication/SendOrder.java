@@ -21,6 +21,8 @@ public class SendOrder extends Modbus implements Runnable {
     private ReadCoilsRequest reqRCoilCompleteTransform = null;
 
     private WriteSingleRegisterRequest singleUnload = null;
+    private WriteSingleRegisterRequest pieceType = null;
+
     private SimpleRegister reg = new SimpleRegister(4);
 
     private ReadCoilsResponse CoilRespIdle = null;
@@ -58,6 +60,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 
                     //Write Register Example
+                    /*
                     singleUnload = new WriteSingleRegisterRequest();
                     singleUnload.setReference(0);
                     reg.setValue(4);
@@ -67,7 +70,7 @@ public class SendOrder extends Modbus implements Runnable {
                         trans.execute();
                     } catch (ModbusException e) {
                         e.printStackTrace();
-                    }
+                    } */
 
                     //Check if idle is available to receive orders
                     coilNumber = 0;
@@ -89,13 +92,68 @@ public class SendOrder extends Modbus implements Runnable {
                     idle = Integer.parseInt(CoilRespIdle.getCoils().toString().trim());
 
 
-                    if(idle == 1) {
+                    if(idle == 0) {
+                        System.out.println("Entrei neste estado");
                         if (!Main.transformReceived.isEmpty()) {
                             t = Main.transformReceived.get(0);
                         }
                         if (!Main.unloadReceived.isEmpty()) {
                             u = Main.unloadReceived.get(0);
+
+                            System.out.println(" Também entrei neste estado");
+
+                            try {
+                                sleep(30);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            singleUnload = new WriteSingleRegisterRequest();
+                            singleUnload.setReference(0);
+                            reg.setValue(1);
+                            singleUnload.setRegister(reg);
+                            trans.setRequest(singleUnload);
+                            try {
+                                trans.execute();
+                            } catch (ModbusException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            pieceType = new WriteSingleRegisterRequest();
+                            pieceType.setReference(2);
+                            reg.setValue(1);
+                            pieceType.setRegister(reg);
+                            trans.setRequest(pieceType);
+                            try {
+                                trans.execute();
+                            } catch (ModbusException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                sleep(30);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            WCoil = new WriteCoilRequest(1, true);
+                            trans.setRequest(WCoil);
+                            try {
+                                trans.execute();
+                            } catch (ModbusException e) {
+                                e.printStackTrace();
+                            }
+
+                            try {
+                                sleep(30);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            while(true);
                         }
+
                         //if we have transform
                         if (t != null) {
                             //send this order or do what you need

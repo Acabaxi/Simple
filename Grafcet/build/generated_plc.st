@@ -1844,9 +1844,7 @@ PROGRAM program1
   END_VAR
   VAR
     sensorAT1 AT %IX0.0.0.0 : BOOL;
-  END_VAR
-  VAR
-    initial : INT := 3;
+    initialPiece AT %IW0.1.1.0 : INT;
   END_VAR
   VAR_EXTERNAL
     runFrontAT1_ex : BOOL;
@@ -1883,8 +1881,10 @@ PROGRAM program1
   END_VAR
   VAR
     removeFromWarehouse0 : removeFromWarehouse;
-    PM : INT := 2;
-    runUnload : BOOL;
+  END_VAR
+  VAR
+    PM AT %IW0.1.1.2 : INT;
+    runUnload AT %IX0.1.0.1 : BOOL;
   END_VAR
 
   INITIAL_STEP Step0:
@@ -1907,7 +1907,7 @@ PROGRAM program1
   END_STEP
 
   ACTION action0:
-    removeFromWarehouse0(pieceNum := initial, sensorAT1 := sensorAT1);
+    removeFromWarehouse0(pieceNum := initialPiece, sensorAT1 := sensorAT1);
     warehouseIn := removeFromWarehouse0.warehouseIn;
   END_ACTION
 
@@ -2538,7 +2538,7 @@ PROGRAM program1
   END_STEP
 
   TRANSITION FROM Step91 TO Step89
-    := PM = 1;
+    := false;
   END_TRANSITION
 
   STEP Step89:

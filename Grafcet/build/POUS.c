@@ -6747,7 +6747,8 @@ void PROGRAM1_init__(PROGRAM1 *data__, BOOL retain) {
   __INIT_EXTERNAL(BOOL,WAREHOUSEBUSY,data__->WAREHOUSEBUSY,retain)
   __INIT_LOCATED(BOOL,__IX0_0_0_0,data__->SENSORAT1,retain)
   __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
-  __INIT_VAR(data__->INITIAL,3,retain)
+  __INIT_LOCATED(INT,__IW0_1_1_0,data__->INITIALPIECE,retain)
+  __INIT_LOCATED_VALUE(data__->INITIALPIECE,0)
   __INIT_EXTERNAL(BOOL,RUNFRONTAT1_EX,data__->RUNFRONTAT1_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNFRONTSAT1_EX,data__->RUNFRONTSAT1_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNFRONTSAT2_EX,data__->RUNFRONTSAT2_EX,retain)
@@ -6780,8 +6781,10 @@ void PROGRAM1_init__(PROGRAM1 *data__, BOOL retain) {
   __INIT_EXTERNAL(BOOL,PUSHTOROLLCT5_EX,data__->PUSHTOROLLCT5_EX,retain)
   __INIT_EXTERNAL(BOOL,PUSHTOROLLCT6_EX,data__->PUSHTOROLLCT6_EX,retain)
   REMOVEFROMWAREHOUSE_init__(&data__->REMOVEFROMWAREHOUSE0,retain);
-  __INIT_VAR(data__->PM,2,retain)
-  __INIT_VAR(data__->RUNUNLOAD,__BOOL_LITERAL(FALSE),retain)
+  __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
+  __INIT_LOCATED_VALUE(data__->PM,0)
+  __INIT_LOCATED(BOOL,__IX0_1_0_1,data__->RUNUNLOAD,retain)
+  __INIT_LOCATED_VALUE(data__->RUNUNLOAD,__BOOL_LITERAL(FALSE))
   UINT i;
   data__->__nb_steps = 92;
   static const STEP temp_step = {{0, 0}, 0, {{0, 0}, 0}};
@@ -7054,26 +7057,26 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
 
   // Transitions fire test
   if (__GET_VAR(data__->STEP0.X)) {
-    __SET_VAR(data__->,__transition_list[0],,(__GET_VAR(data__->RUNUNLOAD,) && !(__GET_EXTERNAL(data__->WAREHOUSEBUSY,))));
+    __SET_VAR(data__->,__transition_list[0],,(__GET_LOCATED(data__->RUNUNLOAD,) && !(__GET_EXTERNAL(data__->WAREHOUSEBUSY,))));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[0],,__GET_VAR(data__->__transition_list[0]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[0],,(__GET_VAR(data__->RUNUNLOAD,) && !(__GET_EXTERNAL(data__->WAREHOUSEBUSY,))));
+      __SET_VAR(data__->,__debug_transition_list[0],,(__GET_LOCATED(data__->RUNUNLOAD,) && !(__GET_EXTERNAL(data__->WAREHOUSEBUSY,))));
     }
     __SET_VAR(data__->,__transition_list[0],,0);
   }
   if (__GET_VAR(data__->STEP52.X)) {
-    __SET_VAR(data__->,__transition_list[1],,(__GET_VAR(data__->PM,) == 1));
+    __SET_VAR(data__->,__transition_list[1],,(__GET_LOCATED(data__->PM,) == 1));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[1],,__GET_VAR(data__->__transition_list[1]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[1],,(__GET_VAR(data__->PM,) == 1));
+      __SET_VAR(data__->,__debug_transition_list[1],,(__GET_LOCATED(data__->PM,) == 1));
     }
     __SET_VAR(data__->,__transition_list[1],,0);
   }
@@ -7390,14 +7393,14 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     __SET_VAR(data__->,__transition_list[27],,0);
   }
   if (__GET_VAR(data__->STEP52.X)) {
-    __SET_VAR(data__->,__transition_list[28],,(__GET_VAR(data__->PM,) == 2));
+    __SET_VAR(data__->,__transition_list[28],,(__GET_LOCATED(data__->PM,) == 2));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[28],,__GET_VAR(data__->__transition_list[28]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[28],,(__GET_VAR(data__->PM,) == 2));
+      __SET_VAR(data__->,__debug_transition_list[28],,(__GET_LOCATED(data__->PM,) == 2));
     }
     __SET_VAR(data__->,__transition_list[28],,0);
   }
@@ -7738,14 +7741,14 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     __SET_VAR(data__->,__transition_list[56],,0);
   }
   if (__GET_VAR(data__->STEP52.X)) {
-    __SET_VAR(data__->,__transition_list[57],,(__GET_VAR(data__->PM,) == 3));
+    __SET_VAR(data__->,__transition_list[57],,(__GET_LOCATED(data__->PM,) == 3));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[57],,__GET_VAR(data__->__transition_list[57]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[57],,(__GET_VAR(data__->PM,) == 3));
+      __SET_VAR(data__->,__debug_transition_list[57],,(__GET_LOCATED(data__->PM,) == 3));
     }
     __SET_VAR(data__->,__transition_list[57],,0);
   }
@@ -8086,14 +8089,14 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     __SET_VAR(data__->,__transition_list[85],,0);
   }
   if (__GET_VAR(data__->STEP91.X)) {
-    __SET_VAR(data__->,__transition_list[86],,(__GET_VAR(data__->PM,) == 1));
+    __SET_VAR(data__->,__transition_list[86],,__BOOL_LITERAL(FALSE));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[86],,__GET_VAR(data__->__transition_list[86]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[86],,(__GET_VAR(data__->PM,) == 1));
+      __SET_VAR(data__->,__debug_transition_list[86],,__BOOL_LITERAL(FALSE));
     }
     __SET_VAR(data__->,__transition_list[86],,0);
   }
@@ -9499,7 +9502,7 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     __SET_EXTERNAL(data__->,TOOLPIECESAT3_EX,,1);
   }
   if(__GET_VAR(data__->__action_list[__SFC_ACTION0].state)) {
-    __SET_VAR(data__->REMOVEFROMWAREHOUSE0.,PIECENUM,,__GET_VAR(data__->INITIAL,));
+    __SET_VAR(data__->REMOVEFROMWAREHOUSE0.,PIECENUM,,__GET_LOCATED(data__->INITIALPIECE,));
     __SET_VAR(data__->REMOVEFROMWAREHOUSE0.,SENSORAT1,,__GET_LOCATED(data__->SENSORAT1,));
     REMOVEFROMWAREHOUSE_body__(&data__->REMOVEFROMWAREHOUSE0);
     __SET_LOCATED(data__->,WAREHOUSEIN,,__GET_VAR(data__->REMOVEFROMWAREHOUSE0.WAREHOUSEIN,));
