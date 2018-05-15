@@ -6,7 +6,9 @@ import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.ReadCoilsRequest;
 import net.wimpi.modbus.msg.ReadCoilsResponse;
 import net.wimpi.modbus.msg.WriteCoilRequest;
+import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
 import net.wimpi.modbus.net.TCPMasterConnection;
+import net.wimpi.modbus.procimg.SimpleRegister;
 
 import java.io.IOException;
 import java.net.*;
@@ -17,6 +19,9 @@ public class SendOrder extends Modbus implements Runnable {
     private WriteCoilRequest WCoil = null; //the request
     private ReadCoilsRequest reqRCoilIdle = null;
     private ReadCoilsRequest reqRCoilCompleteTransform = null;
+
+    private WriteSingleRegisterRequest singleUnload = null;
+    private SimpleRegister reg = new SimpleRegister(1);
 
     private ReadCoilsResponse CoilRespIdle = null;
     private ReadCoilsResponse CoilRespCompleteTransform = null;
@@ -51,6 +56,18 @@ public class SendOrder extends Modbus implements Runnable {
                 	Transform t = null;
                 	Unload u = null;
 
+                	//Write Register Example
+                    singleUnload = new WriteSingleRegisterRequest();
+                    singleUnload.setReference(0);
+                    reg.setValue(1);
+                    singleUnload.setRegister(reg);
+                    trans.setRequest(singleUnload);
+                    try {
+                        trans.execute();
+                    } catch (ModbusException e) {
+                        e.printStackTrace();
+                    }
+
                     //Check if idle is available to receive orders
                     coilNumber = 0;
                     reqRCoilIdle = new ReadCoilsRequest(coilNumber, 1);
@@ -60,13 +77,16 @@ public class SendOrder extends Modbus implements Runnable {
                     } catch (ModbusException e) {
                         e.printStackTrace();
                     }
-                    CoilRespIdle = (ReadCoilsResponse)trans.getResponse();
-                    idle = Integer.parseInt(CoilRespIdle.getCoils().toString().trim());
+
                     try {
                         sleep(30);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+                    CoilRespIdle = (ReadCoilsResponse)trans.getResponse();
+                    idle = Integer.parseInt(CoilRespIdle.getCoils().toString().trim());
+
 
                     if(idle == 1) {
                         if (!Main.transformReceived.isEmpty()) {
@@ -83,7 +103,7 @@ public class SendOrder extends Modbus implements Runnable {
                                 quantity = t.getQuantity();
                                 i = 1;
                             }
-                            if(quantity >= 0){ //why >= ? if 0 you shouldn't do anything. Maybe just > ?
+                            if(quantity > 0){
                                 WCoil = new WriteCoilRequest(1, true);
                                 trans.setRequest(WCoil);
                                 try {
