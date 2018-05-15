@@ -3,10 +3,9 @@ package MES;
 public class Load extends Order {
     private String type;
     private String from;
-    private String quantity;
 
-    public Load(String number){
-        super(number);
+    public Load(String number, String oType){
+        super(number, oType);
     }
 
     public void setType(String type){
@@ -17,19 +16,11 @@ public class Load extends Order {
         this.from = from;
     }
 
-    public void setQuantity(String quantity){
-        this.quantity = quantity;
-    }
-
     public String getType() {
         return type;
     }
 
     public String getFrom() {
         return from;
-    }
-
-    public String getQuantity() {
-        return quantity;
     }
 }

@@ -2,7 +2,7 @@ package MES;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
+import java.util.*;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -15,7 +15,7 @@ public class Parser {
     public Parser(){}
 
     @SuppressWarnings({ "unchecked", "null" })
-    public Order parseFile(String xml) {
+    public Order parseFile(String xml, Date timeReceived) {
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
@@ -36,8 +36,9 @@ public class Parser {
                             System.out.println("Number : " + number);
 
                         } else if (qName.equalsIgnoreCase("Unload")) {
-                            Unload unLoad = new Unload(number);
-                            System.out.println("Do : unLoad");
+                            Unload unLoad = new Unload(number, "U");
+                            unLoad.setTimeReceived(timeReceived);
+                            //System.out.println("Do : unLoad");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -48,16 +49,17 @@ public class Parser {
                                     unLoad.setDestination(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    unLoad.setQuantity(attribute.getValue());
+                                    unLoad.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
-                            System.out.println("type: " + unLoad.getType());
-                            System.out.println("destination: " + unLoad.getDestination());
-                            System.out.println("quantity: " + unLoad.getQuantity());
+                            //System.out.println("type: " + unLoad.getType());
+                            //System.out.println("destination: " + unLoad.getDestination());
+                            //System.out.println("quantity: " + unLoad.getQuantity());
                             return unLoad;
                         } else if (qName.equalsIgnoreCase("Load")) {
-                            Load load = new Load(number);
-                            System.out.println("Do : Load");
+                            Load load = new Load(number, "L");
+                            load.setTimeReceived(timeReceived);
+                            //System.out.println("Do : Load");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -68,16 +70,17 @@ public class Parser {
                                     load.setFrom(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    load.setQuantity(attribute.getValue());
+                                    load.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
-                            System.out.println("type: " + load.getType());
-                            System.out.println("from: " + load.getFrom());
-                            System.out.println("quantity: " + load.getQuantity());
+                            //System.out.println("type: " + load.getType());
+                            //System.out.println("from: " + load.getFrom());
+                            //System.out.println("quantity: " + load.getQuantity());
                             return load;
                         } else if (qName.equalsIgnoreCase("Transform")) {
-                            Transform transform = new Transform(number);
-                            System.out.println("Do : Transform");
+                            Transform transform = new Transform(number, "T");
+                            transform.setTimeReceived(timeReceived);
+                            //System.out.println("Do : Transform");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
@@ -88,12 +91,12 @@ public class Parser {
                                     transform.setTo(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    transform.setQuantity(attribute.getValue());
+                                    transform.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
-                            System.out.println("from: " + transform.getFrom());
-                            System.out.println("to: " + transform.getTo());
-                            System.out.println("quantity: " + transform.getQuantity());
+                            //System.out.println("from: " + transform.getFrom());
+                            //System.out.println("to: " + transform.getTo());
+                            //System.out.println("quantity: " + transform.getQuantity());
                             return transform;
                         }
                         break;

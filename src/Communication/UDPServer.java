@@ -1,11 +1,10 @@
 package Communication;
 
-import MES.Main;
-import MES.Order;
-import MES.Parser;
+import MES.*;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.*;
 
 public class UDPServer implements Runnable{
     private DatagramSocket udpSocket;
@@ -16,7 +15,11 @@ public class UDPServer implements Runnable{
 
     public void run() {
         running = true;
-        System.out.println("Server started on port " + port);
+    }
+
+    public void notRunning(){
+        running = false;
+        System.out.println("Server closed");
     }
 
     //Initialize Server
@@ -27,11 +30,16 @@ public class UDPServer implements Runnable{
         process.start();
     }
 
-    public void listen() throws Exception {Parser p = new Parser();
+    public void close(){
+        close();
+    }
+
+    public void listen() throws Exception {
+        Parser p = new Parser();
         receive = new Thread("receive_thread"){
         public void run() {
             try {
-                System.out.println("-- Running Server at " + InetAddress.getLocalHost() + "--");
+                System.out.println("-- Running Server UDP at " + InetAddress.getLocalHost() + "--");
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
@@ -48,10 +56,14 @@ public class UDPServer implements Runnable{
                     e.printStackTrace();
                 }
                 msg = new String(packet.getData()).trim();
+                Date timeReceived = new Date();
                 msg = msg.split("]>")[1];
                 Parser p = new Parser();
-                Order o = p.parseFile(msg);
-                Main.ordersReceived.add(o);
+                Order o = p.parseFile(msg, timeReceived);
+                if (o.getDo().equals("U"))
+                    Main.unloadReceived.add((Unload) o);
+                else if (o.getDo().equals("T"))
+                    Main.transformReceived.add((Transform) o);
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
