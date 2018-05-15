@@ -385,12 +385,15 @@ typedef struct {
   TON TON2;
   TON TON3;
   TON TON4;
-  STEP __step_list[28];
+  TON TON5;
+  TON TON6;
+  TON TON7;
+  STEP __step_list[43];
   UINT __nb_steps;
-  ACTION __action_list[16];
+  ACTION __action_list[21];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[35];
-  __IEC_BOOL_t __debug_transition_list[35];
+  __IEC_BOOL_t __transition_list[54];
+  __IEC_BOOL_t __debug_transition_list[54];
   UINT __nb_transitions;
   TIME __lasttick_time;
 

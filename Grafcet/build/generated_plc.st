@@ -630,6 +630,9 @@ FUNCTION_BLOCK Machine
     TON2 : TON;
     TON3 : TON;
     TON4 : TON;
+    TON5 : TON;
+    TON6 : TON;
+    TON7 : TON;
   END_VAR
 
   INITIAL_STEP initLinearStep:
@@ -664,6 +667,9 @@ FUNCTION_BLOCK Machine
     TON2(IN := toolTimerOn, PT := T#5s);
     TON3(IN := toolTimerOn, PT := T#10s);
     TON4(IN := toolTimerOn, PT := T#5s);
+    TON6(IN := toolTimerOn, PT := T#5s);
+    TON5(IN := toolTimerOn, PT := T#10s);
+    TON7(IN := toolTimerOn, PT := T#5s);
   END_ACTION
 
   TRANSITION FROM initLinearStep TO moveFront
@@ -775,14 +781,14 @@ FUNCTION_BLOCK Machine
     currentPiece := initialPiece;
   END_ACTION
 
-  TRANSITION FROM Step4 TO Step10
+  TRANSITION FROM Step4 TO checkIfFinalA
     := true;
   END_TRANSITION
 
-  STEP Step10:
+  STEP checkIfFinalA:
   END_STEP
 
-  TRANSITION FROM Step10 TO Step11
+  TRANSITION FROM checkIfFinalA TO Step11
     := currentPiece <> finalPiece;
   END_TRANSITION
 
@@ -829,7 +835,7 @@ FUNCTION_BLOCK Machine
     currentPiece := 3;
   END_ACTION
 
-  TRANSITION FROM Step1 TO Step10
+  TRANSITION FROM Step1 TO checkIfFinalA
     := true;
   END_TRANSITION
 
@@ -872,7 +878,7 @@ FUNCTION_BLOCK Machine
     currentPiece := 5;
   END_ACTION
 
-  TRANSITION FROM Step15 TO Step10
+  TRANSITION FROM Step15 TO checkIfFinalA
     := true;
   END_TRANSITION
 
@@ -921,18 +927,177 @@ FUNCTION_BLOCK Machine
   END_TRANSITION
 
   STEP sendToNext:
+    motorUp(N);
+    motorLeft(N);
   END_STEP
 
-  TRANSITION FROM Step10 TO sendToNext
-    := currentPiece = finalPiece;
-  END_TRANSITION
-
-  TRANSITION FROM Step2 TO Step3
-    := initialPiece = 2 OR initialPiece = 4 OR initialPiece = 6;
+  TRANSITION FROM sendToNext TO Step3
+    := sensorUp AND sensorLeft;
   END_TRANSITION
 
   STEP Step3:
   END_STEP
+
+  TRANSITION FROM checkIfFinalA TO sendToNext
+    := currentPiece = finalPiece;
+  END_TRANSITION
+
+  TRANSITION FROM Step2 TO Step7
+    := initialPiece = 2 OR initialPiece = 4 OR initialPiece = 6;
+  END_TRANSITION
+
+  STEP Step7:
+    currentAsInitial(N);
+  END_STEP
+
+  TRANSITION FROM Step7 TO checkIfFinalB
+    := true;
+  END_TRANSITION
+
+  STEP checkIfFinalB:
+  END_STEP
+
+  TRANSITION FROM checkIfFinalB TO Step27
+    := currentPiece <> finalPiece;
+  END_TRANSITION
+
+  STEP Step27:
+  END_STEP
+
+  TRANSITION FROM Step27 TO Step20
+    := currentPiece = 4 ;
+  END_TRANSITION
+
+  STEP Step20:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step20 TO Step28
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step28:
+    toolPlus(N);
+  END_STEP
+
+  TRANSITION FROM Step28 TO Step21
+    := toolNumber = 2;
+  END_TRANSITION
+
+  STEP Step21:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step21 TO Step29
+    := TON6.Q;
+  END_TRANSITION
+
+  STEP Step29:
+    setCurrent6(N);
+  END_STEP
+
+  ACTION setCurrent6:
+    currentPiece := 6;
+  END_ACTION
+
+  TRANSITION FROM Step29 TO checkIfFinalB
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step27 TO Step9
+    := currentPiece = 2 ;
+  END_TRANSITION
+
+  STEP Step9:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step9 TO Step23
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step23:
+    toolPlus(N);
+    incrementToolNumber(N);
+  END_STEP
+
+  TRANSITION FROM Step23 TO Step22
+    := toolNumber = 1;
+  END_TRANSITION
+
+  STEP Step22:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step22 TO Step24
+    := TON5.Q;
+  END_TRANSITION
+
+  STEP Step24:
+    setCurrent4(N);
+  END_STEP
+
+  ACTION setCurrent4:
+    currentPiece := 4;
+  END_ACTION
+
+  TRANSITION FROM Step24 TO checkIfFinalB
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step27 TO Step25
+    := currentPiece = 6;
+  END_TRANSITION
+
+  STEP Step25:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step25 TO Step31
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step31:
+    toolPlus(N);
+    incrementToolNumber(N);
+  END_STEP
+
+  TRANSITION FROM Step31 TO Step30
+    := toolNumber = 3;
+  END_TRANSITION
+
+  STEP Step30:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step30 TO Step32
+    := TON7.Q;
+  END_TRANSITION
+
+  STEP Step32:
+    setCurrent8(N);
+  END_STEP
+
+  ACTION setCurrent8:
+    currentPiece := 8;
+  END_ACTION
+
+  TRANSITION FROM Step32 TO sendToNext
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM checkIfFinalB TO sendToNext
+    := currentPiece = finalPiece;
+  END_TRANSITION
 
   TRANSITION FROM Step2 TO sendToNext
     := initialPiece = finalPiece;
