@@ -562,6 +562,384 @@ FUNCTION_BLOCK Roll
 
 END_FUNCTION_BLOCK
 
+FUNCTION_BLOCK Machine
+  VAR_INPUT
+    reachedSensor : BOOL;
+  END_VAR
+  VAR_OUTPUT
+    useTool : BOOL;
+  END_VAR
+  VAR
+    toolTimerOn : BOOL;
+  END_VAR
+  VAR_INPUT
+    initialPiece : INT;
+  END_VAR
+  VAR_OUTPUT
+    currentPiece : INT;
+  END_VAR
+  VAR_INPUT
+    finalPiece : INT;
+    toolPiece : BOOL;
+  END_VAR
+  VAR
+    toolNumber : INT := 0;
+  END_VAR
+  VAR_OUTPUT NON_RETAIN
+    toolPlus : BOOL;
+  END_VAR
+  VAR_INPUT
+    toolSensor : BOOL;
+  END_VAR
+  VAR
+    toolSensorRE : BOOL;
+  END_VAR
+  VAR_OUTPUT
+    toolMinus : BOOL;
+    motorUp : BOOL;
+    motorLeft : BOOL;
+    motorDown : BOOL;
+    motorRight : BOOL;
+  END_VAR
+  VAR_INPUT
+    sensorUp : BOOL;
+    sensorLeft : BOOL;
+    sensorDown : BOOL;
+    sensorRight : BOOL;
+    backSignal : BOOL;
+  END_VAR
+  VAR
+    forwardTimerOn : BOOL;
+  END_VAR
+  VAR_INPUT
+    forwardSignal : BOOL;
+    backNotBusy : BOOL;
+    frontNotBusy : BOOL;
+    reachedSensorFront : BOOL;
+    reachedSensorBack : BOOL;
+  END_VAR
+  VAR_OUTPUT
+    forwardMotor : BOOL;
+    backMotor : BOOL;
+    isBusy : BOOL;
+  END_VAR
+  VAR
+    TON0 : TON;
+    TON1 : TON;
+    asd : R_TRIG;
+    TON2 : TON;
+    TON3 : TON;
+    TON4 : TON;
+  END_VAR
+
+  INITIAL_STEP initLinearStep:
+    isBusy(R);
+    incrementToolNumber(S);
+    toolStandby(N);
+    COMPUTE_FUNCTION_BLOCKS(S);
+  END_STEP
+
+  ACTION incrementToolNumber:
+    asd(
+         CLK := toolSensor,
+         Q => toolSensorRE);
+         
+
+    IF asd.Q = true then
+      toolNumber := toolNumber + 1;
+      IF toolNumber = 4 then
+        toolNumber := 1;
+        end_if;
+    end_if;
+  END_ACTION
+
+  ACTION toolStandby:
+    motorUp := NOT(sensorUp);
+    motorLeft := NOT(sensorLeft);
+  END_ACTION
+
+  ACTION COMPUTE_FUNCTION_BLOCKS:
+    TON1(IN := forwardTimerOn, PT := T#10s);
+    TON0(IN := forwardTimerOn, PT := T#10s);
+    TON2(IN := toolTimerOn, PT := T#5s);
+    TON3(IN := toolTimerOn, PT := T#10s);
+    TON4(IN := toolTimerOn, PT := T#5s);
+  END_ACTION
+
+  TRANSITION FROM initLinearStep TO moveFront
+    := forwardSignal;
+  END_TRANSITION
+
+  STEP moveFront:
+    forwardMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveFront TO notBusyFront
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP notBusyFront:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyFront TO moveFrontStep
+    := not frontNotBusy;
+  END_TRANSITION
+
+  STEP moveFrontStep:
+    forwardTimerOn(N);
+    forwardMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveFrontStep TO turnOffFront
+    := reachedSensorFront;
+  END_TRANSITION
+
+  STEP turnOffFront:
+    forwardMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffFront TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveFrontStep TO turnOffFront
+    := TON0.Q;
+  END_TRANSITION
+
+  TRANSITION FROM initLinearStep TO moveBack
+    := backSignal;
+  END_TRANSITION
+
+  STEP moveBack:
+    backMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveBack TO notBusyBack
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP notBusyBack:
+    isBusy(S);
+  END_STEP
+
+  TRANSITION FROM notBusyBack TO moveBackStep
+    := not backNotBusy;
+  END_TRANSITION
+
+  STEP moveBackStep:
+    forwardTimerOn(N);
+    backMotor(S);
+  END_STEP
+
+  TRANSITION FROM moveBackStep TO turnOffBack
+    := reachedSensorBack;
+  END_TRANSITION
+
+  STEP turnOffBack:
+    backMotor(R);
+  END_STEP
+
+  TRANSITION FROM turnOffBack TO initLinearStep
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM moveBackStep TO turnOffBack
+    := TON1.Q;
+  END_TRANSITION
+
+  TRANSITION FROM initLinearStep TO moveFront0
+    := toolPiece;
+  END_TRANSITION
+
+  STEP moveFront0:
+    forwardMotor(N);
+  END_STEP
+
+  TRANSITION FROM moveFront0 TO Step2
+    := reachedSensor;
+  END_TRANSITION
+
+  STEP Step2:
+  END_STEP
+
+  TRANSITION FROM Step2 TO Step4
+    := initialPiece = 1 OR initialPiece = 3 OR initialPiece = 5;
+  END_TRANSITION
+
+  STEP Step4:
+    currentAsInitial(N);
+  END_STEP
+
+  ACTION currentAsInitial:
+    currentPiece := initialPiece;
+  END_ACTION
+
+  TRANSITION FROM Step4 TO Step10
+    := true;
+  END_TRANSITION
+
+  STEP Step10:
+  END_STEP
+
+  TRANSITION FROM Step10 TO Step11
+    := currentPiece <> finalPiece;
+  END_TRANSITION
+
+  STEP Step11:
+  END_STEP
+
+  TRANSITION FROM Step11 TO Step5
+    := currentPiece = 1 ;
+  END_TRANSITION
+
+  STEP Step5:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step5 TO Step0
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step0:
+    toolPlus(N);
+    incrementToolNumber(N);
+  END_STEP
+
+  TRANSITION FROM Step0 TO Step8
+    := toolNumber = 1;
+  END_TRANSITION
+
+  STEP Step8:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step8 TO Step1
+    := TON2.Q;
+  END_TRANSITION
+
+  STEP Step1:
+    setCurrent3(N);
+  END_STEP
+
+  ACTION setCurrent3:
+    currentPiece := 3;
+  END_ACTION
+
+  TRANSITION FROM Step1 TO Step10
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step11 TO Step12
+    := currentPiece = 3 ;
+  END_TRANSITION
+
+  STEP Step12:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step12 TO Step14
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step14:
+    toolPlus(N);
+  END_STEP
+
+  TRANSITION FROM Step14 TO Step13
+    := toolNumber = 2;
+  END_TRANSITION
+
+  STEP Step13:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step13 TO Step15
+    := TON3.Q;
+  END_TRANSITION
+
+  STEP Step15:
+    setCurrent5(N);
+  END_STEP
+
+  ACTION setCurrent5:
+    currentPiece := 5;
+  END_ACTION
+
+  TRANSITION FROM Step15 TO Step10
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step11 TO Step16
+    := currentPiece = 5;
+  END_TRANSITION
+
+  STEP Step16:
+    isBusy(S);
+    motorDown(N);
+    motorRight(N);
+  END_STEP
+
+  TRANSITION FROM Step16 TO Step18
+    := sensorDown AND sensorRight;
+  END_TRANSITION
+
+  STEP Step18:
+    toolPlus(N);
+    incrementToolNumber(N);
+  END_STEP
+
+  TRANSITION FROM Step18 TO Step17
+    := toolNumber = 3;
+  END_TRANSITION
+
+  STEP Step17:
+    useTool(N);
+    toolTimerOn(N);
+  END_STEP
+
+  TRANSITION FROM Step17 TO Step19
+    := TON4.Q;
+  END_TRANSITION
+
+  STEP Step19:
+    setCurrent7(N);
+  END_STEP
+
+  ACTION setCurrent7:
+    currentPiece := 7;
+  END_ACTION
+
+  TRANSITION FROM Step19 TO sendToNext
+    := true;
+  END_TRANSITION
+
+  STEP sendToNext:
+  END_STEP
+
+  TRANSITION FROM Step10 TO sendToNext
+    := currentPiece = finalPiece;
+  END_TRANSITION
+
+  TRANSITION FROM Step2 TO Step3
+    := initialPiece = 2 OR initialPiece = 4 OR initialPiece = 6;
+  END_TRANSITION
+
+  STEP Step3:
+  END_STEP
+
+  TRANSITION FROM Step2 TO sendToNext
+    := initialPiece = finalPiece;
+  END_TRANSITION
+
+END_FUNCTION_BLOCK
+
 PROGRAM program0
   VAR
     AT1 : LinearConveyor;
@@ -574,6 +952,9 @@ PROGRAM program0
     sensorAT2_ex : BOOL;
     sensorSaT1_ex : BOOL;
     sensorSaT2_ex : BOOL;
+    sensorSaT3_ex : BOOL;
+    sensorSaT4_ex : BOOL;
+    sensorSaT5_ex : BOOL;
     sensorSaT6_ex : BOOL;
     sensorSaT7_ex : BOOL;
     sensorSbT1_ex : BOOL;
@@ -602,6 +983,9 @@ PROGRAM program0
     runFrontAT1_ex : BOOL;
     runFrontSaT1_ex : BOOL;
     runFrontSaT2_ex : BOOL;
+    runFrontSaT3_ex : BOOL;
+    runFrontSaT4_ex : BOOL;
+    runFrontSaT5_ex : BOOL;
     runFrontSbT1_ex : BOOL;
     runFrontSbT2_ex : BOOL;
     runFrontScT1_ex : BOOL;
@@ -851,6 +1235,89 @@ PROGRAM program0
     PM1 : Roll;
     PM2 : Roll;
     PM3 : Roll;
+    SaT3 : Machine;
+  END_VAR
+  VAR
+    toolSensorSaT3 AT %IX0.0.0.7 : BOOL;
+    toolSensorSaT5 AT %IX0.0.0.14 : BOOL;
+    toolSensorSbT3 AT %IX0.0.0.28 : BOOL;
+    toolSensorSbT5 AT %IX0.0.0.35 : BOOL;
+    toolSensorScT3 AT %IX0.0.0.49 : BOOL;
+    toolSensorScT5 AT %IX0.0.0.56 : BOOL;
+    xRightSaT3 AT %QX0.0.1.16 : BOOL;
+    xLeftSaT3 AT %QX0.0.1.17 : BOOL;
+    zUpSaT3 AT %QX0.0.1.18 : BOOL;
+    zDownSaT3 AT %QX0.0.1.19 : BOOL;
+    xRightSaT5 AT %QX0.0.1.27 : BOOL;
+    xLeftSaT5 AT %QX0.0.1.28 : BOOL;
+    zUpSaT5 AT %QX0.0.1.29 : BOOL;
+    zDownSaT5 AT %QX0.0.1.30 : BOOL;
+    xRightSbT3 AT %QX0.0.1.48 : BOOL;
+    xLeftSbT3 AT %QX0.0.1.49 : BOOL;
+    zUpSbT3 AT %QX0.0.1.50 : BOOL;
+    zDownSbT3 AT %QX0.0.1.51 : BOOL;
+    xRightSbT5 AT %QX0.0.1.59 : BOOL;
+    xLeftSbT5 AT %QX0.0.1.60 : BOOL;
+    zUpSbT5 AT %QX0.0.1.61 : BOOL;
+    zDownSbT5 AT %QX0.0.1.62 : BOOL;
+    xRightScT3 AT %QX0.0.1.80 : BOOL;
+    xLeftScT3 AT %QX0.0.1.81 : BOOL;
+    zUpScT3 AT %QX0.0.1.82 : BOOL;
+    zDownScT3 AT %QX0.0.1.83 : BOOL;
+    xRightScT5 AT %QX0.0.1.91 : BOOL;
+    xLeftScT5 AT %QX0.0.1.92 : BOOL;
+    zUpScT5 AT %QX0.0.1.93 : BOOL;
+    zDownScT5 AT %QX0.0.1.94 : BOOL;
+    toolMinusSaT3 AT %QX0.0.1.13 : BOOL;
+    toolPlusSaT3 AT %QX0.0.1.14 : BOOL;
+    toolMinusSaT5 AT %QX0.0.1.24 : BOOL;
+    toolPlusSaT5 AT %QX0.0.1.25 : BOOL;
+    toolMinusSbT3 AT %QX0.0.1.45 : BOOL;
+    toolPlusSbT3 AT %QX0.0.1.46 : BOOL;
+    toolMinusSbT5 AT %QX0.0.1.56 : BOOL;
+    toolPlusSbT5 AT %QX0.0.1.57 : BOOL;
+    toolMinusScT3 AT %QX0.0.1.77 : BOOL;
+    toolPlusScT3 AT %QX0.0.1.78 : BOOL;
+    toolMinusScT5 AT %QX0.0.1.88 : BOOL;
+    toolPlusScT5 AT %QX0.0.1.89 : BOOL;
+    toolUpSensorSaT3 AT %IX0.0.0.10 : BOOL;
+    toolUpSensorSaT5 AT %IX0.0.0.17 : BOOL;
+    toolUpSensorSbT3 AT %IX0.0.0.31 : BOOL;
+    toolUpSensorSbT5 AT %IX0.0.0.38 : BOOL;
+    toolUpSensorScT3 AT %IX0.0.0.52 : BOOL;
+    toolUpSensorScT5 AT %IX0.0.0.59 : BOOL;
+    toolDownSensorSaT3 AT %IX0.0.0.11 : BOOL;
+    toolDownSensorSaT5 AT %IX0.0.0.18 : BOOL;
+    toolDownSensorSbT3 AT %IX0.0.0.32 : BOOL;
+    toolDownSensorSbT5 AT %IX0.0.0.39 : BOOL;
+    toolDownSensorScT3 AT %IX0.0.0.53 : BOOL;
+    toolDownSensorScT5 AT %IX0.0.0.60 : BOOL;
+    toolLeftSensorSaT3 AT %IX0.0.0.8 : BOOL;
+    toolLeftSensorSaT5 AT %IX0.0.0.15 : BOOL;
+    toolLeftSensorSbT3 AT %IX0.0.0.29 : BOOL;
+    toolLeftSensorSbT5 AT %IX0.0.0.36 : BOOL;
+    toolLeftSensorScT3 AT %IX0.0.0.50 : BOOL;
+    toolLeftSensorScT5 AT %IX0.0.0.57 : BOOL;
+    toolRightSensorSaT3 AT %IX0.0.0.9 : BOOL;
+    toolRightSensorSaT5 AT %IX0.0.0.16 : BOOL;
+    toolRightSensorSbT3 AT %IX0.0.0.30 : BOOL;
+    toolRightSensorSbT5 AT %IX0.0.0.37 : BOOL;
+    toolRightSensorScT3 AT %IX0.0.0.51 : BOOL;
+    toolRightSensorScT5 AT %IX0.0.0.58 : BOOL;
+    useToolSaT3 AT %QX0.0.1.15 : BOOL;
+    useToolSaT5 AT %QX0.0.1.26 : BOOL;
+    useToolSbT3 AT %QX0.0.1.47 : BOOL;
+    useToolSbT5 AT %QX0.0.1.58 : BOOL;
+    useToolScT3 AT %QX0.0.1.79 : BOOL;
+    useToolScT5 AT %QX0.0.1.90 : BOOL;
+  END_VAR
+  VAR_EXTERNAL
+    toolPieceSaT3_ex : BOOL;
+    toolPieceSaT5_ex : BOOL;
+  END_VAR
+  VAR
+    SaT4 : LinearConveyor;
+    SaT5 : Machine;
     OR210_OUT : BOOL;
     OR209_OUT : BOOL;
   END_VAR
@@ -871,11 +1338,17 @@ PROGRAM program0
   CT1(reachedSensor := sensorCT1, forwardSignal := runFrontCT1_ex, frontNotBusy := CT2.isBusy, reachedSensorFront := sensorCT2);
   MT2(forwardSignal := runFrontMT2_ex, sendDownSignal := sendDownMT2_ex, sensorRotRight := sensorRotRightMT2, sensorRotLeft := sensorRotLeftMT2, frontNotBusy := CT1.isBusy, reachedSensorFront := sensorCT1, reachedSensor := sensorMT2);
   MT1(reachedSensor := sensorMT1, forwardSignal := runFrontMT1_ex, frontNotBusy := MT2.isBusy, reachedSensorFront := sensorMT2);
-  ScT2(forwardSignal := runFrontScT2_ex, sendDownSignal := sendDownScT2_ex, sensorRotRight := sensorRotRightScT2, sensorRotLeft := sensorRotLeftScT2, frontNotBusy := MT1.isBusy, reachedSensor := sensorScT2);
+  ScT2(forwardSignal := runFrontScT2_ex, sendDownSignal := sendDownScT2_ex, sensorRotRight := sensorRotRightScT2, sensorRotLeft := sensorRotLeftScT2, frontNotBusy := MT1.isBusy, reachedSensorFront := sensorMT1, reachedSensor := sensorScT2);
   ScT1(reachedSensor := sensorScT1, forwardSignal := runFrontSbT1_ex, frontNotBusy := ScT2.isBusy, reachedSensorFront := sensorScT2);
   SbT2(forwardSignal := runFrontSbT2_ex, sendDownSignal := sendDownSbT2_ex, sensorRotRight := sensorRotRightSbT2, sensorRotLeft := sensorRotLeftSbT2, frontNotBusy := ScT1.isBusy, reachedSensorFront := sensorScT1, reachedSensor := sensorSbT2);
   SbT1(reachedSensor := sensorSbT1, forwardSignal := runFrontSbT1_ex, frontNotBusy := SbT2.isBusy, reachedSensorFront := sensorSbT2);
-  SaT2(forwardSignal := runFrontSaT2_ex, sendDownSignal := sendDownSaT2_ex, sensorRotRight := sensorRotRightSaT2, sensorRotLeft := sensorRotLeftSaT2, frontNotBusy := SbT1.isBusy, reachedSensorFront := sensorSbT1, reachedSensor := sensorSaT2);
+  AT2(reachedSensor := sensorAT2, backSignal := runBackAT2_ex);
+  SaT7(reachedSensor := sensorSaT7, backSignal := runBackSaT7_ex, backNotBusy := AT2.isBusy, reachedSensorFront := sensorSaT6, reachedSensorBack := sensorAT2);
+  SaT6(backSignal := runBackSaT6_ex, sendDownSignal := sendDownSaT6_ex, sendUpSignal := sendUpSaT6_ex, sensorRotRight := sensorRotRightSaT6, sensorRotLeft := sensorRotLeftSaT6, backNotBusy := SaT7.isBusy, reachedSensorFront := sensorSbT7, reachedSensor := sensorSaT6, reachedSensorBack := sensorSaT7);
+  SaT5(reachedSensor := sensorSaT5, toolPiece := toolPieceSaT5_ex, toolSensor := toolSensorSaT5, sensorUp := toolUpSensorSaT5, sensorLeft := toolLeftSensorSaT5, sensorDown := toolDownSensorSaT5, sensorRight := toolRightSensorSaT5, forwardSignal := runFrontSaT5_ex, frontNotBusy := SaT6.isBusy, reachedSensorFront := sensorSaT6);
+  SaT4(reachedSensor := sensorSaT4, forwardSignal := runFrontSaT4_ex, frontNotBusy := SaT5.isBusy, reachedSensorFront := sensorSaT5);
+  SaT3(reachedSensor := sensorSaT3, initialPiece := 1, finalPiece := 7, toolPiece := toolPieceSaT3_ex, toolSensor := toolSensorSaT3, sensorUp := toolUpSensorSaT3, sensorLeft := toolLeftSensorSaT3, sensorDown := toolDownSensorSaT3, sensorRight := toolRightSensorSaT3, forwardSignal := runFrontSaT3_ex, frontNotBusy := SaT4.isBusy, reachedSensorFront := sensorSaT4);
+  SaT2(forwardSignal := runFrontSaT2_ex, sendDownSignal := sendDownSaT2_ex, sensorRotRight := sensorRotRightSaT2, sensorRotLeft := sensorRotLeftSaT2, frontNotBusy := SbT1.isBusy, downNotBusy := SaT3.isBusy, reachedSensorFront := sensorSbT1, reachedSensor := sensorSaT2, reachedSensorDown := sensorSaT3);
   forwardSaT2 := SaT2.forwardMotor;
   forwardScT2 := ScT2.forwardMotor;
   forwardCT2 := CT2.forwardMotor;
@@ -901,15 +1374,26 @@ PROGRAM program0
   forwardMT1 := MT1.forwardMotor;
   forwardScT1 := ScT1.forwardMotor;
   leftRotMT2 := MT2.leftRotMotor;
+  sensorSaT3_ex := sensorSaT3;
+  useToolSaT3 := SaT3.useTool;
+  toolPlusSaT3 := SaT3.toolPlus;
+  toolMinusSaT3 := SaT3.toolMinus;
   sensorCT4_ex := sensorCT4;
   PM1(reachedSensor := sensorPM1);
   CT4(rollBusy := PM1.hasPiece, pushSignal := pushToRollCT4_ex, forwardSignal := runFrontCT4_ex, reachedSensor := sensorCT4, reachedSensorFront := sensorCT5, sensorPushForward := sensorPushForwardCT4, sensorPushBack := sensorPushBackCT4);
   forwardCT4 := CT4.forwardMotor;
+  zUpSaT3 := SaT3.motorUp;
   pushForwardCT4 := CT4.pushMotorForward;
+  xLeftSaT3 := SaT3.motorLeft;
   pushBackCT4 := CT4.pushMotorBack;
+  zDownSaT3 := SaT3.motorDown;
+  xRightSaT3 := SaT3.motorRight;
+  forwardSaT3 := SaT3.forwardMotor;
+  sensorSaT4_ex := sensorSaT4;
   PM2(reachedSensor := sensorPM2);
   CT5(rollBusy := PM2.hasPiece, pushSignal := pushToRollCT5_ex, forwardSignal := runFrontCT5_ex, reachedSensor := sensorCT5, reachedSensorFront := sensorCT6, sensorPushForward := sensorPushForwardCT5, sensorPushBack := sensorPushBackCT5);
   forwardCT5 := CT5.forwardMotor;
+  forwardSaT4 := SaT4.forwardMotor;
   sensorCT5_ex := sensorCT5;
   pushForwardCT5 := CT5.pushMotorForward;
   pushBackCT5 := CT5.pushMotorBack;
@@ -918,6 +1402,14 @@ PROGRAM program0
   CT6(rollBusy := PM3.hasPiece, pushSignal := pushToRollCT6_ex, forwardSignal := runFrontCT6_ex, reachedSensor := sensorCT6, reachedSensorFront := sensorCT8, sensorPushForward := sensorPushForwardCT6, sensorPushBack := sensorPushBackCT6);
   forwardCT6 := CT6.forwardMotor;
   pushForwardCT6 := CT6.pushMotorForward;
+  sensorSaT5_ex := sensorSaT5;
+  toolPlusSaT5 := SaT5.toolPlus;
+  toolMinusSaT5 := SaT5.toolMinus;
+  zUpSaT5 := SaT5.motorUp;
+  xLeftSaT5 := SaT5.motorLeft;
+  zDownSaT5 := SaT5.motorDown;
+  xRightSaT5 := SaT5.motorRight;
+  forwardSaT5 := SaT5.forwardMotor;
   pushBackCT6 := CT6.pushMotorBack;
   sensorScT6_ex := sensorScT6;
   sensorSbT6_ex := sensorSbT6;
@@ -931,9 +1423,6 @@ PROGRAM program0
   sensorCT7_ex := sensorCT7;
   sensorCT8_ex := sensorCT8;
   sensorMT6_ex := sensorMT6;
-  AT2(reachedSensor := sensorAT2, backSignal := runBackAT2_ex);
-  SaT7(reachedSensor := sensorSaT7, backSignal := runBackSaT7_ex, backNotBusy := AT2.isBusy, reachedSensorFront := sensorSaT6, reachedSensorBack := sensorAT2);
-  SaT6(backSignal := runBackSaT6_ex, sendDownSignal := sendDownSaT6_ex, sendUpSignal := sendUpSaT6_ex, sensorRotRight := sensorRotRightSaT6, sensorRotLeft := sensorRotLeftSaT6, backNotBusy := SaT7.isBusy, reachedSensorFront := sensorSbT7, reachedSensor := sensorSaT6, reachedSensorBack := sensorSaT7);
   SbT7(reachedSensor := sensorSbT7, backSignal := runBackSbT7_ex, backNotBusy := SaT6.isBusy, reachedSensorFront := sensorSbT6, reachedSensorBack := sensorSaT6);
   SbT6(backSignal := runBackSbT6_ex, forwardSignal := runFrontSbT6_ex, sendDownSignal := sendDownSbT6_ex, sensorRotRight := sensorRotRightSbT6, sensorRotLeft := sensorRotLeftSbT6, backNotBusy := SbT7.isBusy, reachedSensorFront := sensorScT7, reachedSensor := sensorSbT6, reachedSensorBack := sensorSbT7);
   ScT7(reachedSensor := sensorScT7, backSignal := runBackScT7_ex, backNotBusy := SbT6.isBusy, reachedSensorFront := sensorScT6, reachedSensorBack := sensorSbT6);
@@ -963,9 +1452,9 @@ PROGRAM program0
   leftRotScT6 := ScT6.leftRotMotor;
   backSbT7 := SbT7.backMotor;
   forwardMT5 := MT5.forwardMotor;
+  rightRotMT6 := MT6.rightRotMotor;
   backAT2 := AT2.backMotor;
   backSaT7 := SaT7.backMotor;
-  rightRotMT6 := MT6.rightRotMotor;
   leftRotSaT6 := SaT6.leftRotMotor;
   backCT7 := CT7.backMotor;
   leftRotCT8 := CT8.leftRotMotor;
@@ -980,9 +1469,199 @@ PROGRAM program0
   CT3(reachedSensor := sensorCT3, backSignal := runBackCT2_ex, backNotBusy := OR209_OUT, reachedSensorBack := sensorCT2);
 END_PROGRAM
 
+FUNCTION_BLOCK removeFromWarehouse
+  VAR_INPUT
+    pieceNum : INT;
+  END_VAR
+  VAR_OUTPUT
+    warehouseIn : INT;
+  END_VAR
+  VAR_INPUT
+    sensorAT1 : BOOL;
+  END_VAR
+
+  INITIAL_STEP initialLoad:
+  END_STEP
+
+  TRANSITION FROM initialLoad TO putP3
+    := pieceNum = 2;
+  END_TRANSITION
+
+  STEP putP3:
+    P2(N);
+  END_STEP
+
+  ACTION P2:
+    warehouseIn := 2;
+  END_ACTION
+
+  TRANSITION FROM putP3 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  STEP Step2:
+    resetWarehouse(N);
+  END_STEP
+
+  ACTION resetWarehouse:
+    warehouseIn := 0;
+  END_ACTION
+
+  TRANSITION FROM Step2 TO Step0
+    := not sensorAT1;
+  END_TRANSITION
+
+  STEP Step0:
+  END_STEP
+
+  TRANSITION FROM Step0 TO initialLoad
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP4
+    := pieceNum = 3;
+  END_TRANSITION
+
+  STEP putP4:
+    P3(N);
+  END_STEP
+
+  ACTION P3:
+    warehouseIn := 3;
+  END_ACTION
+
+  TRANSITION FROM putP4 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP5
+    := pieceNum = 4;
+  END_TRANSITION
+
+  STEP putP5:
+    P4(N);
+  END_STEP
+
+  ACTION P4:
+    warehouseIn := 4;
+  END_ACTION
+
+  TRANSITION FROM putP5 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP7
+    := pieceNum = 6;
+  END_TRANSITION
+
+  STEP putP7:
+    P6(N);
+  END_STEP
+
+  ACTION P6:
+    warehouseIn := 6;
+  END_ACTION
+
+  TRANSITION FROM putP7 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP8
+    := pieceNum = 7;
+  END_TRANSITION
+
+  STEP putP8:
+    P7(N);
+  END_STEP
+
+  ACTION P7:
+    warehouseIn := 7;
+  END_ACTION
+
+  TRANSITION FROM putP8 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP9
+    := pieceNum = 8;
+  END_TRANSITION
+
+  STEP putP9:
+    P8(N);
+  END_STEP
+
+  ACTION P8:
+    warehouseIn := 8;
+  END_ACTION
+
+  TRANSITION FROM putP9 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP6
+    := pieceNum = 5;
+  END_TRANSITION
+
+  STEP putP6:
+    P5(N);
+  END_STEP
+
+  ACTION P5:
+    warehouseIn := 5;
+  END_ACTION
+
+  TRANSITION FROM putP6 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP10
+    := pieceNum = 9;
+  END_TRANSITION
+
+  STEP putP10:
+    P9(N);
+  END_STEP
+
+  ACTION P9:
+    warehouseIn := 9;
+  END_ACTION
+
+  TRANSITION FROM putP10 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+  TRANSITION FROM initialLoad TO putP2
+    := pieceNum = 1;
+  END_TRANSITION
+
+  STEP putP2:
+    P1(N);
+  END_STEP
+
+  ACTION P1:
+    warehouseIn := 1;
+  END_ACTION
+
+  TRANSITION FROM putP2 TO Step2
+    := sensorAT1;
+  END_TRANSITION
+
+END_FUNCTION_BLOCK
+
 PROGRAM program1
+  VAR
+    warehouseIn AT %IW0.0.2.0 : INT;
+  END_VAR
   VAR_EXTERNAL
-    ii : BOOL;
+    warehouseBusy : BOOL;
+  END_VAR
+  VAR
+    sensorAT1 AT %IX0.0.0.0 : BOOL;
+  END_VAR
+  VAR
+    initial : INT := 3;
+  END_VAR
+  VAR_EXTERNAL
     runFrontAT1_ex : BOOL;
     runFrontSaT1_ex : BOOL;
     runFrontSaT2_ex : BOOL;
@@ -993,7 +1672,10 @@ PROGRAM program1
     runFrontMT1_ex : BOOL;
     runFrontMT2_ex : BOOL;
     runFrontCT1_ex : BOOL;
+    runFrontCT4_ex : BOOL;
+    runFrontCT5_ex : BOOL;
     sendDownSaT2_ex : BOOL;
+    toolPieceSaT3_ex : BOOL;
     sendDownCT2_ex : BOOL;
     sensorAT1_ex : BOOL;
     sensorSaT1_ex : BOOL;
@@ -1007,25 +1689,48 @@ PROGRAM program1
     sensorCT1_ex : BOOL;
     sensorCT2_ex : BOOL;
     sensorCT4_ex : BOOL;
+    sensorCT5_ex : BOOL;
+    pushToRollCT4_ex : BOOL;
+    pushToRollCT5_ex : BOOL;
+    pushToRollCT6_ex : BOOL;
+  END_VAR
+  VAR
+    removeFromWarehouse0 : removeFromWarehouse;
+    PM : INT := 2;
+    runUnload : BOOL;
   END_VAR
 
   INITIAL_STEP Step0:
   END_STEP
 
-  TRANSITION FROM Step0 TO Step1
-    := true;
+  TRANSITION FROM Step0 TO Step52
+    := runUnload AND (not warehouseBusy);
   END_TRANSITION
 
-  STEP Step1:
-    runFrontAT1_ex(N);
+  STEP Step52:
+    warehouseBusy(S);
   END_STEP
 
-  TRANSITION FROM Step1 TO Step2
+  TRANSITION FROM Step52 TO Step26
+    := PM = 1;
+  END_TRANSITION
+
+  STEP Step26:
+    action0(N);
+  END_STEP
+
+  ACTION action0:
+    removeFromWarehouse0(pieceNum := initial, sensorAT1 := sensorAT1);
+    warehouseIn := removeFromWarehouse0.warehouseIn;
+  END_ACTION
+
+  TRANSITION FROM Step26 TO Step2
     := sensorAT1_ex;
   END_TRANSITION
 
   STEP Step2:
     runFrontSaT1_ex(N);
+    runFrontAT1_ex(N);
   END_STEP
 
   TRANSITION FROM Step2 TO (Step4, Step6)
@@ -1175,6 +1880,7 @@ PROGRAM program1
   END_TRANSITION
 
   STEP Step23:
+    pushToRollCT4_ex(N);
   END_STEP
 
   TRANSITION FROM Step23 TO Step24
@@ -1191,14 +1897,511 @@ PROGRAM program1
   STEP Step25:
   END_STEP
 
-  TRANSITION FROM Step25 TO Step0
+  TRANSITION FROM Step25 TO Step1
     := not sensorCT4_ex;
   END_TRANSITION
 
+  STEP Step1:
+  END_STEP
+
+  TRANSITION FROM Step1 TO Step1
+    := true;
+  END_TRANSITION
+
   STEP Step6:
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step6 TO Step0
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step52 TO Step47
+    := PM = 2;
+  END_TRANSITION
+
+  STEP Step47:
+    action0(N);
+  END_STEP
+
+  TRANSITION FROM Step47 TO Step46
+    := sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step46:
+    runFrontSaT1_ex(N);
+    runFrontAT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step46 TO (Step28, Step30)
+    := NOT sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step28:
+  END_STEP
+
+  TRANSITION FROM Step28 TO Step27
+    := sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step27:
+    runFrontSaT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step27 TO Step29
+    := not sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step29:
+  END_STEP
+
+  TRANSITION FROM Step29 TO Step31
+    := sensorSaT2_ex;
+  END_TRANSITION
+
+  STEP Step31:
+    runFrontSbT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step31 TO Step32
+    := not sensorSaT2_ex;
+  END_TRANSITION
+
+  STEP Step32:
+  END_STEP
+
+  TRANSITION FROM Step32 TO Step33
+    := sensorSbT1_ex;
+  END_TRANSITION
+
+  STEP Step33:
+    runFrontSbT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step33 TO Step34
+    := not sensorSbT1_ex;
+  END_TRANSITION
+
+  STEP Step34:
+  END_STEP
+
+  TRANSITION FROM Step34 TO Step35
+    := sensorSbT2_ex;
+  END_TRANSITION
+
+  STEP Step35:
+    runFrontScT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step35 TO Step36
+    := not sensorSbT2_ex;
+  END_TRANSITION
+
+  STEP Step36:
+  END_STEP
+
+  TRANSITION FROM Step36 TO Step37
+    := sensorScT1_ex;
+  END_TRANSITION
+
+  STEP Step37:
+    runFrontScT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step37 TO Step38
+    := not sensorScT1_ex;
+  END_TRANSITION
+
+  STEP Step38:
+  END_STEP
+
+  TRANSITION FROM Step38 TO Step39
+    := sensorScT2_ex;
+  END_TRANSITION
+
+  STEP Step39:
+    runFrontMT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step39 TO Step40
+    := not sensorScT2_ex;
+  END_TRANSITION
+
+  STEP Step40:
+  END_STEP
+
+  TRANSITION FROM Step40 TO Step41
+    := sensorMT1_ex;
+  END_TRANSITION
+
+  STEP Step41:
+    runFrontMT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step41 TO Step42
+    := not sensorMT1_ex;
+  END_TRANSITION
+
+  STEP Step42:
+  END_STEP
+
+  TRANSITION FROM Step42 TO Step43
+    := sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step43:
+    runFrontCT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step43 TO Step44
+    := not sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step44:
+  END_STEP
+
+  TRANSITION FROM Step44 TO Step45
+    := sensorCT1_ex;
+  END_TRANSITION
+
+  STEP Step45:
+    sendDownCT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step45 TO Step48
+    := not sensorCT1_ex;
+  END_TRANSITION
+
+  STEP Step48:
+  END_STEP
+
+  TRANSITION FROM Step48 TO Step49
+    := sensorCT2_ex;
+  END_TRANSITION
+
+  STEP Step49:
+    runFrontCT4_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step49 TO Step50
+    := not sensorCT2_ex;
+  END_TRANSITION
+
+  STEP Step50:
+  END_STEP
+
+  TRANSITION FROM Step50 TO Step51
+    := sensorCT4_ex;
+  END_TRANSITION
+
+  STEP Step51:
+    pushToRollCT5_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step51 TO Step53
+    := not sensorCT4_ex;
+  END_TRANSITION
+
+  STEP Step53:
+  END_STEP
+
+  TRANSITION FROM Step53 TO Step54
+    := sensorCT5_ex;
+  END_TRANSITION
+
+  STEP Step54:
+  END_STEP
+
+  TRANSITION FROM Step54 TO Step55
+    := not sensorCT5_ex;
+  END_TRANSITION
+
+  STEP Step55:
+  END_STEP
+
+  TRANSITION FROM Step55 TO Step1
+    := true;
+  END_TRANSITION
+
+  STEP Step30:
+    warehouseBusy(R);
+  END_STEP
+
+  TRANSITION FROM Step30 TO Step0
+    := true;
+  END_TRANSITION
+
+  TRANSITION FROM Step52 TO Step80
+    := PM = 3;
+  END_TRANSITION
+
+  STEP Step80:
+    action0(N);
+  END_STEP
+
+  TRANSITION FROM Step80 TO Step58
+    := sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step58:
+    runFrontSaT1_ex(N);
+    runFrontAT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step58 TO (Step57, Step60)
+    := NOT sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step57:
+  END_STEP
+
+  TRANSITION FROM Step57 TO Step56
+    := sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step56:
+    runFrontSaT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step56 TO Step59
+    := not sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step59:
+  END_STEP
+
+  TRANSITION FROM Step59 TO Step61
+    := sensorSaT2_ex;
+  END_TRANSITION
+
+  STEP Step61:
+    runFrontSbT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step61 TO Step62
+    := not sensorSaT2_ex;
+  END_TRANSITION
+
+  STEP Step62:
+  END_STEP
+
+  TRANSITION FROM Step62 TO Step63
+    := sensorSbT1_ex;
+  END_TRANSITION
+
+  STEP Step63:
+    runFrontSbT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step63 TO Step64
+    := not sensorSbT1_ex;
+  END_TRANSITION
+
+  STEP Step64:
+  END_STEP
+
+  TRANSITION FROM Step64 TO Step65
+    := sensorSbT2_ex;
+  END_TRANSITION
+
+  STEP Step65:
+    runFrontScT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step65 TO Step66
+    := not sensorSbT2_ex;
+  END_TRANSITION
+
+  STEP Step66:
+  END_STEP
+
+  TRANSITION FROM Step66 TO Step67
+    := sensorScT1_ex;
+  END_TRANSITION
+
+  STEP Step67:
+    runFrontScT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step67 TO Step68
+    := not sensorScT1_ex;
+  END_TRANSITION
+
+  STEP Step68:
+  END_STEP
+
+  TRANSITION FROM Step68 TO Step69
+    := sensorScT2_ex;
+  END_TRANSITION
+
+  STEP Step69:
+    runFrontMT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step69 TO Step70
+    := not sensorScT2_ex;
+  END_TRANSITION
+
+  STEP Step70:
+  END_STEP
+
+  TRANSITION FROM Step70 TO Step71
+    := sensorMT1_ex;
+  END_TRANSITION
+
+  STEP Step71:
+    runFrontMT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step71 TO Step72
+    := not sensorMT1_ex;
+  END_TRANSITION
+
+  STEP Step72:
+  END_STEP
+
+  TRANSITION FROM Step72 TO Step73
+    := sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step73:
+    runFrontCT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step73 TO Step74
+    := not sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step74:
+  END_STEP
+
+  TRANSITION FROM Step74 TO Step75
+    := sensorCT1_ex;
+  END_TRANSITION
+
+  STEP Step75:
+    sendDownCT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step75 TO Step76
+    := not sensorCT1_ex;
+  END_TRANSITION
+
+  STEP Step76:
+  END_STEP
+
+  TRANSITION FROM Step76 TO Step77
+    := sensorCT2_ex;
+  END_TRANSITION
+
+  STEP Step77:
+    runFrontCT4_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step77 TO Step78
+    := not sensorCT2_ex;
+  END_TRANSITION
+
+  STEP Step78:
+  END_STEP
+
+  TRANSITION FROM Step78 TO Step79
+    := sensorCT4_ex;
+  END_TRANSITION
+
+  STEP Step79:
+    runFrontCT5_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step79 TO Step81
+    := not sensorCT4_ex;
+  END_TRANSITION
+
+  STEP Step81:
+  END_STEP
+
+  TRANSITION FROM Step81 TO Step82
+    := sensorCT5_ex;
+  END_TRANSITION
+
+  STEP Step82:
+    pushToRollCT6_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step82 TO Step83
+    := not sensorCT5_ex;
+  END_TRANSITION
+
+  STEP Step83:
+  END_STEP
+
+  TRANSITION FROM Step83 TO Step1
+    := true;
+  END_TRANSITION
+
+  STEP Step60:
+    warehouseBusy(R);
+  END_STEP
+
+  TRANSITION FROM Step60 TO Step0
+    := true;
+  END_TRANSITION
+
+  INITIAL_STEP Step91:
+  END_STEP
+
+  TRANSITION FROM Step91 TO Step89
+    := PM = 1;
+  END_TRANSITION
+
+  STEP Step89:
+    action0(N);
+  END_STEP
+
+  TRANSITION FROM Step89 TO Step86
+    := sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step86:
+    runFrontSaT1_ex(N);
+    runFrontAT1_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step86 TO (Step85, Step88)
+    := NOT sensorAT1_ex;
+  END_TRANSITION
+
+  STEP Step85:
+  END_STEP
+
+  TRANSITION FROM Step85 TO Step84
+    := sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step84:
+    sendDownSaT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step84 TO Step87
+    := not sensorSaT1_ex;
+  END_TRANSITION
+
+  STEP Step87:
+  END_STEP
+
+  TRANSITION FROM Step87 TO Step90
+    := sensorSaT2_ex;
+  END_TRANSITION
+
+  STEP Step90:
+    toolPieceSaT3_ex(N);
+  END_STEP
+
+  STEP Step88:
+    warehouseBusy(R);
+  END_STEP
+
+  TRANSITION FROM Step88 TO Step91
     := true;
   END_TRANSITION
 
@@ -1388,6 +2591,7 @@ END_PROGRAM
 CONFIGURATION config
   VAR_GLOBAL
     ii : BOOL;
+    warehouseBusy : BOOL;
     pushToRollCT4_ex : BOOL;
     pushToRollCT5_ex : BOOL;
     pushToRollCT6_ex : BOOL;
@@ -1427,6 +2631,9 @@ CONFIGURATION config
     sensorCT6_ex : BOOL;
     sensorAT2_ex : BOOL;
     sensorSaT7_ex : BOOL;
+    sensorSaT3_ex : BOOL;
+    sensorSaT4_ex : BOOL;
+    sensorSaT5_ex : BOOL;
     sensorSaT6_ex : BOOL;
     sensorSbT7_ex : BOOL;
     sensorSbT6_ex : BOOL;
@@ -1449,6 +2656,9 @@ CONFIGURATION config
     runBackSbT7_ex : BOOL;
     runBackSbT6_ex : BOOL;
     runFrontSbT6_ex : BOOL;
+    runFrontSaT3_ex : BOOL;
+    runFrontSaT4_ex : BOOL;
+    runFrontSaT5_ex : BOOL;
     runBackScT7_ex : BOOL;
     runBackScT6_ex : BOOL;
     runFrontScT6_ex : BOOL;
@@ -1461,6 +2671,8 @@ CONFIGURATION config
     runFrontCT5_ex : BOOL;
     runFrontCT6_ex : BOOL;
     runBackCT9_ex : BOOL;
+    toolPieceSaT3_ex : BOOL;
+    toolPieceSaT5_ex : BOOL;
   END_VAR
 
   RESOURCE resource1 ON PLC
