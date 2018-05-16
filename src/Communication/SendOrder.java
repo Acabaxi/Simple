@@ -53,6 +53,43 @@ public class SendOrder extends Modbus implements Runnable {
                 	Transform transform = null;
                 	Unload unLoad = null;
 
+
+                    //1 s for line to respond
+                    try {
+
+                        sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                	//Reset coils and registers written
+                    pieceType = new WriteSingleRegisterRequest();
+                    pieceType.setReference(0);
+                    reg.setValue(0);
+                    pieceType.setRegister(reg);
+                    trans.setRequest(pieceType);
+                    try {
+                        trans.execute();
+                    } catch (ModbusException e) {
+                        e.printStackTrace();
+                    }
+                    unLoadDestination = new WriteSingleRegisterRequest();
+                    unLoadDestination.setReference(2);
+                    reg.setValue(0);
+                    unLoadDestination.setRegister(reg);
+                    trans.setRequest(unLoadDestination);
+                    try {
+                        trans.execute();
+                    } catch (ModbusException e) {
+                        e.printStackTrace();
+                    }
+                    unLoadCommand = new WriteCoilRequest(1,false);
+                    trans.setRequest(unLoadCommand);
+                    try {
+                        trans.execute();
+                    } catch (ModbusException e) {
+                        e.printStackTrace();
+                    }
+
                 	//check if line can receive orders
                     reqIdleState = new ReadCoilsRequest(0, 1);
                     trans.setRequest(reqIdleState);
@@ -74,11 +111,11 @@ public class SendOrder extends Modbus implements Runnable {
                     //if it can receive orders
                     if(idle == 0){
                         //Check if there are transform orders on queue to send
-                        if(Main.transformReceived != null){
+                        if(!Main.transformReceived.isEmpty()){
                             //Send transform order based on transform priority (faster orders first)
                         }
                         //Check if there are unload orders on queue to send
-                        if(Main.unloadReceived != null){
+                        if(!Main.unloadReceived.isEmpty()){
                             unLoad = Main.unloadReceived.get(0);
                             //Send unLoad order based on stock available
 
@@ -964,26 +1001,11 @@ public class SendOrder extends Modbus implements Runnable {
                                     } catch (ModbusException e) {
                                         e.printStackTrace();
                                     }
-                                    //50 ms for line to respond
-                                    try {
-
-                                        sleep(50);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                    System.out.println(unLoad.getQuantity());
                                     unLoad.decreaseQuantity();
-                                    System.out.println(unLoad.getQuantity());
+                                    System.out.println("New quantity: " +unLoad.getQuantity());
                                     //Remove Order and Send completed time to data base
                                     if(unLoad.getQuantity() == 0){
                                         Main.unloadReceived.remove(unLoad);
-                                    }
-                                    //50 ms for line to respond
-                                    try {
-
-                                        sleep(50);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
                                     }
                                 }
                                 if(unLoad.getDestination().equals("D3")){
