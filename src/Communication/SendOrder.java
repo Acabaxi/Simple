@@ -119,9 +119,11 @@ public class SendOrder extends Modbus implements Runnable {
 							unLoad = Main.unloadReceived.get(0);
 
 							String orderType = unLoad.getType();
-							int valT = Integer.parseInt(orderType.substring(1, 1));
+							int valT = Integer.parseInt(orderType.substring(1));
+							System.out.println("valT:" +valT);
 							String destination = unLoad.getDestination();
-							int valD = Integer.parseInt(destination.substring(1, 1));
+							int valD = Integer.parseInt(destination.substring(1));
+							System.out.println("valD:" +valD);
 							//Send unLoad order based on stock available
 
 							//Write on register to tell what piece to remove from stock and unLoad
