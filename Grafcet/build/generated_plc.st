@@ -2538,7 +2538,7 @@ PROGRAM program1
   END_STEP
 
   TRANSITION FROM Step91 TO Step89
-    := false;
+    := PM = 1;
   END_TRANSITION
 
   STEP Step89:

@@ -8089,14 +8089,14 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     __SET_VAR(data__->,__transition_list[85],,0);
   }
   if (__GET_VAR(data__->STEP91.X)) {
-    __SET_VAR(data__->,__transition_list[86],,__BOOL_LITERAL(FALSE));
+    __SET_VAR(data__->,__transition_list[86],,(__GET_LOCATED(data__->PM,) == 1));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[86],,__GET_VAR(data__->__transition_list[86]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[86],,__BOOL_LITERAL(FALSE));
+      __SET_VAR(data__->,__debug_transition_list[86],,(__GET_LOCATED(data__->PM,) == 1));
     }
     __SET_VAR(data__->,__transition_list[86],,0);
   }
