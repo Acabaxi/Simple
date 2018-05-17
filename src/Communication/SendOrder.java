@@ -15,230 +15,196 @@ import java.net.*;
 import java.util.*;
 
 public class SendOrder extends Modbus implements Runnable {
-    private ModbusTCPTransaction trans = null; //the transaction
-    private WriteCoilRequest WCoil = null; //the request
-    private ReadCoilsRequest reqRCoilIdle = null;
-    private ReadCoilsRequest reqRCoilCompleteTransform = null;
+	private ModbusTCPTransaction trans = null; // the transaction
+	private WriteCoilRequest unLoadCommand = null; // the request
+	private ReadCoilsRequest reqIdleState = null;
 
-    private WriteSingleRegisterRequest singleUnload = null;
-    private WriteSingleRegisterRequest pieceType = null;
+	private WriteSingleRegisterRequest unLoadDestination = null;
+	private WriteSingleRegisterRequest pieceType = null;
 
-    private SimpleRegister reg = new SimpleRegister(4);
+	private SimpleRegister reg = new SimpleRegister(0);
 
-    private ReadCoilsResponse CoilRespIdle = null;
-    private ReadCoilsResponse CoilRespCompleteTransform = null;
+	private ReadCoilsResponse respIdle = null;
 
-    private int idle = 0;
-    private int i = 0;
-    private int quantity = 0;
+	private int idle = 0;
 
-    private boolean runningOrders;
+	private boolean runningOrders;
 
-    private Thread work;
-    private int coilNumber;
+	private Thread work;
 
-    public void run() {
-        runningOrders = true;
-        System.out.println("Thread Send Order check");
-    }
+	public void run() {
+		runningOrders = true;
+		System.out.println("Thread Send Order check");
+	}
 
-    public void SendLoop() {
-        work = new Thread("receive_thread") {
-            public void run() {
-                System.out.println("Sending Orders");
+	public void SendLoop() {
+		work = new Thread("receive_thread") {
+			public void run() {
+				System.out.println("Sending Orders");
 
-                try {
-                    trans = new ModbusTCPTransaction(connect(5503));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+				try {
+					trans = new ModbusTCPTransaction(connect(5503));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
-                while (true) {
-                    //Do stuff :)
-                	Transform t = null;
-                	Unload u = null;
+				while (true) {
+					//Do stuff :)
+					Transform transform = null;
+					Unload unLoad = null;
 
 
-                    //Write Register Example
-                    /*
-                    singleUnload = new WriteSingleRegisterRequest();
-                    singleUnload.setReference(0);
-                    reg.setValue(4);
-                    singleUnload.setRegister(reg);
-                    trans.setRequest(singleUnload);
-                    try {
-                        trans.execute();
-                    } catch (ModbusException e) {
-                        e.printStackTrace();
-                    } */
+					//1 s for line to respond
+					try {
 
-                    //Check if idle is available to receive orders
-                    coilNumber = 0;
-                    reqRCoilIdle = new ReadCoilsRequest(coilNumber, 1);
-                    trans.setRequest(reqRCoilIdle);
-                    try {
-                        trans.execute();
-                    } catch (ModbusException e) {
-                        e.printStackTrace();
-                    }
+						sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					//Reset coils and registers written
+					pieceType = new WriteSingleRegisterRequest();
+					pieceType.setReference(0);
+					reg.setValue(0);
+					pieceType.setRegister(reg);
+					trans.setRequest(pieceType);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					unLoadDestination = new WriteSingleRegisterRequest();
+					unLoadDestination.setReference(2);
+					reg.setValue(0);
+					unLoadDestination.setRegister(reg);
+					trans.setRequest(unLoadDestination);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					unLoadCommand = new WriteCoilRequest(1,false);
+					trans.setRequest(unLoadCommand);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
 
-                    try {
-                        sleep(30);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+					//check if line can receive orders
+					reqIdleState = new ReadCoilsRequest(0, 1);
+					trans.setRequest(reqIdleState);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					//50 ms for line to respond
+					try {
 
-                    CoilRespIdle = (ReadCoilsResponse)trans.getResponse();
-                    idle = Integer.parseInt(CoilRespIdle.getCoils().toString().trim());
+						sleep(50);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					respIdle = (ReadCoilsResponse)trans.getResponse();
+					idle = Integer.parseInt(respIdle.getCoils().toString().trim());
 
+					//if it can receive orders
+					if(idle == 0){
+						//Check if there are transform orders on queue to send
+						if(!Main.transformReceived.isEmpty()){
+							//Send transform order based on transform priority (faster orders first)
+						}
+						//Check if there are unload orders on queue to send
+						if(!Main.unloadReceived.isEmpty()){
+							unLoad = Main.unloadReceived.get(0);
 
-                    if(idle == 0) {
-                        System.out.println("Entrei neste estado");
-                        if (!Main.transformReceived.isEmpty()) {
-                            t = Main.transformReceived.get(0);
-                        }
-                        if (!Main.unloadReceived.isEmpty()) {
-                            u = Main.unloadReceived.get(0);
+							String orderType = unLoad.getType();
+							int valT = Integer.parseInt(orderType.substring(1));
+							System.out.println("valT:" +valT);
+							String destination = unLoad.getDestination();
+							int valD = Integer.parseInt(destination.substring(1));
+							System.out.println("valD:" +valD);
+							//Send unLoad order based on stock available
 
-                            System.out.println(" Também entrei neste estado");
+							//Write on register to tell what piece to remove from stock and unLoad
+							if(unLoad.getQuantity() > 0){
+								pieceType = new WriteSingleRegisterRequest();
+								pieceType.setReference(0);
+								reg.setValue(valT);
+								pieceType.setRegister(reg);
+								trans.setRequest(pieceType);
+								try {
+									trans.execute();
+								} catch (ModbusException e) {
+									e.printStackTrace();
+								}
+								//50 ms for line to respond
+								try {
 
-                            try {
-                                sleep(30);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								//unLoad destination zone PM1 or PM2 or PM3
+								unLoadDestination = new WriteSingleRegisterRequest();
+								unLoadDestination.setReference(2);
+								reg.setValue(valD);
+								unLoadDestination.setRegister(reg);
+								trans.setRequest(unLoadDestination);
+								try {
+									trans.execute();
+								} catch (ModbusException e) {
+									e.printStackTrace();
+								}
+								//50 ms for line to respond
+								try {
 
-                            singleUnload = new WriteSingleRegisterRequest();
-                            singleUnload.setReference(0);
-                            reg.setValue(1);
-                            singleUnload.setRegister(reg);
-                            trans.setRequest(singleUnload);
-                            try {
-                                trans.execute();
-                            } catch (ModbusException e) {
-                                e.printStackTrace();
-                            }
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								//Send unLoad command to PLC Boolean
+								unLoadCommand = new WriteCoilRequest(1,true);
+								trans.setRequest(unLoadCommand);
+								try {
+									trans.execute();
+								} catch (ModbusException e) {
+									e.printStackTrace();
+								}
+								//50 ms for line to respond
+								try {
 
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								unLoad.decreaseQuantity();
+								//Remove Order and Send completed time to data base
+								if(unLoad.getQuantity() == 0){
+									Main.unloadReceived.remove(unLoad);
+								}
+								//50 ms for line to respond
+								try {
 
-                            pieceType = new WriteSingleRegisterRequest();
-                            pieceType.setReference(2);
-                            reg.setValue(1);
-                            pieceType.setRegister(reg);
-                            trans.setRequest(pieceType);
-                            try {
-                                trans.execute();
-                            } catch (ModbusException e) {
-                                e.printStackTrace();
-                            }
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+						}
+					}
+				//if it can't receive orders
+				else if(idle == 1){
+					//Sleep for 5 seconds
+					try {
+						sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 
-                            try {
-                                sleep(30);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            WCoil = new WriteCoilRequest(1, true);
-                            trans.setRequest(WCoil);
-                            try {
-                                trans.execute();
-                            } catch (ModbusException e) {
-                                e.printStackTrace();
-                            }
-
-                            try {
-                                sleep(30);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            while(true);
-                        }
-
-                        //if we have transform
-                        if (t != null) {
-                            //send this order or do what you need
-                            //remove after sending
-                            if(i == 0) {
-                                quantity = t.getQuantity();
-                                i = 1;
-                            }
-                            if(quantity > 0){
-                                WCoil = new WriteCoilRequest(1, true);
-                                trans.setRequest(WCoil);
-                                try {
-                                    trans.execute();
-                                } catch (ModbusException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    sleep(30);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                                coilNumber = 2;
-                                reqRCoilCompleteTransform = new ReadCoilsRequest(coilNumber, 1);
-                                trans.setRequest(reqRCoilCompleteTransform);
-                                try {
-                                    trans.execute();
-                                } catch (ModbusException e) {
-                                    e.printStackTrace();
-                                }
-                                CoilRespCompleteTransform = (ReadCoilsResponse)trans.getResponse();
-                                int complete = Integer.parseInt(CoilRespCompleteTransform.getCoils().toString().trim());
-                                System.out.println("Result of boolean complete: " + complete);
-                                try {
-                                    sleep(30);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                if(complete == 1) {
-                                    quantity = quantity - 1;
-                                    System.out.println("Result of int quantity: " + quantity);
-                                }
-                            }
-                            if(quantity == 0) {
-                            	Date timeFinished = new Date();
-                            	t.setTimeFinished(timeFinished);
-                            	//send data to database
-                                Main.transformReceived.remove(t);
-                                i = 0;
-                                //Add time stamp;
-                                //Send to data base completed order
-                            }
-
-                            try {
-                                sleep(30);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                        } else if (u != null) { //if we don't have any transform order, check if we have unload
-                            //send this order
-                            //remove after sending
-                            Main.unloadReceived.remove(u);
-                        }
-                    }
-                	
-                	/* if you will need orders after sending then it's better to create other vectors 
-                	 * and put them there after sending. You can create them in this class or in Main (probably better), wherever you want
-                	 * something like this:
-                	 * 
-                	 * public static Vector<Unload> unloadSent = new Vector<>();
-                	 * public static Vector<Transform> transformSent = new Vector<>();
-                	 * 
-                	 * and then after sending order you first put it to another vector and then remove:
-                	 * 
-                	 * Main.transformSent.add(t);
-                	 * Main.transformReceived.remove(t);
-                	 *  */
-
-                }
-            }
-        };
-        work.start();
-    }
-}
+			}
+		}
+	};
+	work.start();
+}}
