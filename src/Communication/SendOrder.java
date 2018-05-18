@@ -21,6 +21,8 @@ public class SendOrder extends Modbus implements Runnable {
 
 	private WriteSingleRegisterRequest unLoadDestination = null;
 	private WriteSingleRegisterRequest pieceType = null;
+	private WriteSingleRegisterRequest pieceFrom = null;
+	private WriteSingleRegisterRequest pieceTo = null;
 
 	private SimpleRegister reg = new SimpleRegister(0);
 
@@ -47,12 +49,10 @@ public class SendOrder extends Modbus implements Runnable {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
 				while (true) {
 					//Do stuff :)
 					Transform transform = null;
 					Unload unLoad = null;
-
 
 					//1 s for line to respond
 					try {
@@ -98,9 +98,9 @@ public class SendOrder extends Modbus implements Runnable {
 					} catch (ModbusException e) {
 						e.printStackTrace();
 					}
-					//50 ms for line to respond
+					//1 s for line to respond
 					try {
-						sleep(50);
+						sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -109,9 +109,108 @@ public class SendOrder extends Modbus implements Runnable {
 
 					//if it can receive orders
 					if(idle == 0){
-						//Check if there  are transform orders on queue to send
+						//Check if there are transform orders on queue to send
 						if(!Main.transformReceived.isEmpty()){
 							//Send transform order based on transform priority (faster orders first)
+							transform = Main.transformReceived.get(0);
+
+							//1 s for line to respond
+							try {
+
+								sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+
+							//Register and coil resets
+							pieceFrom = new WriteSingleRegisterRequest();
+							pieceFrom.setReference(0);
+							reg.setValue(0);
+							pieceFrom.setRegister(reg);
+							trans.setRequest(pieceFrom);
+							try {
+								trans.execute();
+							} catch (ModbusException e) {
+								e.printStackTrace();
+							}
+							pieceTo = new WriteSingleRegisterRequest();
+							pieceTo.setReference(3);
+							reg.setValue(0);
+							pieceTo.setRegister(reg);
+							trans.setRequest(pieceTo);
+							try {
+								trans.execute();
+							} catch (ModbusException e) {
+								e.printStackTrace();
+							}
+							//1 s for line to respond
+							try {
+
+								sleep(1000);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+
+							String orderFrom = transform.getFrom();
+							int valFrom = Integer.parseInt((orderFrom.substring(1)));
+							String orderTo = transform.getTo();
+							int valTo = Integer.parseInt((orderTo.substring(1)));
+
+							if(transform.getQuantity() > 0){
+								//Write on register to tell what piece to remove from stock
+								pieceFrom = new WriteSingleRegisterRequest();
+								pieceFrom.setReference(0);
+								reg.setValue(valFrom);
+								pieceFrom.setRegister(reg);
+								trans.setRequest(pieceFrom);
+								try {
+									trans.execute();
+								} catch (ModbusException e) {
+									e.printStackTrace();
+								}
+								//50 ms for line to respond
+								try {
+
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								//Write on register to tell what piece to transform into
+								pieceTo = new WriteSingleRegisterRequest();
+								pieceTo.setReference(3);
+								reg.setValue(valTo);
+								pieceTo.setRegister(reg);
+								trans.setRequest(pieceTo);
+								try {
+									trans.execute();
+								} catch (ModbusException e) {
+									e.printStackTrace();
+								}
+								//50 ms for line to respond
+								try {
+
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+
+								//Choose place where to transform Cell 1, 2 or 3
+
+								//decrease quantity
+								transform.decreaseQuantity();
+								//Remove order if quantity equals zero
+								if(transform.getQuantity() == 0){
+									Main.transformReceived.remove(transform);
+								}
+								//50 ms for line to respond
+								try {
+
+									sleep(50);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+
 						}
 						//Check if there are unload orders on queue to send
 						if(!Main.unloadReceived.isEmpty()){
@@ -119,10 +218,8 @@ public class SendOrder extends Modbus implements Runnable {
 
 							String orderType = unLoad.getType();
 							int valT = Integer.parseInt(orderType.substring(1));
-							System.out.println("valT:" +valT);
 							String destination = unLoad.getDestination();
 							int valD = Integer.parseInt(destination.substring(1));
-							System.out.println("valD:" +valD);
 							//Send unLoad order based on stock available
 
 							//Write on register to tell what piece to remove from stock and unLoad
@@ -196,7 +293,7 @@ public class SendOrder extends Modbus implements Runnable {
 				else if(idle == 1){
 					//Sleep for 5 seconds
 					try {
-						sleep(500);
+						sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
