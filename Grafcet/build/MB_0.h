@@ -408,6 +408,7 @@ u16 *__IW0_0_2_0 = &client_requests[2].plcv_buffer[0];
 u16 *__QX0_1_0_0 = &server_nodes[0].mem_area.rw_bits[0];
 u16 *__IX0_1_0_1 = &server_nodes[0].mem_area.rw_bits[1];
 u16 *__IX0_1_0_2 = &server_nodes[0].mem_area.rw_bits[2];
+u16 *__IX0_1_0_3 = &server_nodes[0].mem_area.rw_bits[3];
 u16 *__IW0_1_1_0 = &server_nodes[0].mem_area.rw_words[0];
 u16 *__IW0_1_1_3 = &server_nodes[0].mem_area.rw_words[3];
 u16 *__IW0_1_1_2 = &server_nodes[0].mem_area.rw_words[2];
