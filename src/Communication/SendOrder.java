@@ -109,7 +109,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 					//if it can receive orders
 					if(idle == 0){
-						//Check if there are transform orders on queue to send
+						//Check if there  are transform orders on queue to send
 						if(!Main.transformReceived.isEmpty()){
 							//Send transform order based on transform priority (faster orders first)
 						}
