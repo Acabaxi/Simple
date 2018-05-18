@@ -100,7 +100,6 @@ public class SendOrder extends Modbus implements Runnable {
 					}
 					//50 ms for line to respond
 					try {
-
 						sleep(50);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
