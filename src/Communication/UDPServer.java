@@ -7,6 +7,8 @@ import java.net.*;
 import java.util.*;
 
 public class UDPServer implements Runnable{
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_RESET = "\u001B[0m";
     private DatagramSocket udpSocket;
     private int port;
     private boolean running;
@@ -39,7 +41,7 @@ public class UDPServer implements Runnable{
         receive = new Thread("receive_thread"){
         public void run() {
             try {
-                System.out.println("-- Running Server UDP at " + InetAddress.getLocalHost() + "--");
+                System.out.println(ANSI_BLUE + "-- Running Server UDP at " + InetAddress.getLocalHost() + "--" + ANSI_RESET);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }

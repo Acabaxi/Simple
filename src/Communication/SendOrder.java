@@ -3,10 +3,7 @@ package Communication;
 import MES.*;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
-import net.wimpi.modbus.msg.ReadCoilsRequest;
-import net.wimpi.modbus.msg.ReadCoilsResponse;
-import net.wimpi.modbus.msg.WriteCoilRequest;
-import net.wimpi.modbus.msg.WriteSingleRegisterRequest;
+import net.wimpi.modbus.msg.*;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.procimg.SimpleRegister;
 
@@ -18,15 +15,24 @@ public class SendOrder extends Modbus implements Runnable {
 	private ModbusTCPTransaction trans = null; // the transaction
 	private WriteCoilRequest unLoadCommand = null; // the request
 	private ReadCoilsRequest reqIdleState = null;
+	private ReadCoilsRequest reqCell1State = null;
+	private ReadCoilsRequest reqCell2State = null;
+	private ReadCoilsRequest reqCell3State = null;
+
 
 	private WriteSingleRegisterRequest unLoadDestination = null;
 	private WriteSingleRegisterRequest pieceType = null;
 	private WriteSingleRegisterRequest pieceFrom = null;
+
 	private WriteSingleRegisterRequest pieceTo = null;
 
 	private SimpleRegister reg = new SimpleRegister(0);
 
 	private ReadCoilsResponse respIdle = null;
+	private ReadCoilsResponse respCell1State = null;
+	private ReadCoilsResponse respCell2State = null;
+	private ReadCoilsResponse respCell3State = null;
+
 
 	private int idle = 0;
 
@@ -37,6 +43,44 @@ public class SendOrder extends Modbus implements Runnable {
 	public void run() {
 		runningOrders = true;
 		System.out.println("Thread Send Order check");
+	}
+
+	public int checkCell(int numberOfCell){
+		int cell = 0;
+
+		switch(numberOfCell){
+			case 1:
+				reqCell1State = new ReadCoilsRequest(0,1);
+				trans.setRequest(reqCell1State);
+				try {
+					trans.execute();
+				} catch (ModbusException e) {
+					e.printStackTrace();
+				}
+				respCell1State = (ReadCoilsResponse)trans.getResponse();
+				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
+			case 2:
+				reqCell2State = new ReadCoilsRequest(1,1);
+				trans.setRequest(reqCell2State);
+				try {
+					trans.execute();
+				} catch (ModbusException e) {
+					e.printStackTrace();
+				}
+				respCell2State = (ReadCoilsResponse)trans.getResponse();
+				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
+			case 3:
+				reqCell3State = new ReadCoilsRequest(2,1);
+				trans.setRequest(reqCell3State);
+				try {
+					trans.execute();
+				} catch (ModbusException e) {
+					e.printStackTrace();
+				}
+				respCell3State = (ReadCoilsResponse)trans.getResponse();
+				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
+		}
+		return cell;
 	}
 
 	public void SendLoop() {
