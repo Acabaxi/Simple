@@ -22,12 +22,18 @@ public class Main{
     public static final Modbus modbus = new Modbus();
     public static final SendOrder sendOrder = new SendOrder();
     public static boolean startedUdp = false;
-
+    public static Stock stock = new Stock();
 
     public static void main(String args[]) throws Exception {
 
         Main m = new Main();
         UDPServer server = new UDPServer(54321);
+        //temporary block
+        for (int i = 1; i <= 9; i++) {
+        	String type = "P" + i;
+        	m.stock.setQuantity(type, 20);
+        }
+        //end of block
         m.MainMenu(server);
     }
 

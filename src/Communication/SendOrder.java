@@ -117,48 +117,26 @@ public class SendOrder extends Modbus implements Runnable {
 		}
 	}
 
-	public int checkCell(int numberOfCell){
+	public boolean checkCell(int numberOfCell){
 		int cell = 0;
-
+		int val = numberOfCell - 1;
+		reqCell1State = new ReadCoilsRequest(val, 1);
+		trans.setRequest(reqCell1State);
 		try {
-			trans = new ModbusTCPTransaction(connect(5503));
-		} catch (Exception e) {
+			trans.execute();
+		} catch (ModbusException e) {
 			e.printStackTrace();
 		}
+		respCell1State = (ReadCoilsResponse)trans.getResponse();
+		cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
 
-		switch(numberOfCell){
-			case 1:
-				reqCell1State = new ReadCoilsRequest(0,1);
-				trans.setRequest(reqCell1State);
-				try {
-					trans.execute();
-				} catch (ModbusException e) {
-					e.printStackTrace();
-				}
-				respCell1State = (ReadCoilsResponse)trans.getResponse();
-				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
-			case 2:
-				reqCell2State = new ReadCoilsRequest(1,1);
-				trans.setRequest(reqCell2State);
-				try {
-					trans.execute();
-				} catch (ModbusException e) {
-					e.printStackTrace();
-				}
-				respCell2State = (ReadCoilsResponse)trans.getResponse();
-				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
-			case 3:
-				reqCell3State = new ReadCoilsRequest(2,1);
-				trans.setRequest(reqCell3State);
-				try {
-					trans.execute();
-				} catch (ModbusException e) {
-					e.printStackTrace();
-				}
-				respCell3State = (ReadCoilsResponse)trans.getResponse();
-				cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
-		}
-		return cell;
+		if (cell == 1) return true;
+		else return false;
+	}
+		
+	private Order getFirstOrder() {
+		
+		return null;
 	}
 
 	public void SendLoop() {
@@ -219,6 +197,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 								if (transform.getQuantity() > 0) {
 									//Write on register to tell what piece to remove from stock
+									Main.stock.decreaseQuantity(transform.getFrom());
 									pieceFrom = new WriteSingleRegisterRequest();
 									pieceFrom.setReference(0);
 									reg.setValue(valFrom);
@@ -258,6 +237,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 									//decrease quantity
 									transform.decreaseQuantity();
+									Main.stock.increaseQuantity(transform.getTo());
 									//Remove order if quantity equals zero
 									if (transform.getQuantity() == 0) {
 										Main.ordersReceived.remove(transform);
@@ -283,6 +263,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 								//Write on register to tell what piece to remove from stock and unLoad
 								if (unLoad.getQuantity() > 0) {
+									Main.stock.decreaseQuantity(unLoad.getType());
 									pieceType = new WriteSingleRegisterRequest();
 									pieceType.setReference(0);
 									reg.setValue(valT);
