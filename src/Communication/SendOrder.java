@@ -150,13 +150,6 @@ public class SendOrder extends Modbus implements Runnable {
 								} catch (ModbusException e) {
 									e.printStackTrace();
 								}
-								//1 s for line to respond
-								try {
-
-									sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
 
 								String orderFrom = transform.getFrom();
 								int valFrom = Integer.parseInt((orderFrom.substring(1)));
