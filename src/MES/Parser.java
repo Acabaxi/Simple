@@ -11,11 +11,14 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.*;
 
 public class Parser {
+    public static final String ANSI_Yellow = "\u001B[33m";
+    public static final String ANSI_RESET = "\u001B[0m";
 
     public Parser(){}
 
     @SuppressWarnings({ "unchecked", "null" })
     public Order parseFile(String xml, Date timeReceived) {
+
         try {
             XMLInputFactory factory = XMLInputFactory.newInstance();
             InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
@@ -33,10 +36,10 @@ public class Parser {
                         	//TODO: create XML with stores
                         }
                         else if (qName.equalsIgnoreCase("Order")) {
-                            System.out.println("Order");
+                            System.out.println(ANSI_Yellow + "Order Received ");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             number = attributes.next().getValue();
-                            System.out.println("Number : " + number);
+                            System.out.println("ID Number : " + number + ANSI_RESET);
 
                         } 
                         else if (qName.equalsIgnoreCase("Unload")) {
