@@ -60,10 +60,7 @@ public class UDPServer implements Runnable{
                 msg = msg.split("]>")[1];
                 Parser p = new Parser();
                 Order o = p.parseFile(msg, timeReceived);
-                if (o.getDo().equals("U"))
-                    Main.unloadReceived.add((Unload) o);
-                else if (o.getDo().equals("T"))
-                    Main.transformReceived.add((Transform) o);
+                Main.ordersReceived.add(o);
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);

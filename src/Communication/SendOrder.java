@@ -51,8 +51,9 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				while (true) {
 					//Do stuff :)
-					Transform transform = null;
-					Unload unLoad = null;
+					//Transform transform = null;
+					//Unload unLoad = null;
+					Order o = null;
 
 					//1 s for line to respond
 					try {

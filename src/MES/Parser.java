@@ -28,14 +28,18 @@ public class Parser {
                     case XMLStreamConstants.START_ELEMENT:
                         StartElement startElement = event.asStartElement();
                         String qName = startElement.getName().getLocalPart();
-
-                        if (qName.equalsIgnoreCase("Order")) {
+                        
+                        if(qName.equalsIgnoreCase("Request_Stores")) {
+                        	//TODO: create XML with stores
+                        }
+                        else if (qName.equalsIgnoreCase("Order")) {
                             System.out.println("Order");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             number = attributes.next().getValue();
                             System.out.println("Number : " + number);
 
-                        } else if (qName.equalsIgnoreCase("Unload")) {
+                        } 
+                        else if (qName.equalsIgnoreCase("Unload")) {
                             Unload unLoad = new Unload(number, "U");
                             unLoad.setTimeReceived(timeReceived);
                             //System.out.println("Do : unLoad");
@@ -56,28 +60,30 @@ public class Parser {
                             //System.out.println("destination: " + unLoad.getDestination());
                             //System.out.println("quantity: " + unLoad.getQuantity());
                             return unLoad;
-                        } else if (qName.equalsIgnoreCase("Load")) {
-                            Load load = new Load(number, "L");
-                            load.setTimeReceived(timeReceived);
-                            //System.out.println("Do : Load");
+                        } 
+                        else if (qName.equalsIgnoreCase("CreatePair")) {
+                            Mount mount = new Mount(number, "M");
+                            mount.setTimeReceived(timeReceived);
+                            //System.out.println("Do : Mount");
                             Iterator<Attribute> attributes = startElement.getAttributes();
                             while (attributes.hasNext()) {
                                 Attribute attribute = attributes.next();
-                                if (attribute.getName().toString().equals("Type")) {
-                                    load.setType(attribute.getValue());
+                                if (attribute.getName().toString().equals("Bottom")) {
+                                    mount.setBottom(attribute.getValue());
                                 }
-                                if (attribute.getName().toString().equals("From")) {
-                                    load.setFrom(attribute.getValue());
+                                if (attribute.getName().toString().equals("Top")) {
+                                    mount.setTop(attribute.getValue());
                                 }
                                 if (attribute.getName().toString().equals("Quantity")) {
-                                    load.setQuantity(Integer.parseInt(attribute.getValue()));
+                                    mount.setQuantity(Integer.parseInt(attribute.getValue()));
                                 }
                             }
                             //System.out.println("type: " + load.getType());
                             //System.out.println("from: " + load.getFrom());
                             //System.out.println("quantity: " + load.getQuantity());
-                            return load;
-                        } else if (qName.equalsIgnoreCase("Transform")) {
+                            return mount;
+                        } 
+                        else if (qName.equalsIgnoreCase("Transform")) {
                             Transform transform = new Transform(number, "T");
                             transform.setTimeReceived(timeReceived);
                             //System.out.println("Do : Transform");
@@ -99,7 +105,7 @@ public class Parser {
                             //System.out.println("quantity: " + transform.getQuantity());
                             return transform;
                         }
-                        break;
+                        //break;
                 }
             }
         } catch (XMLStreamException e) {

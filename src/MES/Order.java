@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Order {
     private String number;
-    private String orderType;       //L-load T-transform U-unload
+    private String orderType;       //M-mount T-transform U-unload
     private int quantity;
     private Date timeReceived;
     private Date timeSent;

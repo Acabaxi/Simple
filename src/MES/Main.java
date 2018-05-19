@@ -12,8 +12,9 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class Main{
-    public static Vector<Unload> unloadReceived = new Vector<>();
-    public static Vector<Transform> transformReceived = new Vector<>();
+    //public static Vector<Unload> unloadReceived = new Vector<>();
+    //public static Vector<Transform> transformReceived = new Vector<>();
+    public static Vector<Order> ordersReceived = new Vector<>();
     public static final Modbus modbus = new Modbus();
     public static final SendOrder sendOrder = new SendOrder();
 
@@ -114,11 +115,10 @@ public class Main{
 
     public void ChooseFirst(UDPServer server){
         Order o1 = null;
-        if (!transformReceived.isEmpty()){
-            o1 = transformReceived.firstElement();
+        if (!ordersReceived.isEmpty()){
+            o1 = ordersReceived.firstElement();
         }
-        else if (!unloadReceived.isEmpty())
-            o1 = unloadReceived.firstElement();
+        if(o1 != null) {
         switch (o1.getDo()){
             case "U":
                 System.out.println("here");
@@ -136,6 +136,10 @@ public class Main{
                 System.out.println("to: " + t.getTo());
                 System.out.println("quantity: " + t.getQuantity());
                 break;
+        }
+        }
+        else {
+        	System.out.println("No orders");
         }
         MainMenu(server);
     }
