@@ -31,6 +31,7 @@ public class SendOrder extends Modbus implements Runnable {
 	private int idle = 0;
 
 	private boolean runningOrders;
+	
 
 	private Thread work;
 
