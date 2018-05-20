@@ -57,4 +57,32 @@ public class Order {
     public Date getTimeFinished() {
     	return this.timeFinished;
     }
+    
+    public String getMachine() {
+    	switch(this.orderType) {
+    	case "U":
+    		return "no";
+    	case "M":
+    		return "claw";
+    	case "T":
+    		Transform t = (Transform)this;
+    		return t.machine();
+    	default: return "";
+    	}
+    }
+    
+    public Order getCopy() {
+    	switch(this.orderType) {
+    	case "U":
+    		Unload u = (Unload)this;
+    		return u.makeCopy();
+    	case "M":
+    		Mount m = (Mount)this;
+    		return m.makeCopy();
+    	case "T":
+    		Transform t = (Transform)this;
+    		return t.makeCopy();
+    	default: return null;
+    	}
+    }
 }

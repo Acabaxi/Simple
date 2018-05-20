@@ -23,4 +23,15 @@ public class Mount extends Order {
     public String getTop() {
         return this.topType;
     }
+    
+    public Mount makeCopy() {
+    	Mount m = new Mount(this.getNumber(), this.getDo());
+    	m.setBottom(this.getBottom());
+    	m.setTop(this.getTop());
+    	m.setQuantity(this.getQuantity());
+    	m.setTimeReceived(this.getTimeReceived());
+    	m.setTimeSent(this.getTimeSent());
+    	m.setTimeFinished(this.getTimeFinished());
+    	return m;
+    }
 }

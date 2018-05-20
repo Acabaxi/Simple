@@ -85,9 +85,12 @@ public class Main{
     }
 
     public void CheckOrders(UDPServer server){
+    	Sorting s = new Sorting();
+    	s.insertionSort(ordersReceived);
         Order o1 = null;
         if (!ordersReceived.isEmpty()){
-            o1 = ordersReceived.firstElement();
+        	for(int i = 0; i < ordersReceived.size(); i++) {
+            o1 = ordersReceived.get(i);
         }
         if(o1 != null) {
         switch (o1.getDo()){
@@ -110,6 +113,7 @@ public class Main{
                 System.out.println("Bottom: " + m.getTop());
                 System.out.println("quantity: " + m.getQuantity() +ANSI_RESET);
                 break;
+        }
         }
         }
         else {
