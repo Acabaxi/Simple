@@ -14,12 +14,19 @@ public class JDBC {
 
     public static void connect() {
         //"jdbc:postgresql://localhost:5432/testdb"
-        String host = "jdbc:postgresql:db.fe.up.pt:5432";
+        String host = "jdbc:postgresql://db.fe.up.pt:5432/up201502825";
         String username = "up201502825";
         String password = "VkgSgU9P8";
+        Connection con;
 
         try {
-            Connection con = DriverManager.getConnection( host, username, password );
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            con = DriverManager.getConnection( host, username, password );
             System.out.println(ANSI_BLUE + "-- DataBase connected " + host + "--" + ANSI_RESET);
 
             //Example Read
