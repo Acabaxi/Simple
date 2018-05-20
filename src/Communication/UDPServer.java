@@ -36,24 +36,6 @@ public class UDPServer implements Runnable{
         close();
     }
 
-    public static void send(){
-        try {
-            byte[] message = "Send packet test".getBytes();
-
-            // Get the internet address of the specified host
-            InetAddress address = InetAddress.getLocalHost();
-
-            // Initialize a datagram packet with data and address
-            DatagramPacket packet = new DatagramPacket(message, message.length,
-                    address, port);
-
-            // Create a datagram socket, send the packet through it, close it.
-            udpSocket.send(packet);
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-    }
-
     public void listen() throws Exception {
         Parser p = new Parser();
         receive = new Thread("receive_thread"){

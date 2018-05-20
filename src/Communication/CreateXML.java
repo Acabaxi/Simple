@@ -14,6 +14,10 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import java.io.File;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.Socket;
 
 public class CreateXML {
 
@@ -125,8 +129,8 @@ public class CreateXML {
             StreamResult result = new StreamResult(new File("/home/sobaca/Downloads/stores.xml"));
             transformer.transform(source, result);
 
-            UDPServer.send();
-            
+            //Send XML over UDP
+
             // Output to console for testing
             StreamResult consoleResult = new StreamResult(System.out);
             transformer.transform(source, consoleResult);
