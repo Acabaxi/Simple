@@ -1,5 +1,6 @@
 package MES;
 
+import Communication.JDBC;
 import Communication.Modbus;
 import Communication.UDPServer;
 import Communication.SendOrder;
@@ -42,7 +43,7 @@ public class Main{
         Scanner ss = new Scanner(System.in);
         System.out.println(ANSI_RED + "\nChoose an option: " + ANSI_RESET);
         if(!startedUdp) {
-            System.out.println("1 - Start UDP");
+            System.out.println("1 - Start UDP and DataBase");
             String resp = ss.next();
             switch (resp) {
                 case "1":
@@ -74,6 +75,7 @@ public class Main{
     }
     public void ControlUDP(UDPServer server){
         try {
+            //JDBC.connect();
             server.listen();
             startedUdp = true;
         } catch (Exception e) {
@@ -125,5 +127,4 @@ public class Main{
         }
         MainMenu(server);
     }
-
     }
