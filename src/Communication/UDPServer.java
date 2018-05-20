@@ -9,8 +9,8 @@ import java.util.*;
 public class UDPServer implements Runnable{
     public static final String ANSI_BLUE = "\u001B[34m";
     public static final String ANSI_RESET = "\u001B[0m";
-    private DatagramSocket udpSocket;
-    private int port;
+    private static DatagramSocket udpSocket;
+    private static int port;
     private boolean running;
 
     private Thread receive, process;
@@ -34,6 +34,24 @@ public class UDPServer implements Runnable{
 
     public void close(){
         close();
+    }
+
+    public static void send(){
+        try {
+            byte[] message = "Send packet test".getBytes();
+
+            // Get the internet address of the specified host
+            InetAddress address = InetAddress.getLocalHost();
+
+            // Initialize a datagram packet with data and address
+            DatagramPacket packet = new DatagramPacket(message, message.length,
+                    address, port);
+
+            // Create a datagram socket, send the packet through it, close it.
+            udpSocket.send(packet);
+        } catch (Exception e) {
+            System.err.println(e);
+        }
     }
 
     public void listen() throws Exception {
@@ -62,13 +80,13 @@ public class UDPServer implements Runnable{
                 msg = msg.split("]>")[1];
                 Parser p = new Parser();
                 Order o = p.parseFile(msg, timeReceived);
-                Main.ordersReceived.add(o);
+                if(o != null) Main.ordersReceived.add(o);
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
             }
-            }
+                  }
         };
         receive.start();
     }

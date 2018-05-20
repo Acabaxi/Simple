@@ -33,6 +33,7 @@ public class Main{
         	String type = "P" + i;
         	m.stock.setQuantity(type, 20);
         }
+
         //end of block
         m.MainMenu(server);
     }

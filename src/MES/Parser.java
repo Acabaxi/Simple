@@ -3,6 +3,7 @@ package MES;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import Communication.CreateXML;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -33,7 +34,8 @@ public class Parser {
                         String qName = startElement.getName().getLocalPart();
                         
                         if(qName.equalsIgnoreCase("Request_Stores")) {
-                        	//TODO: create XML with stores
+                        	CreateXML.CreateResponse();
+                            return null;
                         }
                         else if (qName.equalsIgnoreCase("Order")) {
                             System.out.println(ANSI_Yellow + "Order Received ");

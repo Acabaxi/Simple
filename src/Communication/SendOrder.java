@@ -322,6 +322,8 @@ public class SendOrder extends Modbus implements Runnable {
 							//Send mount commands to line
 							else if (order.getDo().equals("M")) {
 								Mount mount = (Mount) order;
+								Main.stock.decreaseQuantity(mount.getBottom());
+								Main.stock.decreaseQuantity(mount.getTop());
 								System.out.println("Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity());
 
 								String orderType = mount.getBottom();
