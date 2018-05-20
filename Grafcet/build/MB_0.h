@@ -151,7 +151,7 @@ DEF_REQ_SEND_RETRIES, 0 /* error_code */, 0 /* prev_code */, {0, 10000000} /* ti
 
 static server_node_t		server_nodes[NUMBER_OF_SERVER_NODES] = {
 /*node 0.1*/
-{"0.1", 0, {naf_tcp, {.tcp = {"127.0.0.1", "5503", DEF_CLOSE_ON_SILENCE}}}, -1 /* mb_nd */, 0 /* init_state */}
+{"0.1", 0, {naf_tcp, {.tcp = {"127.0.0.1", "5510", DEF_CLOSE_ON_SILENCE}}}, -1 /* mb_nd */, 0 /* init_state */}
 }
 ;
 
@@ -259,6 +259,16 @@ u16 *__IX0_0_0_30 = &client_requests[0].plcv_buffer[30];
 u16 *__IX0_0_0_37 = &client_requests[0].plcv_buffer[37];
 u16 *__IX0_0_0_51 = &client_requests[0].plcv_buffer[51];
 u16 *__IX0_0_0_58 = &client_requests[0].plcv_buffer[58];
+u16 *__IX0_0_0_87 = &client_requests[0].plcv_buffer[87];
+u16 *__IX0_0_0_86 = &client_requests[0].plcv_buffer[86];
+u16 *__IX0_0_0_85 = &client_requests[0].plcv_buffer[85];
+u16 *__IX0_0_0_84 = &client_requests[0].plcv_buffer[84];
+u16 *__IX0_0_0_83 = &client_requests[0].plcv_buffer[83];
+u16 *__IX0_0_0_82 = &client_requests[0].plcv_buffer[82];
+u16 *__IX0_0_0_81 = &client_requests[0].plcv_buffer[81];
+u16 *__IX0_0_0_80 = &client_requests[0].plcv_buffer[80];
+u16 *__IX0_0_0_79 = &client_requests[0].plcv_buffer[79];
+u16 *__IX0_0_0_88 = &client_requests[0].plcv_buffer[88];
 u16 *__QX0_0_1_0 = &client_requests[1].plcv_buffer[0];
 u16 *__QX0_0_1_2 = &client_requests[1].plcv_buffer[2];
 u16 *__QX0_0_1_7 = &client_requests[1].plcv_buffer[7];
@@ -404,6 +414,13 @@ u16 *__QX0_0_1_47 = &client_requests[1].plcv_buffer[47];
 u16 *__QX0_0_1_58 = &client_requests[1].plcv_buffer[58];
 u16 *__QX0_0_1_79 = &client_requests[1].plcv_buffer[79];
 u16 *__QX0_0_1_90 = &client_requests[1].plcv_buffer[90];
+u16 *__QX0_0_1_121 = &client_requests[1].plcv_buffer[121];
+u16 *__QX0_0_1_122 = &client_requests[1].plcv_buffer[122];
+u16 *__QX0_0_1_120 = &client_requests[1].plcv_buffer[120];
+u16 *__QX0_0_1_119 = &client_requests[1].plcv_buffer[119];
+u16 *__QX0_0_1_118 = &client_requests[1].plcv_buffer[118];
+u16 *__QX0_0_1_117 = &client_requests[1].plcv_buffer[117];
+u16 *__QX0_0_1_123 = &client_requests[1].plcv_buffer[123];
 u16 *__IW0_0_2_0 = &client_requests[2].plcv_buffer[0];
 u16 *__QX0_1_0_0 = &server_nodes[0].mem_area.rw_bits[0];
 u16 *__IX0_1_0_1 = &server_nodes[0].mem_area.rw_bits[1];
