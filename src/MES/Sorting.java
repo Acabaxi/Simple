@@ -7,13 +7,16 @@ public class Sorting {
 	public Sorting() {}
 	
 	public void insertionSort(Vector<Order> v) {
+		System.out.println(v.size());
 	    for (int p = 1; p < v.size(); p++)
 	    {
+	    	if(p > 5) break;
 	    	Order tmp = v.get(p).getCopy();
 	    	int j;
 	    	for (j = p; j > 0 && isBefore(tmp, v.get(j-1)); j--)
-	    		v.add(j, v.get(j-1));
-	    	v.add(j, tmp);
+			{v.set(j, v.get(j-1));
+			}
+	    	v.set(j, tmp);
 	    } 
 	}
 	

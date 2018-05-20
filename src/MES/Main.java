@@ -88,33 +88,37 @@ public class Main{
     	Sorting s = new Sorting();
     	s.insertionSort(ordersReceived);
         Order o1 = null;
-        if (!ordersReceived.isEmpty()){
-        	for(int i = 0; i < ordersReceived.size(); i++) {
-            o1 = ordersReceived.get(i);
-        }
-        if(o1 != null) {
-        switch (o1.getDo()){
-            case "U":
-                Unload u = (Unload)o1;
-                System.out.println(ANSI_BLUE + "Order number " + u.getNumber() + " - unload");
-                System.out.println("type: " + u.getType());
-                System.out.println("destination: " + u.getDestination());
-                System.out.println("quantity: " + u.getQuantity() + ANSI_RESET);
-                break;
-            case "T": Transform t = (Transform)o1;
-                System.out.println(ANSI_BLUE + "Order number " + t.getNumber() + " - transform");
-                System.out.println("from: " + t.getFrom());
-                System.out.println("to: " + t.getTo());
-                System.out.println("quantity: " + t.getQuantity() + ANSI_RESET);
-                break;
-            case "M": Mount m = (Mount)o1;
-                System.out.println(ANSI_BLUE + "Order number " + m.getNumber() + " - mount");
-                System.out.println("Top: " + m.getBottom());
-                System.out.println("Bottom: " + m.getTop());
-                System.out.println("quantity: " + m.getQuantity() +ANSI_RESET);
-                break;
-        }
-        }
+        if (!ordersReceived.isEmpty()) {
+            System.out.println(ordersReceived.size() + " orders");
+            for (int i = 0; i < ordersReceived.size(); i++) {
+                o1 = ordersReceived.get(i);
+
+                if (o1 != null) {
+                    switch (o1.getDo()) {
+                        case "U":
+                            Unload u = (Unload) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + u.getNumber() + " - unload");
+                            System.out.println("type: " + u.getType());
+                            System.out.println("destination: " + u.getDestination());
+                            System.out.println("quantity: " + u.getQuantity() + ANSI_RESET);
+                            break;
+                        case "T":
+                            Transform t = (Transform) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + t.getNumber() + " - transform");
+                            System.out.println("from: " + t.getFrom());
+                            System.out.println("to: " + t.getTo());
+                            System.out.println("quantity: " + t.getQuantity() + ANSI_RESET);
+                            break;
+                        case "M":
+                            Mount m = (Mount) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + m.getNumber() + " - mount");
+                            System.out.println("Top: " + m.getBottom());
+                            System.out.println("Bottom: " + m.getTop());
+                            System.out.println("quantity: " + m.getQuantity() + ANSI_RESET);
+                            break;
+                    }
+                }
+            }
         }
         else {
         	System.out.println(ANSI_BLUE + "No orders" +ANSI_RESET);
