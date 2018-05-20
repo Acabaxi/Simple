@@ -1,5 +1,7 @@
 package Communication;
 
+import org.postgresql.Driver;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -11,13 +13,14 @@ public class JDBC {
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static void connect() {
-        String host = "db.fe.up.pt:5432";
-        String username = "sara";
-        String password = "password";
+        //"jdbc:postgresql://localhost:5432/testdb"
+        String host = "jdbc:postgresql:db.fe.up.pt:5432";
+        String username = "up201502825";
+        String password = "VkgSgU9P8";
 
         try {
             Connection con = DriverManager.getConnection( host, username, password );
-            System.out.println(ANSI_BLUE + "-- Running Server UDP at " + host + "--" + ANSI_RESET);
+            System.out.println(ANSI_BLUE + "-- DataBase connected " + host + "--" + ANSI_RESET);
 
             //Example Read
             //Example write

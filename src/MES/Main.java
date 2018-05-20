@@ -75,7 +75,7 @@ public class Main{
     }
     public void ControlUDP(UDPServer server){
         try {
-            //JDBC.connect();
+            JDBC.connect();
             server.listen();
             startedUdp = true;
         } catch (Exception e) {
