@@ -284,6 +284,32 @@ public class SendOrder extends Modbus implements Runnable {
 									}
 
 									//Choose place where to transform Cell 1, 2 or 3s
+									String machine = transform.getMachine();
+									switch(machine) {
+									case "b":
+										//send it to cell 3
+										break;
+									case "a":
+										if(checkCell(1)) {
+											//send to cell 2
+										}
+										
+										else {
+											//send to cell 1
+										}
+										break;
+									case "c":
+										if(checkCell(2)) {
+											//send to cell 3
+										}
+										else if(checkCell(1)) {
+											//send to cell 2
+										}
+										else {
+											//send to cell 1
+										}
+										break;
+									}
 
 									//decrease quantity
 									transform.decreaseQuantity();
