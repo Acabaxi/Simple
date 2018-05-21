@@ -27,6 +27,15 @@ public class SendOrder extends Modbus implements Runnable {
 	private ReadCoilsRequest reqCell2State = null;
 	private ReadCoilsRequest reqCell3State = null;
 
+	private ReadCoilsRequest reqLoadP1 = null;
+	private ReadCoilsRequest reqLoadP2 = null;
+	private ReadCoilsResponse resLoadP1 = null;
+	private ReadCoilsResponse resLoadP2 = null;
+	private int loadP1 = 0;
+	private int reLoadP1 = 0;
+	private int loadP2 = 0;
+	private int reLoadP2 = 0;
+
 
 	private WriteSingleRegisterRequest unLoadDestination = null;
 	private WriteSingleRegisterRequest pieceType = null;
@@ -248,6 +257,41 @@ public class SendOrder extends Modbus implements Runnable {
 						e.printStackTrace();
 					}
 
+
+					//Check if load order is on the line to manage Stock
+					reqLoadP1 = new ReadCoilsRequest(9,1);
+					trans.setRequest(reqLoadP1);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					resLoadP1 = (ReadCoilsResponse)trans.getResponse();
+					loadP1 = Integer.parseInt(resLoadP1.getCoils().toString().trim());
+					reqLoadP2 = new ReadCoilsRequest(10, 1);
+					trans.setRequest(reqLoadP2);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					resLoadP2 = (ReadCoilsResponse)trans.getResponse();
+					loadP2 = Integer.parseInt(resLoadP2.getCoils().toString().trim());
+
+					if(loadP1 == 1){
+						if(loadP1 != reLoadP1) {
+							Main.stock.increaseQuantity("P1");
+						}
+					}
+					reLoadP1 = loadP1;
+
+					if(loadP2 == 1){
+						if(loadP2 != reLoadP2) {
+							Main.stock.increaseQuantity("P2");
+						}
+					}
+					reLoadP2 = loadP2;
+
 					//check if line can receive orders
 					reqIdleState = new ReadCoilsRequest(0, 1);
 					trans.setRequest(reqIdleState);
@@ -261,14 +305,15 @@ public class SendOrder extends Modbus implements Runnable {
 
 					//if it can receive orders
 					if(idle == 0) {
-						Order order = getOrder();
-						System.out.println("Order " +order.getNumber()); //Null if order transform
+						    System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
+							Order order = getOrder();
+							System.out.println(ANSI_BLUE + "Order " + order.getNumber() + ANSI_RESET); //Null if order transform
 						//Check if there are orders
 						if (order != null) {
 							//Send transform order based on transform priority (faster orders first)
 							if (order.getDo().equals("T")) {
 								Transform transform = (Transform)order;
-								System.out.println("Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity());
+								System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 
 								String orderFrom = transform.getFrom();
 								int valFrom = Integer.parseInt((orderFrom.substring(1)));
@@ -437,7 +482,7 @@ public class SendOrder extends Modbus implements Runnable {
 							//Check if there are unload orders on queue to send
 							else if (order.getDo().equals("U")) {
 								Unload unLoad = (Unload) order;
-								System.out.println("Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity());
+								System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
 
 								String orderType = unLoad.getType();
 								int valT = Integer.parseInt(orderType.substring(1));
@@ -508,7 +553,7 @@ public class SendOrder extends Modbus implements Runnable {
 								Mount mount = (Mount) order;
 								Main.stock.decreaseQuantity(mount.getBottom());
 								Main.stock.decreaseQuantity(mount.getTop());
-								System.out.println("Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity());
+								System.out.println(ANSI_BLUE + "Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity() + ANSI_RESET);
 
 								String orderType = mount.getBottom();
 								int valBot = Integer.parseInt(orderType.substring(1));
@@ -569,6 +614,7 @@ public class SendOrder extends Modbus implements Runnable {
 				//if it can't receive orders
 				else if(idle == 1){
 					//Sleep for 5 seconds
+						System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
 					try {
 						sleep(1000);
 					} catch (InterruptedException e) {
