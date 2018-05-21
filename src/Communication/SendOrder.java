@@ -187,12 +187,15 @@ public class SendOrder extends Modbus implements Runnable {
 			//continue;
 			switch (o.getMachine()) {
 				case "no":
-					if (!o.getExecuting()) {
-						Date d = new Date();
-						o.setTimeSent(d);
-						o.setExecuting(true);
+					if(this.checkCell(9)) {
+						if (!o.getExecuting()) {
+							Date d = new Date();
+							o.setTimeSent(d);
+							o.setExecuting(true);
+						}
+						return o;
 					}
-					return o;
+					break;
 				case "claw":
 					if (this.checkCell(8)) {
 						if (!o.getExecuting()) {
