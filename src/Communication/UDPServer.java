@@ -7,8 +7,10 @@ import java.net.*;
 import java.util.*;
 
 public class UDPServer implements Runnable{
-    private DatagramSocket udpSocket;
-    private int port;
+    public static final String ANSI_BLUE = "\u001B[34m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    private static DatagramSocket udpSocket;
+    private static int port;
     private boolean running;
 
     private Thread receive, process;
@@ -39,7 +41,7 @@ public class UDPServer implements Runnable{
         receive = new Thread("receive_thread"){
         public void run() {
             try {
-                System.out.println("-- Running Server UDP at " + InetAddress.getLocalHost() + "--");
+                System.out.println(ANSI_BLUE + "-- Running Server UDP at " + InetAddress.getLocalHost() + "--" + ANSI_RESET);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
@@ -60,16 +62,17 @@ public class UDPServer implements Runnable{
                 msg = msg.split("]>")[1];
                 Parser p = new Parser();
                 Order o = p.parseFile(msg, timeReceived);
-                if (o.getDo().equals("U"))
-                    Main.unloadReceived.add((Unload) o);
-                else if (o.getDo().equals("T"))
-                    Main.transformReceived.add((Transform) o);
+                if(o != null) {
+                	o.setPending(true);
+                	Main.ordersReceived.add(o);
+                	Main.sorting.insertionSort(Main.ordersReceived);
+                }
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
             }
-            }
+                  }
         };
         receive.start();
     }

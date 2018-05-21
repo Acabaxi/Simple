@@ -4,12 +4,13 @@ import java.util.*;
 
 public class Order {
     private String number;
-    private String orderType;       //L-load T-transform U-unload
+    private String orderType;       //M-mount T-transform U-unload
     private int quantity;
     private Date timeReceived;
     private Date timeSent;
     private Date timeFinished;
-    
+    private boolean pending = false;
+    private boolean executing = false;    
 
     public Order(String number, String type){
         this.number = number;
@@ -56,5 +57,49 @@ public class Order {
     
     public Date getTimeFinished() {
     	return this.timeFinished;
+    }
+    
+    public String getMachine() {
+    	switch(this.orderType) {
+    	case "U":
+    		return "no";
+    	case "M":
+    		return "claw";
+    	case "T":
+    		Transform t = (Transform)this;
+    		return t.machine();
+    	default: return "";
+    	}
+    }
+    
+    public Order getCopy() {
+    	switch(this.orderType) {
+    	case "U":
+    		Unload u = (Unload)this;
+    		return u.makeCopy();
+    	case "M":
+    		Mount m = (Mount)this;
+    		return m.makeCopy();
+    	case "T":
+    		Transform t = (Transform)this;
+    		return t.makeCopy();
+    	default: return null;
+    	}
+    }
+    
+    public void setPending(boolean p) {
+    	this.pending = p;
+    }
+    
+    public void setExecuting(boolean e) {
+    	this.executing = e;
+    }
+    
+    public boolean getPending() {
+    	return this.pending;
+    }
+    
+    public boolean getExecuting() {
+    	return this.executing;
     }
 }

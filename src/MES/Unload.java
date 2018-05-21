@@ -23,4 +23,15 @@ public class Unload extends Order{
     public String getDestination() {
         return destination;
     }
+    
+    public Unload makeCopy() {
+    	Unload u = new Unload(this.getNumber(), this.getDo());
+    	u.setType(this.getType());
+    	u.setDestination(this.getDestination());
+    	u.setQuantity(this.getQuantity());
+    	u.setTimeReceived(this.getTimeReceived());
+    	u.setTimeSent(this.getTimeSent());
+    	u.setTimeFinished(this.getTimeFinished());
+    	return u;
+    }
 }
