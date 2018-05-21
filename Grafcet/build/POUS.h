@@ -300,12 +300,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[10];
+  STEP __step_list[12];
   UINT __nb_steps;
   ACTION __action_list[4];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[12];
-  __IEC_BOOL_t __debug_transition_list[12];
+  __IEC_BOOL_t __transition_list[14];
+  __IEC_BOOL_t __debug_transition_list[14];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -345,12 +345,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[23];
+  STEP __step_list[25];
   UINT __nb_steps;
   ACTION __action_list[8];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[27];
-  __IEC_BOOL_t __debug_transition_list[27];
+  __IEC_BOOL_t __transition_list[29];
+  __IEC_BOOL_t __debug_transition_list[29];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -986,6 +986,8 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,TAKEPIECE)
+  __DECLARE_EXTERNAL(INT,PIECENUM)
   __DECLARE_EXTERNAL(INT,CELL1INITIAL)
   __DECLARE_EXTERNAL(INT,CELL1FINAL)
   __DECLARE_EXTERNAL(INT,CELL2INITIAL)
@@ -1078,12 +1080,12 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[78];
+  STEP __step_list[82];
   UINT __nb_steps;
   ACTION __action_list[38];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[78];
-  __IEC_BOOL_t __debug_transition_list[78];
+  __IEC_BOOL_t __transition_list[81];
+  __IEC_BOOL_t __debug_transition_list[81];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -1340,12 +1342,14 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(INT,PIECENUM)
+  __DECLARE_EXTERNAL(BOOL,TAKEPIECE)
   __DECLARE_LOCATED(INT,WAREHOUSEIN)
   __DECLARE_LOCATED(BOOL,SENSORAT1)
   __DECLARE_LOCATED(INT,PM)
   __DECLARE_LOCATED(INT,INITIALPIECE)
   __DECLARE_LOCATED(INT,FINALPIECE)
-  __DECLARE_EXTERNAL(BOOL,WAREHOUSEBUSY)
+  __DECLARE_LOCATED(BOOL,WAREHOUSEBUSY)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTAT1_EX)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTSAT1_EX)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTSAT2_EX)
@@ -1424,9 +1428,9 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[85];
+  STEP __step_list[86];
   UINT __nb_steps;
-  ACTION __action_list[19];
+  ACTION __action_list[21];
   UINT __nb_actions;
   __IEC_BOOL_t __transition_list[87];
   __IEC_BOOL_t __debug_transition_list[87];

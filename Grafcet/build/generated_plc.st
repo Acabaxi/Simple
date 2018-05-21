@@ -9,14 +9,14 @@ FUNCTION_BLOCK removeFromWarehouse
     sensorAT1 : BOOL;
   END_VAR
 
-  INITIAL_STEP initialLoad:
+  INITIAL_STEP initialLoad1:
   END_STEP
 
-  TRANSITION FROM initialLoad TO putP3
+  TRANSITION FROM initialLoad1 TO putP5
     := pieceNum = 2;
   END_TRANSITION
 
-  STEP putP3:
+  STEP putP5:
     P2(N);
   END_STEP
 
@@ -24,11 +24,11 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 2;
   END_ACTION
 
-  TRANSITION FROM putP3 TO Step2
+  TRANSITION FROM putP5 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  STEP Step2:
+  STEP Step0:
     resetWarehouse(N);
   END_STEP
 
@@ -36,22 +36,22 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 0;
   END_ACTION
 
-  TRANSITION FROM Step2 TO Step0
+  TRANSITION FROM Step0 TO Step1
     := not sensorAT1;
   END_TRANSITION
 
-  STEP Step0:
+  STEP Step1:
   END_STEP
 
-  TRANSITION FROM Step0 TO initialLoad
+  TRANSITION FROM Step1 TO initialLoad1
     := true;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP4
+  TRANSITION FROM initialLoad1 TO putP6
     := pieceNum = 3;
   END_TRANSITION
 
-  STEP putP4:
+  STEP putP6:
     P3(N);
   END_STEP
 
@@ -59,15 +59,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 3;
   END_ACTION
 
-  TRANSITION FROM putP4 TO Step2
+  TRANSITION FROM putP6 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP5
+  TRANSITION FROM initialLoad1 TO putP7
     := pieceNum = 4;
   END_TRANSITION
 
-  STEP putP5:
+  STEP putP7:
     P4(N);
   END_STEP
 
@@ -75,15 +75,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 4;
   END_ACTION
 
-  TRANSITION FROM putP5 TO Step2
+  TRANSITION FROM putP7 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP7
+  TRANSITION FROM initialLoad1 TO putP9
     := pieceNum = 6;
   END_TRANSITION
 
-  STEP putP7:
+  STEP putP9:
     P6(N);
   END_STEP
 
@@ -91,15 +91,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 6;
   END_ACTION
 
-  TRANSITION FROM putP7 TO Step2
+  TRANSITION FROM putP9 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP8
+  TRANSITION FROM initialLoad1 TO putP10
     := pieceNum = 7;
   END_TRANSITION
 
-  STEP putP8:
+  STEP putP10:
     P7(N);
   END_STEP
 
@@ -107,15 +107,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 7;
   END_ACTION
 
-  TRANSITION FROM putP8 TO Step2
+  TRANSITION FROM putP10 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP9
+  TRANSITION FROM initialLoad1 TO putP11
     := pieceNum = 8;
   END_TRANSITION
 
-  STEP putP9:
+  STEP putP11:
     P8(N);
   END_STEP
 
@@ -123,15 +123,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 8;
   END_ACTION
 
-  TRANSITION FROM putP9 TO Step2
+  TRANSITION FROM putP11 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP6
+  TRANSITION FROM initialLoad1 TO putP8
     := pieceNum = 5;
   END_TRANSITION
 
-  STEP putP6:
+  STEP putP8:
     P5(N);
   END_STEP
 
@@ -139,15 +139,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 5;
   END_ACTION
 
-  TRANSITION FROM putP6 TO Step2
+  TRANSITION FROM putP8 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP10
+  TRANSITION FROM initialLoad1 TO putP12
     := pieceNum = 9;
   END_TRANSITION
 
-  STEP putP10:
+  STEP putP12:
     P9(N);
   END_STEP
 
@@ -155,15 +155,15 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 9;
   END_ACTION
 
-  TRANSITION FROM putP10 TO Step2
+  TRANSITION FROM putP12 TO Step0
     := sensorAT1;
   END_TRANSITION
 
-  TRANSITION FROM initialLoad TO putP2
+  TRANSITION FROM initialLoad1 TO putP4
     := pieceNum = 1;
   END_TRANSITION
 
-  STEP putP2:
+  STEP putP4:
     P1(N);
   END_STEP
 
@@ -171,7 +171,7 @@ FUNCTION_BLOCK removeFromWarehouse
     warehouseIn := 1;
   END_ACTION
 
-  TRANSITION FROM putP2 TO Step2
+  TRANSITION FROM putP4 TO Step0
     := sensorAT1;
   END_TRANSITION
 
@@ -707,7 +707,14 @@ FUNCTION_BLOCK LinearConveyor
     forwardMotor(S);
   END_STEP
 
-  TRANSITION FROM moveFrontStep TO turnOffFront
+  TRANSITION FROM moveFrontStep TO Step0
+    := not reachedSensor;
+  END_TRANSITION
+
+  STEP Step0:
+  END_STEP
+
+  TRANSITION FROM Step0 TO turnOffFront
     := reachedSensorFront;
   END_TRANSITION
 
@@ -744,7 +751,14 @@ FUNCTION_BLOCK LinearConveyor
     backMotor(S);
   END_STEP
 
-  TRANSITION FROM moveBackStep TO turnOffBack
+  TRANSITION FROM moveBackStep TO Step1
+    := not reachedSensor;
+  END_TRANSITION
+
+  STEP Step1:
+  END_STEP
+
+  TRANSITION FROM Step1 TO turnOffBack
     := reachedSensorBack;
   END_TRANSITION
 
@@ -841,7 +855,14 @@ FUNCTION_BLOCK RotaryConveyor
     forwardMotor(S);
   END_STEP
 
-  TRANSITION FROM moveFrontStep TO turnOffFront
+  TRANSITION FROM moveFrontStep TO Step1
+    := not reachedSensor;
+  END_TRANSITION
+
+  STEP Step1:
+  END_STEP
+
+  TRANSITION FROM Step1 TO turnOffFront
     := reachedSensorFront;
   END_TRANSITION
 
@@ -878,7 +899,14 @@ FUNCTION_BLOCK RotaryConveyor
     backMotor(S);
   END_STEP
 
-  TRANSITION FROM moveBackStep TO turnOffBack
+  TRANSITION FROM moveBackStep TO Step2
+    := not reachedSensor;
+  END_TRANSITION
+
+  STEP Step2:
+  END_STEP
+
+  TRANSITION FROM Step2 TO turnOffBack
     := reachedSensorBack;
   END_TRANSITION
 
@@ -896,6 +924,7 @@ FUNCTION_BLOCK RotaryConveyor
 
   STEP rotateRight:
     rightRotMotor(N);
+    isBusy(S);
   END_STEP
 
   TRANSITION FROM rotateRight TO rightRotateed
@@ -913,7 +942,6 @@ FUNCTION_BLOCK RotaryConveyor
 
   STEP rotatingLeft:
     leftRotMotor(N);
-    isBusy(N);
   END_STEP
 
   TRANSITION FROM rotatingLeft TO notBusyBack0
@@ -1734,7 +1762,7 @@ FUNCTION_BLOCK Machine
   END_STEP
 
   TRANSITION FROM Step3 TO Step10
-    := not frontNotBusy AND nextReadyToReceive;
+    := nextReadyToReceive;
   END_TRANSITION
 
   STEP Step10:
@@ -2750,6 +2778,8 @@ END_PROGRAM
 
 PROGRAM transformProgram
   VAR_EXTERNAL
+    takePiece : BOOL;
+    pieceNum : INT;
     cell1Initial : INT;
     cell1Final : INT;
     cell2Initial : INT;
@@ -2863,8 +2893,8 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step89:
-    action0(S);
     runTransformMach1(R);
+    action0(S);
     warehouseBusy(S);
     cell1Busy(S);
     setPiece1(N);
@@ -2903,7 +2933,6 @@ PROGRAM transformProgram
 
   STEP Step84:
     sendDownSaT2_ex(N);
-    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step84 TO Step87
@@ -2911,6 +2940,7 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step87:
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step87 TO Step90
@@ -2964,10 +2994,9 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step95:
-    runBackSaT7_ex(N);
   END_STEP
 
-  TRANSITION FROM Step95 TO Step96
+  TRANSITION FROM Step95 TO (Step96, Step2)
     := not sensorSaT6_ex;
   END_TRANSITION
 
@@ -3004,7 +3033,17 @@ PROGRAM transformProgram
   STEP Step102:
   END_STEP
 
-  TRANSITION FROM Step102 TO machineTransform1
+  TRANSITION FROM Step102 TO Step0
+    := true;
+  END_TRANSITION
+
+  STEP Step0:
+  END_STEP
+
+  STEP Step2:
+  END_STEP
+
+  TRANSITION FROM Step2 TO machineTransform1
     := true;
   END_TRANSITION
 
@@ -3017,8 +3056,8 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step113:
-    action0(S);
     runTransformMach2(R);
+    action0(S);
     warehouseBusy(S);
     cell2Busy(S);
     setPiece2(N);
@@ -3052,7 +3091,6 @@ PROGRAM transformProgram
 
   STEP Step88:
     runFrontSaT2_ex(N);
-    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step88 TO Step104
@@ -3060,6 +3098,7 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step104:
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step104 TO Step106
@@ -3143,14 +3182,14 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step116:
-    runBackSbT7_ex(N);
   END_STEP
 
-  TRANSITION FROM Step116 TO Step117
+  TRANSITION FROM Step116 TO (Step117, Step3)
     := not sensorSbT6_ex;
   END_TRANSITION
 
   STEP Step117:
+    runBackSbT7_ex(N);
   END_STEP
 
   TRANSITION FROM Step117 TO Step118
@@ -3214,7 +3253,14 @@ PROGRAM transformProgram
   STEP Step125:
   END_STEP
 
-  TRANSITION FROM Step125 TO machineTransform2
+  TRANSITION FROM Step125 TO Step0
+    := true;
+  END_TRANSITION
+
+  STEP Step3:
+  END_STEP
+
+  TRANSITION FROM Step3 TO machineTransform2
     := true;
   END_TRANSITION
 
@@ -3227,7 +3273,7 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step133:
-    action0(S);
+    action0(N);
     runTransformMach3(R);
     warehouseBusy(S);
     cell3Busy(S);
@@ -3262,7 +3308,6 @@ PROGRAM transformProgram
 
   STEP Step126:
     runFrontSaT2_ex(N);
-    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step126 TO Step128
@@ -3270,6 +3315,7 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step128:
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step128 TO Step129
@@ -3383,10 +3429,9 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step142:
-    runBackScT7_ex(N);
   END_STEP
 
-  TRANSITION FROM Step142 TO Step146
+  TRANSITION FROM Step142 TO (Step146, Step4)
     := not sensorScT6_ex;
   END_TRANSITION
 
@@ -3487,7 +3532,14 @@ PROGRAM transformProgram
   STEP Step160:
   END_STEP
 
-  TRANSITION FROM Step160 TO machineTransform3
+  TRANSITION FROM Step160 TO Step0
+    := true;
+  END_TRANSITION
+
+  STEP Step4:
+  END_STEP
+
+  TRANSITION FROM Step4 TO machineTransform3
     := true;
   END_TRANSITION
 
@@ -4363,15 +4415,19 @@ PROGRAM gantryProgram
 END_PROGRAM
 
 PROGRAM unloadProgram
+  VAR_EXTERNAL
+    pieceNum : INT;
+    takePiece : BOOL;
+  END_VAR
   VAR
     warehouseIn AT %IW0.0.2.0 : INT;
     sensorAT1 AT %IX0.0.0.0 : BOOL;
     PM AT %IW0.1.1.2 : INT;
     initialPiece AT %IW0.1.1.0 : INT;
     finalPiece AT %IW0.1.1.3 : INT;
+    warehouseBusy AT %IX0.1.0.0 : BOOL;
   END_VAR
   VAR_EXTERNAL
-    warehouseBusy : BOOL;
     runFrontAT1_ex : BOOL;
     runFrontSaT1_ex : BOOL;
     runFrontSaT2_ex : BOOL;
@@ -4467,6 +4523,7 @@ PROGRAM unloadProgram
 
   STEP Step52:
     warehouseBusy(S);
+    runUnload(R);
   END_STEP
 
   TRANSITION FROM Step52 TO Step26
@@ -4475,7 +4532,6 @@ PROGRAM unloadProgram
 
   STEP Step26:
     action0(S);
-    runUnload(R);
   END_STEP
 
   ACTION action0:
@@ -4497,6 +4553,7 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step4:
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step4 TO (Step3, Step6)
@@ -4663,13 +4720,15 @@ PROGRAM unloadProgram
   STEP Step1:
   END_STEP
 
-  TRANSITION FROM Step1 TO Step0
+  TRANSITION FROM Step1 TO Step85
     := true;
   END_TRANSITION
 
+  STEP Step85:
+  END_STEP
+
   STEP Step6:
     warehouseBusy(R);
-    action0(R);
   END_STEP
 
   TRANSITION FROM Step6 TO Step0
@@ -4681,9 +4740,17 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step47:
-    action0(S);
-    runUnload(R);
+    take(N);
+    resetWare(P0);
   END_STEP
+
+  ACTION take:
+    warehouseIn := initialPiece;
+  END_ACTION
+
+  ACTION resetWare:
+    warehouseIn := 0;
+  END_ACTION
 
   TRANSITION FROM Step47 TO Step46
     := sensorAT1_ex;
@@ -4701,7 +4768,7 @@ PROGRAM unloadProgram
   STEP Step28:
   END_STEP
 
-  TRANSITION FROM Step28 TO (Step27, Step30)
+  TRANSITION FROM Step28 TO Step27
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -4709,7 +4776,7 @@ PROGRAM unloadProgram
     runFrontSaT2_ex(N);
   END_STEP
 
-  TRANSITION FROM Step27 TO Step29
+  TRANSITION FROM Step27 TO (Step29, Step30)
     := not sensorSaT1_ex;
   END_TRANSITION
 
@@ -4880,7 +4947,7 @@ PROGRAM unloadProgram
   STEP Step55:
   END_STEP
 
-  TRANSITION FROM Step55 TO Step0
+  TRANSITION FROM Step55 TO Step85
     := true;
   END_TRANSITION
 
@@ -4898,8 +4965,8 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step80:
-    action0(S);
-    runUnload(R);
+    take(N);
+    resetWare(P0);
   END_STEP
 
   TRANSITION FROM Step80 TO Step58
@@ -4918,7 +4985,7 @@ PROGRAM unloadProgram
   STEP Step57:
   END_STEP
 
-  TRANSITION FROM Step57 TO (Step56, Step60)
+  TRANSITION FROM Step57 TO Step56
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -4926,7 +4993,7 @@ PROGRAM unloadProgram
     runFrontSaT2_ex(N);
   END_STEP
 
-  TRANSITION FROM Step56 TO Step59
+  TRANSITION FROM Step56 TO (Step59, Step60)
     := not sensorSaT1_ex;
   END_TRANSITION
 
@@ -5105,7 +5172,7 @@ PROGRAM unloadProgram
   STEP Step84:
   END_STEP
 
-  TRANSITION FROM Step84 TO Step0
+  TRANSITION FROM Step84 TO Step85
     := not sensorCT6_ex;
   END_TRANSITION
 
@@ -5123,6 +5190,8 @@ END_PROGRAM
 
 CONFIGURATION config
   VAR_GLOBAL
+    takePiece : BOOL;
+    pieceNum : INT;
     cell1Initial : INT;
     cell1Final : INT;
     cell2Initial : INT;
