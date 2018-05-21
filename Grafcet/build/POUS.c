@@ -11952,8 +11952,6 @@ void TRANSFORMPROGRAM_body__(TRANSFORMPROGRAM *data__) {
     if (active)       {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,0);};
 
-    if (active)       {data__->__action_list[__SFC_CELL1BUSY].reset = 1;}
-
   }
 
   // MACHINETRANSFORM2 action associations
@@ -17580,12 +17578,12 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
   if (__GET_VAR(data__->__transition_list[3])) {
     __SET_VAR(data__->,STEP4.X,,1);
     data__->STEP4.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-    __SET_VAR(data__->,STEP6.X,,1);
-    data__->STEP6.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[4])) {
     __SET_VAR(data__->,STEP3.X,,1);
     data__->STEP3.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP6.X,,1);
+    data__->STEP6.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[5])) {
     __SET_VAR(data__->,STEP5.X,,1);
@@ -17690,12 +17688,12 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
   if (__GET_VAR(data__->__transition_list[30])) {
     __SET_VAR(data__->,STEP28.X,,1);
     data__->STEP28.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-    __SET_VAR(data__->,STEP30.X,,1);
-    data__->STEP30.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[31])) {
     __SET_VAR(data__->,STEP27.X,,1);
     data__->STEP27.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP30.X,,1);
+    data__->STEP30.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[32])) {
     __SET_VAR(data__->,STEP29.X,,1);
@@ -17808,12 +17806,12 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
   if (__GET_VAR(data__->__transition_list[59])) {
     __SET_VAR(data__->,STEP57.X,,1);
     data__->STEP57.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-    __SET_VAR(data__->,STEP60.X,,1);
-    data__->STEP60.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[60])) {
     __SET_VAR(data__->,STEP56.X,,1);
     data__->STEP56.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP60.X,,1);
+    data__->STEP60.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[61])) {
     __SET_VAR(data__->,STEP59.X,,1);
@@ -18075,6 +18073,8 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
 
     if (active)       {data__->__action_list[__SFC_WAREHOUSEBUSY].reset = 1;}
 
+    if (active)       {data__->__action_list[__SFC_ACTION0].reset = 1;}
+
   }
 
   // STEP47 action associations
@@ -18231,6 +18231,8 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
     char desactivated = !active && data__->STEP30.prev_state;
 
     if (active)       {data__->__action_list[__SFC_WAREHOUSEBUSY].reset = 1;}
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].reset = 1;}
 
   }
 
@@ -18399,6 +18401,8 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
     char desactivated = !active && data__->STEP60.prev_state;
 
     if (active)       {data__->__action_list[__SFC_WAREHOUSEBUSY].reset = 1;}
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].reset = 1;}
 
   }
 

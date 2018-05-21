@@ -2981,7 +2981,6 @@ PROGRAM transformProgram
 
   STEP Step97:
     putPieceInSignal_ex(N);
-    cell1Busy(R);
   END_STEP
 
   TRANSITION FROM Step97 TO Step100
@@ -4493,14 +4492,14 @@ PROGRAM unloadProgram
     runFrontAT1_ex(N);
   END_STEP
 
-  TRANSITION FROM Step2 TO (Step4, Step6)
+  TRANSITION FROM Step2 TO Step4
     := NOT sensorAT1_ex;
   END_TRANSITION
 
   STEP Step4:
   END_STEP
 
-  TRANSITION FROM Step4 TO Step3
+  TRANSITION FROM Step4 TO (Step3, Step6)
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -4670,6 +4669,7 @@ PROGRAM unloadProgram
 
   STEP Step6:
     warehouseBusy(R);
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step6 TO Step0
@@ -4694,14 +4694,14 @@ PROGRAM unloadProgram
     runFrontAT1_ex(N);
   END_STEP
 
-  TRANSITION FROM Step46 TO (Step28, Step30)
+  TRANSITION FROM Step46 TO Step28
     := NOT sensorAT1_ex;
   END_TRANSITION
 
   STEP Step28:
   END_STEP
 
-  TRANSITION FROM Step28 TO Step27
+  TRANSITION FROM Step28 TO (Step27, Step30)
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -4886,6 +4886,7 @@ PROGRAM unloadProgram
 
   STEP Step30:
     warehouseBusy(R);
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step30 TO Step0
@@ -4910,14 +4911,14 @@ PROGRAM unloadProgram
     runFrontAT1_ex(N);
   END_STEP
 
-  TRANSITION FROM Step58 TO (Step57, Step60)
+  TRANSITION FROM Step58 TO Step57
     := NOT sensorAT1_ex;
   END_TRANSITION
 
   STEP Step57:
   END_STEP
 
-  TRANSITION FROM Step57 TO Step56
+  TRANSITION FROM Step57 TO (Step56, Step60)
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -5110,6 +5111,7 @@ PROGRAM unloadProgram
 
   STEP Step60:
     warehouseBusy(R);
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step60 TO Step0
