@@ -253,7 +253,7 @@ public class SendOrder extends Modbus implements Runnable {
 						while (true) {
 							//delay to compensate for real time vs plc time
 							try {
-								sleep(100);
+								sleep(1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -261,7 +261,7 @@ public class SendOrder extends Modbus implements Runnable {
 							reset();
 							//delay
 							try {
-								sleep(100);
+								sleep(1000);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -626,7 +626,7 @@ public class SendOrder extends Modbus implements Runnable {
 								//Sleep for power saving purposes
 								//System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
 								try {
-									sleep(500);
+									sleep(5000);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
