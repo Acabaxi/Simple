@@ -24,6 +24,7 @@ public class Main{
     public static final SendOrder sendOrder = new SendOrder();
     public static boolean startedUdp = false;
     public static Stock stock = new Stock();
+    public static Sorting sorting = new Sorting();
 
     public static void main(String args[]) throws Exception {
 
@@ -85,8 +86,7 @@ public class Main{
     }
 
     public void CheckOrders(UDPServer server){
-    	Sorting s = new Sorting();
-    	s.insertionSort(ordersReceived);
+    	sorting.insertionSort(ordersReceived);
         Order o1 = null;
         if (!ordersReceived.isEmpty()) {
             System.out.println(ordersReceived.size() + " orders");

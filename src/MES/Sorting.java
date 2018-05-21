@@ -97,4 +97,25 @@ public class Sorting {
 		default: return false;
 		}
 	}
+	
+	public boolean hasPieces(Order o) {
+		switch(o.getDo()) {
+		case "T":
+			Transform t = (Transform)o;
+			if (Main.stock.getQuantity(t.getFrom()) > 0)
+				return true;
+			else return false;
+		case "M":
+			Mount m = (Mount)o;
+			if (Main.stock.getQuantity(m.getTop()) > 0 && Main.stock.getQuantity(m.getBottom()) > 0)
+				return true;
+			else return false;
+		case "U":
+			Unload u = (Unload)o;
+			if (Main.stock.getQuantity(u.getType()) > 0)
+				return true;
+			else return false;
+		default: return false;
+		}
+	}
 }

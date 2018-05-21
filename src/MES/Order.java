@@ -9,7 +9,8 @@ public class Order {
     private Date timeReceived;
     private Date timeSent;
     private Date timeFinished;
-    
+    private boolean pending = false;
+    private boolean executing = false;    
 
     public Order(String number, String type){
         this.number = number;
@@ -84,5 +85,21 @@ public class Order {
     		return t.makeCopy();
     	default: return null;
     	}
+    }
+    
+    public void setPending(boolean p) {
+    	this.pending = p;
+    }
+    
+    public void setExecuting(boolean e) {
+    	this.executing = e;
+    }
+    
+    public boolean getPending() {
+    	return this.pending;
+    }
+    
+    public boolean getExecuting() {
+    	return this.executing;
     }
 }

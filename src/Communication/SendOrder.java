@@ -119,8 +119,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 	public boolean checkCell(int numberOfCell){
 		int cell = 0;
-		int val = numberOfCell - 1;
-		reqCell1State = new ReadCoilsRequest(val, 1);
+		reqCell1State = new ReadCoilsRequest(numberOfCell, 1);
 		trans.setRequest(reqCell1State);
 		try {
 			trans.execute();
@@ -134,8 +133,63 @@ public class SendOrder extends Modbus implements Runnable {
 		else return false;
 	}
 		
-	private Order getFirstOrder() {
-		
+	private Order getOrder() {
+		Vector<Order> v = Main.ordersReceived;
+		Main.sorting.insertionSort(v);
+		for(int i = 0; i < v.size(); i++) {
+			Order o = v.get(i);
+			if(!Main.sorting.hasPieces(o))
+				continue;
+			switch(o.getMachine()) {
+			case "no":
+				if(!o.getExecuting()) {
+					Date d = new Date();
+					o.setTimeSent(d);
+					o.setExecuting(true);
+				}
+				return o;
+			case "claw":
+				if(this.checkCell(3)) {
+					if(!o.getExecuting()) {
+						Date d = new Date();
+						o.setTimeSent(d);
+						o.setExecuting(true);
+					}
+					return o;
+				}
+				break;	
+			case "a":
+				if(this.checkCell(0) || this.checkCell(1)) {
+					if(!o.getExecuting()) {
+						Date d = new Date();
+						o.setTimeSent(d);
+						o.setExecuting(true);
+					}
+					return o;
+				}
+				break;
+			case "b":
+				if(this.checkCell(2)) {
+					if(!o.getExecuting()) {
+						Date d = new Date();
+						o.setTimeSent(d);
+						o.setExecuting(true);
+					}
+					return o;
+				}
+				break;
+			case "c":
+				if(this.checkCell(0) || this.checkCell(1) || this.checkCell(2)) {
+					if(!o.getExecuting()) {
+						Date d = new Date();
+						o.setTimeSent(d);
+						o.setExecuting(true);
+					}
+					return o;
+				}
+				break;
+			}
+		}
 		return null;
 	}
 
@@ -150,8 +204,6 @@ public class SendOrder extends Modbus implements Runnable {
 					e.printStackTrace();
 				}
 				while (true) {
-					Order order = null;
-
 					//1 s delay to compensate for real time vs plc time
 					try {
 						sleep(1000);
@@ -181,10 +233,9 @@ public class SendOrder extends Modbus implements Runnable {
 
 					//if it can receive orders
 					if(idle == 0) {
+						Order order = getOrder();
 						//Check if there are orders
-						if (!Main.ordersReceived.isEmpty()) {
-							//Get the first order on vector
-							order = Main.ordersReceived.get(0);
+						if (order != null) {
 							//Send transform order based on transform priority (faster orders first)
 							if (order.getDo().equals("T")) {
 								Transform transform = (Transform) order;
@@ -227,19 +278,19 @@ public class SendOrder extends Modbus implements Runnable {
 									}
 									//50 ms for line to respond
 									try {
-
 										sleep(50);
 									} catch (InterruptedException e) {
 										e.printStackTrace();
 									}
 
-									//Choose place where to transform Cell 1, 2 or 3
+									//Choose place where to transform Cell 1, 2 or 3s
 
 									//decrease quantity
 									transform.decreaseQuantity();
 									Main.stock.increaseQuantity(transform.getTo());
 									//Remove order if quantity equals zero
 									if (transform.getQuantity() == 0) {
+										//TODO send to DB
 										Main.ordersReceived.remove(transform);
 									}
 									//50 ms for line to respond
