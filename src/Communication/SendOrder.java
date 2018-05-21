@@ -261,12 +261,10 @@ public class SendOrder extends Modbus implements Runnable {
 							reset();
 							// 0.5s for line to respond
 							try {
-
 								sleep(500);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-
 
 							//Check if load order is on the line to manage Stock
 							reqLoadP1 = new ReadCoilsRequest(9, 1);
