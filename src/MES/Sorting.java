@@ -7,7 +7,7 @@ public class Sorting {
 	public Sorting() {}
 	
 	public void insertionSort(Vector<Order> v) {
-		System.out.println(v.size());
+		//System.out.println(v.size());
 	    for (int p = 1; p < v.size(); p++)
 	    {
 	    	if(p > 5) break;

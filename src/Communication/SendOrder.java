@@ -7,17 +7,34 @@ import net.wimpi.modbus.msg.*;
 import net.wimpi.modbus.net.TCPMasterConnection;
 import net.wimpi.modbus.procimg.SimpleRegister;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
 public class SendOrder extends Modbus implements Runnable {
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_RESET = "\u001B[0m";
+
 	private ModbusTCPTransaction trans = null; // the transaction
 	private WriteCoilRequest unLoadCommand = null; // the request
+	private WriteCoilRequest runCell1 = null;
+	private WriteCoilRequest runCell2 = null;
+	private WriteCoilRequest runCell3 = null;
+
 	private ReadCoilsRequest reqIdleState = null;
 	private ReadCoilsRequest reqCell1State = null;
 	private ReadCoilsRequest reqCell2State = null;
 	private ReadCoilsRequest reqCell3State = null;
+
+	private ReadCoilsRequest reqLoadP1 = null;
+	private ReadCoilsRequest reqLoadP2 = null;
+	private ReadCoilsResponse resLoadP1 = null;
+	private ReadCoilsResponse resLoadP2 = null;
+	private int loadP1 = 0;
+	private int reLoadP1 = 0;
+	private int loadP2 = 0;
+	private int reLoadP2 = 0;
 
 
 	private WriteSingleRegisterRequest unLoadDestination = null;
@@ -115,6 +132,27 @@ public class SendOrder extends Modbus implements Runnable {
 		} catch (ModbusException e) {
 			e.printStackTrace();
 		}
+		runCell1 = new WriteCoilRequest(2, false);
+		trans.setRequest(runCell1);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		runCell2 = new WriteCoilRequest(3, false);
+		trans.setRequest(runCell2);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		runCell3 = new WriteCoilRequest(4, false);
+		trans.setRequest(runCell3);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean checkCell(int numberOfCell){
@@ -128,8 +166,7 @@ public class SendOrder extends Modbus implements Runnable {
 		}
 		respCell1State = (ReadCoilsResponse)trans.getResponse();
 		cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
-
-		if (cell == 1) return true;
+		if (cell == 0) return true;
 		else return false;
 	}
 		
@@ -138,8 +175,8 @@ public class SendOrder extends Modbus implements Runnable {
 		Main.sorting.insertionSort(v);
 		for(int i = 0; i < v.size(); i++) {
 			Order o = v.get(i);
-			if(!Main.sorting.hasPieces(o))
-				continue;
+			//if(!Main.sorting.hasPieces(o))
+				//continue;
 			switch(o.getMachine()) {
 			case "no":
 				if(!o.getExecuting()) {
@@ -149,7 +186,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				return o;
 			case "claw":
-				if(this.checkCell(3)) {
+				if(this.checkCell(8)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -159,7 +196,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;	
 			case "a":
-				if(this.checkCell(0) || this.checkCell(1)) {
+				if(this.checkCell(5) || this.checkCell(6)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -169,7 +206,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;
 			case "b":
-				if(this.checkCell(2)) {
+				if(this.checkCell(7)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -179,7 +216,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;
 			case "c":
-				if(this.checkCell(0) || this.checkCell(1) || this.checkCell(2)) {
+				if(this.checkCell(5) || this.checkCell(6) || this.checkCell(7)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -206,7 +243,7 @@ public class SendOrder extends Modbus implements Runnable {
 				while (true) {
 					//1 s delay to compensate for real time vs plc time
 					try {
-						sleep(1000);
+						sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -219,6 +256,41 @@ public class SendOrder extends Modbus implements Runnable {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+
+
+					//Check if load order is on the line to manage Stock
+					reqLoadP1 = new ReadCoilsRequest(9,1);
+					trans.setRequest(reqLoadP1);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					resLoadP1 = (ReadCoilsResponse)trans.getResponse();
+					loadP1 = Integer.parseInt(resLoadP1.getCoils().toString().trim());
+					reqLoadP2 = new ReadCoilsRequest(10, 1);
+					trans.setRequest(reqLoadP2);
+					try {
+						trans.execute();
+					} catch (ModbusException e) {
+						e.printStackTrace();
+					}
+					resLoadP2 = (ReadCoilsResponse)trans.getResponse();
+					loadP2 = Integer.parseInt(resLoadP2.getCoils().toString().trim());
+
+					if(loadP1 == 1){
+						if(loadP1 != reLoadP1) {
+							Main.stock.increaseQuantity("P1");
+						}
+					}
+					reLoadP1 = loadP1;
+
+					if(loadP2 == 1){
+						if(loadP2 != reLoadP2) {
+							Main.stock.increaseQuantity("P2");
+						}
+					}
+					reLoadP2 = loadP2;
 
 					//check if line can receive orders
 					reqIdleState = new ReadCoilsRequest(0, 1);
@@ -233,13 +305,15 @@ public class SendOrder extends Modbus implements Runnable {
 
 					//if it can receive orders
 					if(idle == 0) {
-						Order order = getOrder();
+						    System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
+							Order order = getOrder();
+							System.out.println(ANSI_BLUE + "Order " + order.getNumber() + ANSI_RESET); //Null if order transform
 						//Check if there are orders
 						if (order != null) {
 							//Send transform order based on transform priority (faster orders first)
 							if (order.getDo().equals("T")) {
-								Transform transform = (Transform) order;
-								System.out.println("Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity());
+								Transform transform = (Transform)order;
+								System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 
 								String orderFrom = transform.getFrom();
 								int valFrom = Integer.parseInt((orderFrom.substring(1)));
@@ -284,6 +358,110 @@ public class SendOrder extends Modbus implements Runnable {
 									}
 
 									//Choose place where to transform Cell 1, 2 or 3s
+									String machine = transform.getMachine();
+									switch(machine) {
+									case "b":
+										//send it to cell 3
+										runCell3 = new WriteCoilRequest(4, true);
+										trans.setRequest(runCell3);
+										try {
+											trans.execute();
+										} catch (ModbusException e) {
+											e.printStackTrace();
+										}
+										//20 ms for line to respond
+										try {
+											sleep(20);
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
+										break;
+									case "a":
+										if(checkCell(6)) {
+											//send to cell 2
+											runCell2 = new WriteCoilRequest(3, true);
+											trans.setRequest(runCell2);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+										
+										else {
+											//send to cell 1
+											runCell1 = new WriteCoilRequest(2, true);
+											trans.setRequest(runCell1);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+										break;
+									case "c":
+										if(checkCell(7)) {
+											//send to cell 3
+											runCell3 = new WriteCoilRequest(4, true);
+											trans.setRequest(runCell3);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+										else if(checkCell(6)) {
+											//send to cell 2
+											runCell2 = new WriteCoilRequest(3, true);
+											trans.setRequest(runCell2);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+										else {
+											//send to cell 1
+											runCell1 = new WriteCoilRequest(2, true);
+											trans.setRequest(runCell1);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+										}
+										break;
+									}
 
 									//decrease quantity
 									transform.decreaseQuantity();
@@ -304,7 +482,7 @@ public class SendOrder extends Modbus implements Runnable {
 							//Check if there are unload orders on queue to send
 							else if (order.getDo().equals("U")) {
 								Unload unLoad = (Unload) order;
-								System.out.println("Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity());
+								System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
 
 								String orderType = unLoad.getType();
 								int valT = Integer.parseInt(orderType.substring(1));
@@ -375,7 +553,7 @@ public class SendOrder extends Modbus implements Runnable {
 								Mount mount = (Mount) order;
 								Main.stock.decreaseQuantity(mount.getBottom());
 								Main.stock.decreaseQuantity(mount.getTop());
-								System.out.println("Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity());
+								System.out.println(ANSI_BLUE + "Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity() + ANSI_RESET);
 
 								String orderType = mount.getBottom();
 								int valBot = Integer.parseInt(orderType.substring(1));
@@ -421,8 +599,6 @@ public class SendOrder extends Modbus implements Runnable {
 										e.printStackTrace();
 									}
 
-									//Send destination zone
-
 									//Send command to PLC mount
 
 									//Decrease quantity
@@ -438,13 +614,13 @@ public class SendOrder extends Modbus implements Runnable {
 				//if it can't receive orders
 				else if(idle == 1){
 					//Sleep for 5 seconds
+						System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
 					try {
-						sleep(5000);
+						sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-
 			}
 		}
 	};
