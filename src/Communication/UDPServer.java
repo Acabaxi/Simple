@@ -3,6 +3,8 @@ package Communication;
 import MES.*;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -71,6 +73,18 @@ public class UDPServer implements Runnable{
                 }
 
                 //Send response xml in case request storage to same ip and port
+                /*
+                byte[] response = new byte[2048];
+                String path = "/home/sobaca/Downloads/stores.xml";
+                try {
+                    FileOutputStream FOS = new FileOutputStream(path);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                DatagramPacket send = new DatagramPacket(response, response.length);
+                */
+
 
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
