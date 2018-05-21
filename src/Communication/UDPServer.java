@@ -5,6 +5,7 @@ import MES.*;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
+import MES.Order;
 
 public class UDPServer implements Runnable{
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -67,6 +68,10 @@ public class UDPServer implements Runnable{
                 	Main.ordersReceived.add(o);
                 	Main.sorting.insertionSort(Main.ordersReceived);
                 }
+
+                //Send response xml in case request storage to same ip and port
+                
+
                 //Order o1 = Main.ordersReceived.peek();
                 //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
                 //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
