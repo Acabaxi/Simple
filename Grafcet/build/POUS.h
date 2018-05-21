@@ -266,12 +266,12 @@ typedef struct {
   __DECLARE_VAR(INT,XPOSITION)
   TON TON3;
   TON TON4;
-  STEP __step_list[32];
+  STEP __step_list[34];
   UINT __nb_steps;
   ACTION __action_list[21];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[43];
-  __IEC_BOOL_t __debug_transition_list[43];
+  __IEC_BOOL_t __transition_list[46];
+  __IEC_BOOL_t __debug_transition_list[46];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -286,6 +286,7 @@ typedef struct {
   // FB Interface - IN, OUT, IN_OUT variables
   __DECLARE_VAR(BOOL,EN)
   __DECLARE_VAR(BOOL,ENO)
+  __DECLARE_VAR(BOOL,RECEIVEPIECE)
   __DECLARE_VAR(BOOL,REACHEDSENSOR)
   __DECLARE_VAR(BOOL,BACKSIGNAL)
   __DECLARE_VAR(BOOL,FORWARDSIGNAL)
@@ -299,12 +300,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[9];
+  STEP __step_list[10];
   UINT __nb_steps;
   ACTION __action_list[4];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[10];
-  __IEC_BOOL_t __debug_transition_list[10];
+  __IEC_BOOL_t __transition_list[12];
+  __IEC_BOOL_t __debug_transition_list[12];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -319,6 +320,7 @@ typedef struct {
   // FB Interface - IN, OUT, IN_OUT variables
   __DECLARE_VAR(BOOL,EN)
   __DECLARE_VAR(BOOL,ENO)
+  __DECLARE_VAR(BOOL,RECEIVEPIECE)
   __DECLARE_VAR(BOOL,BACKSIGNAL)
   __DECLARE_VAR(BOOL,FORWARDSIGNAL)
   __DECLARE_VAR(BOOL,READYTORECEIVE)
@@ -343,12 +345,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[22];
+  STEP __step_list[23];
   UINT __nb_steps;
   ACTION __action_list[8];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[25];
-  __IEC_BOOL_t __debug_transition_list[25];
+  __IEC_BOOL_t __transition_list[27];
+  __IEC_BOOL_t __debug_transition_list[27];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -534,6 +536,8 @@ typedef struct {
 
   // PROGRAM private variables - TEMP, private and located variables
   __DECLARE_EXTERNAL(BOOL,GANTRYBUSY_EX)
+  __DECLARE_EXTERNAL(BOOL,RECEIVEPIECEMT1_EX)
+  __DECLARE_EXTERNAL(BOOL,RECEIVEPIECEMT2_EX)
   __DECLARE_EXTERNAL(BOOL,PICKPIECE_EX)
   __DECLARE_EXTERNAL(BOOL,RELEASEPIECE_EX)
   __DECLARE_EXTERNAL(BOOL,X0Y0_EX)
@@ -549,6 +553,9 @@ typedef struct {
   LINEARCONVEYOR AT1;
   __DECLARE_EXTERNAL(BOOL,WAREHOUSEBUSY)
   __DECLARE_LOCATED(BOOL,WAREHOUSEBUSYCOMM)
+  __DECLARE_LOCATED(BOOL,CELL1BUSY)
+  __DECLARE_LOCATED(BOOL,CELL2BUSY)
+  __DECLARE_LOCATED(BOOL,CELL3BUSY)
   LINEARCONVEYOR SAT1;
   ROTARYCONVEYOR SAT2;
   LINEARCONVEYOR SBT1;
@@ -1050,6 +1057,9 @@ typedef struct {
   __DECLARE_LOCATED(BOOL,RUNTRANSFORMMACH1)
   __DECLARE_LOCATED(BOOL,RUNTRANSFORMMACH2)
   __DECLARE_LOCATED(BOOL,RUNTRANSFORMMACH3)
+  __DECLARE_LOCATED(BOOL,CELL1BUSY)
+  __DECLARE_LOCATED(BOOL,CELL2BUSY)
+  __DECLARE_LOCATED(BOOL,CELL3BUSY)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSAT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSAT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT3_EX)
@@ -1058,7 +1068,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
   STEP __step_list[78];
   UINT __nb_steps;
-  ACTION __action_list[32];
+  ACTION __action_list[35];
   UINT __nb_actions;
   __IEC_BOOL_t __transition_list[78];
   __IEC_BOOL_t __debug_transition_list[78];
@@ -1076,6 +1086,10 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,SENSORCT6_EX)
+  __DECLARE_EXTERNAL(BOOL,RECEIVEPIECEMT1_EX)
+  __DECLARE_EXTERNAL(BOOL,RECEIVEPIECEMT2_EX)
+  __DECLARE_LOCATED(BOOL,MOUNT)
   __DECLARE_EXTERNAL(BOOL,GANTRYBUSY_EX)
   __DECLARE_EXTERNAL(BOOL,PICKPIECE_EX)
   __DECLARE_EXTERNAL(BOOL,RELEASEPIECE_EX)
@@ -1092,8 +1106,9 @@ typedef struct {
   __DECLARE_LOCATED(INT,WAREHOUSEIN)
   __DECLARE_LOCATED(BOOL,SENSORAT1)
   __DECLARE_LOCATED(INT,PM)
-  __DECLARE_LOCATED(INT,INITIALPIECE)
-  __DECLARE_LOCATED(INT,FINALPIECE)
+  __DECLARE_LOCATED(INT,BOTTOMPIECE)
+  __DECLARE_LOCATED(INT,TOPPIECE)
+  __DECLARE_VAR(INT,PIECETOUNLOAD)
   __DECLARE_EXTERNAL(BOOL,WAREHOUSEBUSY)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTAT1_EX)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTSAT1_EX)
@@ -1172,12 +1187,12 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[9];
+  STEP __step_list[54];
   UINT __nb_steps;
-  ACTION __action_list[4];
+  ACTION __action_list[24];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[8];
-  __IEC_BOOL_t __debug_transition_list[8];
+  __IEC_BOOL_t __transition_list[53];
+  __IEC_BOOL_t __debug_transition_list[53];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -1257,6 +1272,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,SENSORCT2_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT4_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT5_EX)
+  __DECLARE_EXTERNAL(BOOL,SENSORCT6_EX)
   __DECLARE_EXTERNAL(BOOL,PUSHTOROLLCT4_EX)
   __DECLARE_EXTERNAL(BOOL,PUSHTOROLLCT5_EX)
   __DECLARE_EXTERNAL(BOOL,PUSHTOROLLCT6_EX)
@@ -1275,12 +1291,12 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[84];
+  STEP __step_list[85];
   UINT __nb_steps;
   ACTION __action_list[19];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[86];
-  __IEC_BOOL_t __debug_transition_list[86];
+  __IEC_BOOL_t __transition_list[87];
+  __IEC_BOOL_t __debug_transition_list[87];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
