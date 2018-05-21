@@ -315,7 +315,6 @@ public class SendOrder extends Modbus implements Runnable {
 							if (idle == 0) {
 								System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
 								Order order = getOrder();
-								System.out.println(ANSI_BLUE + "Order " + order.getNumber() + ANSI_RESET); //Null if order transform
 								//Check if there are orders
 								if (order != null) {
 									//Send transform order based on transform priority (faster orders first)
