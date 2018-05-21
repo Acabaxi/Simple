@@ -13,16 +13,15 @@ import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 public class Main{
-
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLUE = "\u001B[34m";
-
 
     public static Vector<Order> ordersReceived = new Vector<>();
     public static final Modbus modbus = new Modbus();
     public static final SendOrder sendOrder = new SendOrder();
     public static boolean startedUdp = false;
+    public static boolean startedSendOrders = false;
     public static Stock stock = new Stock();
     public static Sorting sorting = new Sorting();
 
@@ -35,7 +34,6 @@ public class Main{
         	String type = "P" + i;
         	m.stock.setQuantity(type, 20);
         }
-
         //end of block
         m.MainMenu(server);
     }
@@ -56,7 +54,7 @@ public class Main{
                     break;
             }
         }
-        else {
+        else if (!startedSendOrders){
             System.out.println("1 - Check Orders");
             System.out.println("2 - Send Orders");
 
@@ -72,6 +70,25 @@ public class Main{
                         MainMenu(server);
                         break;
             }
+        }
+
+        else if(startedSendOrders && startedUdp){
+            System.out.println("1 - Check Orders");
+
+            String resp = ss.next();
+            switch (resp) {
+                case "1":
+                    CheckOrders(server);
+                    break;
+                default: System.out.println("Wrong option");
+                    MainMenu(server);
+                    break;
+            }
+        }
+
+        else{
+            System.out.println("1 - Check Orders");
+
         }
     }
     public void ControlUDP(UDPServer server){
@@ -130,6 +147,7 @@ public class Main{
         try {
             System.out.println(ANSI_BLUE + "Sending Orders" + ANSI_RESET);
             sendOrder.SendLoop();
+            startedSendOrders = true;
         } catch (Exception e) {
             e.printStackTrace();
         }

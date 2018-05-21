@@ -34,6 +34,10 @@ public class Parser {
                         String qName = startElement.getName().getLocalPart();
                         
                         if(qName.equalsIgnoreCase("Request_Stores")) {
+                            //create new object request stores
+                            //use that object in udp connection
+                            //if the object is not null send the created xml response in location downloads
+                            //after sending delete xml and delete the object
                         	CreateXML.CreateResponse();
                             return null;
                         }
