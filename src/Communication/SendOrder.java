@@ -258,10 +258,10 @@ public class SendOrder extends Modbus implements Runnable {
 								e.printStackTrace();
 							}
 							//Reset coils and registers written
-							reset();
+							//reset();
 							//delay
 							try {
-								sleep(1000);
+								sleep(500);
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
@@ -313,7 +313,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 							//if it can receive orders
 							if (idle == 0) {
-								//System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
+								System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
 								Order order = getOrder();
 								//Check if there are orders
 								if (order != null) {
@@ -624,9 +624,9 @@ public class SendOrder extends Modbus implements Runnable {
 							//if it can't receive orders
 							else if (idle == 1) {
 								//Sleep for power saving purposes
-								//System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
+								System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
 								try {
-									sleep(5000);
+									sleep(2000);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
