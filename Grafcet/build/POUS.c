@@ -10061,7 +10061,7 @@ void TRANSFORMPROGRAM_init__(TRANSFORMPROGRAM *data__, BOOL retain) {
   __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
   __INIT_LOCATED_VALUE(data__->PM,0)
-  __INIT_LOCATED(INT,__IW0_1_1_0,data__->INITIALPIECE,retain)
+  __INIT_LOCATED(INT,__IW0_1_1_4,data__->INITIALPIECE,retain)
   __INIT_LOCATED_VALUE(data__->INITIALPIECE,0)
   __INIT_LOCATED(INT,__IW0_1_1_3,data__->FINALPIECE,retain)
   __INIT_LOCATED_VALUE(data__->FINALPIECE,0)
@@ -12337,8 +12337,7 @@ void TRANSFORMPROGRAM_body__(TRANSFORMPROGRAM *data__) {
     char activated = active && !data__->STEP133.prev_state;
     char desactivated = !active && data__->STEP133.prev_state;
 
-    if (active)       {__SET_VAR(data__->,__action_list[__SFC_ACTION0].state,,1);};
-    if (desactivated) {__SET_VAR(data__->,__action_list[__SFC_ACTION0].state,,0);};
+    if (active)       {data__->__action_list[__SFC_ACTION0].set = 1;}
 
     if (active)       {data__->__action_list[__SFC_RUNTRANSFORMMACH3].reset = 1;}
 
@@ -14144,7 +14143,7 @@ void GANTRYPROGRAM_init__(GANTRYPROGRAM *data__, BOOL retain) {
   __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
   __INIT_LOCATED_VALUE(data__->PM,0)
-  __INIT_LOCATED(INT,__IW0_1_1_0,data__->BOTTOMPIECE,retain)
+  __INIT_LOCATED(INT,__IW0_1_1_5,data__->BOTTOMPIECE,retain)
   __INIT_LOCATED_VALUE(data__->BOTTOMPIECE,0)
   __INIT_LOCATED(INT,__IW0_1_1_1,data__->TOPPIECE,retain)
   __INIT_LOCATED_VALUE(data__->TOPPIECE,0)

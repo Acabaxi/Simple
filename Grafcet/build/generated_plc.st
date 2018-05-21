@@ -2791,7 +2791,7 @@ PROGRAM transformProgram
     warehouseIn AT %IW0.0.2.0 : INT;
     sensorAT1 AT %IX0.0.0.0 : BOOL;
     PM AT %IW0.1.1.2 : INT;
-    initialPiece AT %IW0.1.1.0 : INT;
+    initialPiece AT %IW0.1.1.4 : INT;
     finalPiece AT %IW0.1.1.3 : INT;
     warehouseBusy AT %QX0.1.0.0 : BOOL;
   END_VAR
@@ -3273,7 +3273,7 @@ PROGRAM transformProgram
   END_TRANSITION
 
   STEP Step133:
-    action0(N);
+    action0(S);
     runTransformMach3(R);
     warehouseBusy(S);
     cell3Busy(S);
@@ -3893,7 +3893,7 @@ PROGRAM gantryProgram
     warehouseIn AT %IW0.0.2.0 : INT;
     sensorAT1 AT %IX0.0.0.0 : BOOL;
     PM AT %IW0.1.1.2 : INT;
-    bottomPiece AT %IW0.1.1.0 : INT;
+    bottomPiece AT %IW0.1.1.5 : INT;
     topPiece AT %IW0.1.1.1 : INT;
   END_VAR
   VAR

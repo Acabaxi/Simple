@@ -435,5 +435,7 @@ u16 *__IX0_1_0_0 = &server_nodes[0].mem_area.rw_bits[0];
 u16 *__IW0_1_1_0 = &server_nodes[0].mem_area.rw_words[0];
 u16 *__IW0_1_1_3 = &server_nodes[0].mem_area.rw_words[3];
 u16 *__IW0_1_1_2 = &server_nodes[0].mem_area.rw_words[2];
+u16 *__IW0_1_1_4 = &server_nodes[0].mem_area.rw_words[4];
+u16 *__IW0_1_1_5 = &server_nodes[0].mem_area.rw_words[5];
 u16 *__IW0_1_1_1 = &server_nodes[0].mem_area.rw_words[1];
 
