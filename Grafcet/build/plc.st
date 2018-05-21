@@ -4972,7 +4972,7 @@ PROGRAM unloadProgram
   STEP Step28:
   END_STEP
 
-  TRANSITION FROM Step28 TO Step27
+  TRANSITION FROM Step28 TO (Step27, Step30)
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -4980,7 +4980,7 @@ PROGRAM unloadProgram
     runFrontSaT2_ex(N);
   END_STEP
 
-  TRANSITION FROM Step27 TO (Step29, Step30)
+  TRANSITION FROM Step27 TO Step29
     := not sensorSaT1_ex;
   END_TRANSITION
 
@@ -5189,7 +5189,7 @@ PROGRAM unloadProgram
   STEP Step57:
   END_STEP
 
-  TRANSITION FROM Step57 TO Step56
+  TRANSITION FROM Step57 TO (Step56, Step60)
     := sensorSaT1_ex;
   END_TRANSITION
 
@@ -5197,7 +5197,7 @@ PROGRAM unloadProgram
     runFrontSaT2_ex(N);
   END_STEP
 
-  TRANSITION FROM Step56 TO (Step59, Step60)
+  TRANSITION FROM Step56 TO Step59
     := not sensorSaT1_ex;
   END_TRANSITION
 

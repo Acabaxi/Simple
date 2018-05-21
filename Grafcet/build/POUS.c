@@ -17873,12 +17873,12 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
   if (__GET_VAR(data__->__transition_list[31])) {
     __SET_VAR(data__->,STEP27.X,,1);
     data__->STEP27.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP30.X,,1);
+    data__->STEP30.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[32])) {
     __SET_VAR(data__->,STEP29.X,,1);
     data__->STEP29.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-    __SET_VAR(data__->,STEP30.X,,1);
-    data__->STEP30.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[33])) {
     __SET_VAR(data__->,STEP31.X,,1);
@@ -17991,12 +17991,12 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
   if (__GET_VAR(data__->__transition_list[60])) {
     __SET_VAR(data__->,STEP56.X,,1);
     data__->STEP56.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP60.X,,1);
+    data__->STEP60.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[61])) {
     __SET_VAR(data__->,STEP59.X,,1);
     data__->STEP59.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-    __SET_VAR(data__->,STEP60.X,,1);
-    data__->STEP60.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[62])) {
     __SET_VAR(data__->,STEP61.X,,1);
