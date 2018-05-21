@@ -12,8 +12,15 @@ import java.net.*;
 import java.util.*;
 
 public class SendOrder extends Modbus implements Runnable {
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_RESET = "\u001B[0m";
+
 	private ModbusTCPTransaction trans = null; // the transaction
 	private WriteCoilRequest unLoadCommand = null; // the request
+	private WriteCoilRequest runCell1 = null;
+	private WriteCoilRequest runCell2 = null;
+	private WriteCoilRequest runCell3 = null;
+
 	private ReadCoilsRequest reqIdleState = null;
 	private ReadCoilsRequest reqCell1State = null;
 	private ReadCoilsRequest reqCell2State = null;
@@ -115,6 +122,27 @@ public class SendOrder extends Modbus implements Runnable {
 		} catch (ModbusException e) {
 			e.printStackTrace();
 		}
+		runCell1 = new WriteCoilRequest(2, false);
+		trans.setRequest(runCell1);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		runCell2 = new WriteCoilRequest(3, false);
+		trans.setRequest(runCell2);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		runCell3 = new WriteCoilRequest(4, false);
+		trans.setRequest(runCell3);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public boolean checkCell(int numberOfCell){
@@ -149,7 +177,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				return o;
 			case "claw":
-				if(this.checkCell(3)) {
+				if(this.checkCell(7)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -159,7 +187,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;	
 			case "a":
-				if(this.checkCell(0) || this.checkCell(1)) {
+				if(this.checkCell(5) || this.checkCell(6)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -169,7 +197,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;
 			case "b":
-				if(this.checkCell(2)) {
+				if(this.checkCell(6)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -179,7 +207,7 @@ public class SendOrder extends Modbus implements Runnable {
 				}
 				break;
 			case "c":
-				if(this.checkCell(0) || this.checkCell(1) || this.checkCell(2)) {
+				if(this.checkCell(5) || this.checkCell(6) || this.checkCell(7)) {
 					if(!o.getExecuting()) {
 						Date d = new Date();
 						o.setTimeSent(d);
@@ -204,9 +232,10 @@ public class SendOrder extends Modbus implements Runnable {
 					e.printStackTrace();
 				}
 				while (true) {
+					System.out.println(ANSI_BLUE);
 					//1 s delay to compensate for real time vs plc time
 					try {
-						sleep(1000);
+						sleep(500);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -288,25 +317,103 @@ public class SendOrder extends Modbus implements Runnable {
 									switch(machine) {
 									case "b":
 										//send it to cell 3
+										runCell3 = new WriteCoilRequest(4, true);
+										trans.setRequest(runCell3);
+										try {
+											trans.execute();
+										} catch (ModbusException e) {
+											e.printStackTrace();
+										}
+										//20 ms for line to respond
+										try {
+											sleep(20);
+										} catch (InterruptedException e) {
+											e.printStackTrace();
+										}
 										break;
 									case "a":
-										if(checkCell(1)) {
+										if(checkCell(5)) {
 											//send to cell 2
+											runCell2 = new WriteCoilRequest(3, true);
+											trans.setRequest(runCell2);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 										}
 										
 										else {
 											//send to cell 1
+											runCell1 = new WriteCoilRequest(2, true);
+											trans.setRequest(runCell1);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 										}
 										break;
 									case "c":
-										if(checkCell(2)) {
+										if(checkCell(6)) {
 											//send to cell 3
+											runCell3 = new WriteCoilRequest(4, true);
+											trans.setRequest(runCell3);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 										}
-										else if(checkCell(1)) {
+										else if(checkCell(5)) {
 											//send to cell 2
+											runCell2 = new WriteCoilRequest(3, true);
+											trans.setRequest(runCell2);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 										}
 										else {
 											//send to cell 1
+											runCell1 = new WriteCoilRequest(2, true);
+											trans.setRequest(runCell1);
+											try {
+												trans.execute();
+											} catch (ModbusException e) {
+												e.printStackTrace();
+											}
+											//20 ms for line to respond
+											try {
+												sleep(20);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 										}
 										break;
 									}
@@ -447,8 +554,6 @@ public class SendOrder extends Modbus implements Runnable {
 										e.printStackTrace();
 									}
 
-									//Send destination zone
-
 									//Send command to PLC mount
 
 									//Decrease quantity
@@ -464,13 +569,13 @@ public class SendOrder extends Modbus implements Runnable {
 				//if it can't receive orders
 				else if(idle == 1){
 					//Sleep for 5 seconds
+						System.out.println("Can't receive orders right now, press 1 to see pending orders");
 					try {
-						sleep(5000);
+						sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
 				}
-
 			}
 		}
 	};
