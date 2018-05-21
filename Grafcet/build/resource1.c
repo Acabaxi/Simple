@@ -25,6 +25,8 @@ UNLOADPROGRAM RESOURCE1__INSTANCE1;
 #define INSTANCE1 RESOURCE1__INSTANCE1
 TRANSFORMPROGRAM RESOURCE1__INSTANCE2;
 #define INSTANCE2 RESOURCE1__INSTANCE2
+LOADPROGRAM RESOURCE1__INSTANCE4;
+#define INSTANCE4 RESOURCE1__INSTANCE4
 
 void RESOURCE1_init__(void) {
   BOOL retain;
@@ -35,6 +37,7 @@ void RESOURCE1_init__(void) {
   GANTRYPROGRAM_init__(&INSTANCE3,retain);
   UNLOADPROGRAM_init__(&INSTANCE1,retain);
   TRANSFORMPROGRAM_init__(&INSTANCE2,retain);
+  LOADPROGRAM_init__(&INSTANCE4,retain);
 }
 
 void RESOURCE1_run__(unsigned long tick) {
@@ -50,6 +53,9 @@ void RESOURCE1_run__(unsigned long tick) {
   }
   if (TASK0) {
     TRANSFORMPROGRAM_body__(&INSTANCE2);
+  }
+  if (TASK0) {
+    LOADPROGRAM_body__(&INSTANCE4);
   }
 }
 

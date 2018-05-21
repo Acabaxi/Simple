@@ -2493,10 +2493,8 @@ PROGRAM factoryFloorProgram
     putPieceInSignal_ex : BOOL;
   END_VAR
   VAR
-    initialPiece AT %IW0.1.1.0 : INT := 1;
-    finalPiece AT %IW0.1.1.3 : INT := 7;
-  END_VAR
-  VAR
+    initialPiece : INT := 1;
+    finalPiece : INT := 7;
     SbT3 : Machine;
     SbT4 : LinearConveyor;
     SbT5 : Machine;
@@ -3020,6 +3018,7 @@ PROGRAM transformProgram
 
   STEP Step88:
     runFrontSaT2_ex(N);
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step88 TO Step104
@@ -3121,7 +3120,7 @@ PROGRAM transformProgram
   END_STEP
 
   TRANSITION FROM Step117 TO Step118
-    := sensorSaT7_ex;
+    := sensorSbT7_ex;
   END_TRANSITION
 
   STEP Step118:
@@ -3129,7 +3128,7 @@ PROGRAM transformProgram
   END_STEP
 
   TRANSITION FROM Step118 TO Step121
-    := not sensorSaT7_ex;
+    := not sensorSbT7_ex;
   END_TRANSITION
 
   STEP Step121:
@@ -3220,6 +3219,7 @@ PROGRAM transformProgram
 
   STEP Step126:
     runFrontSaT2_ex(N);
+    warehouseBusy(R);
   END_STEP
 
   TRANSITION FROM Step126 TO Step128
@@ -3381,7 +3381,7 @@ PROGRAM transformProgram
   END_STEP
 
   TRANSITION FROM Step153 TO Step154
-    := sensorSaT7_ex;
+    := sensorSbT7_ex;
   END_TRANSITION
 
   STEP Step154:
@@ -3389,7 +3389,7 @@ PROGRAM transformProgram
   END_STEP
 
   TRANSITION FROM Step154 TO Step156
-    := not sensorSaT7_ex;
+    := not sensorSbT7_ex;
   END_TRANSITION
 
   STEP Step156:
@@ -3443,6 +3443,305 @@ PROGRAM transformProgram
   TRANSITION FROM Step160 TO machineTransform3
     := true;
   END_TRANSITION
+
+END_PROGRAM
+
+PROGRAM loadProgram
+  VAR
+    warehouseIn AT %IW0.0.2.0 : INT;
+    sensorAT1 AT %IX0.0.0.0 : BOOL;
+    PM AT %IW0.1.1.2 : INT;
+  END_VAR
+  VAR
+    initialPiece : INT := 1;
+    finalPiece : INT := 7;
+  END_VAR
+  VAR_EXTERNAL
+    warehouseBusy : BOOL;
+    runFrontAT1_ex : BOOL;
+    runFrontSaT1_ex : BOOL;
+    runFrontSaT2_ex : BOOL;
+    runFrontSaT4_ex : BOOL;
+    runFrontSbT1_ex : BOOL;
+    runFrontSbT2_ex : BOOL;
+    runFrontSbT4_ex : BOOL;
+    runFrontScT1_ex : BOOL;
+    runFrontScT2_ex : BOOL;
+    runFrontScT4_ex : BOOL;
+    runFrontMT1_ex : BOOL;
+    runFrontMT2_ex : BOOL;
+    runBackMT5_ex : BOOL;
+    runFrontCT1_ex : BOOL;
+    runFrontCT3_ex : BOOL;
+    runFrontCT4_ex : BOOL;
+    runFrontCT5_ex : BOOL;
+    runBackSaT7_ex : BOOL;
+    runBackScT7_ex : BOOL;
+    runBackSbT7_ex : BOOL;
+    runBackSbT6_ex : BOOL;
+    runBackSaT6_ex : BOOL;
+    runBackScT6_ex : BOOL;
+    runBackCT9_ex : BOOL;
+    sendDownSaT2_ex : BOOL;
+    sendDownSbT2_ex : BOOL;
+    sendDownScT2_ex : BOOL;
+    toolPieceSaT3_ex : BOOL;
+    toolPieceSaT5_ex : BOOL;
+    toolPieceSbT3_ex : BOOL;
+    toolPieceSbT5_ex : BOOL;
+    toolPieceScT3_ex : BOOL;
+    toolPieceScT5_ex : BOOL;
+    sendDownCT2_ex : BOOL;
+    sensorAT1_ex : BOOL;
+    sensorAT2_ex : BOOL;
+    sensorSaT1_ex : BOOL;
+    sensorSaT2_ex : BOOL;
+    sensorSaT3_ex : BOOL;
+    sensorSaT4_ex : BOOL;
+    sensorSaT5_ex : BOOL;
+    sensorSaT6_ex : BOOL;
+    sensorSaT7_ex : BOOL;
+    sensorSbT1_ex : BOOL;
+    sensorSbT2_ex : BOOL;
+    sensorSbT3_ex : BOOL;
+    sensorSbT4_ex : BOOL;
+    sensorSbT5_ex : BOOL;
+    sensorSbT6_ex : BOOL;
+    sensorSbT7_ex : BOOL;
+    sensorScT1_ex : BOOL;
+    sensorScT2_ex : BOOL;
+    sensorScT3_ex : BOOL;
+    sensorScT4_ex : BOOL;
+    sensorScT5_ex : BOOL;
+    sensorScT6_ex : BOOL;
+    sensorScT7_ex : BOOL;
+    sensorMT1_ex : BOOL;
+    sensorMT2_ex : BOOL;
+    sensorCT1_ex : BOOL;
+    sensorCT2_ex : BOOL;
+    sensorCT4_ex : BOOL;
+    sensorCT5_ex : BOOL;
+    sensorCT7_ex : BOOL;
+    sensorCT8_ex : BOOL;
+    sensorCT9_ex : BOOL;
+    sensorMT6_ex : BOOL;
+    sensorMT5_ex : BOOL;
+    pushToRollCT4_ex : BOOL;
+    pushToRollCT5_ex : BOOL;
+    pushToRollCT6_ex : BOOL;
+    sendLeftDownSaT6_ex : BOOL;
+    sendLeftDownSbT6_ex : BOOL;
+    sendLeftDownScT6_ex : BOOL;
+    sendLeftDownCT8_ex : BOOL;
+    runBackCT8_ex : BOOL;
+    runBackMT6_ex : BOOL;
+    runBackCT7_ex : BOOL;
+    putPieceInSignal_ex : BOOL;
+  END_VAR
+  VAR
+    removeFromWarehouse0 : removeFromWarehouse;
+  END_VAR
+  VAR
+    runUnload AT %IX0.1.0.1 : BOOL;
+    runTransformMach1 AT %IX0.1.0.2 : BOOL;
+    runTransformMach2 AT %IX0.1.0.3 : BOOL;
+    runTransformMach3 AT %IX0.1.0.4 : BOOL;
+    cell1Busy AT %QX0.1.0.5 : BOOL;
+    cell2Busy AT %QX0.1.0.6 : BOOL;
+    cell3Busy AT %QX0.1.0.7 : BOOL;
+  END_VAR
+  VAR_EXTERNAL
+    readyToSendSaT3_ex : BOOL;
+    readyToSendSaT5_ex : BOOL;
+    readyToSendSbT3_ex : BOOL;
+    readyToSendSbT5_ex : BOOL;
+    readyToSendScT3_ex : BOOL;
+    readyToSendScT5_ex : BOOL;
+  END_VAR
+
+  INITIAL_STEP Step5:
+  END_STEP
+
+  TRANSITION FROM Step5 TO Step164
+    := sensorCT9_ex;
+  END_TRANSITION
+
+  STEP Step164:
+    runBackCT8_ex(N);
+    runBackCT9_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step164 TO Step6
+    := not sensorCT9_ex;
+  END_TRANSITION
+
+  STEP Step6:
+  END_STEP
+
+  TRANSITION FROM Step6 TO Step163
+    := sensorCT8_ex;
+  END_TRANSITION
+
+  STEP Step163:
+    runBackCT7_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step163 TO Step4
+    := not sensorCT8_ex;
+  END_TRANSITION
+
+  STEP Step4:
+  END_STEP
+
+  TRANSITION FROM Step4 TO Step162
+    := sensorCT7_ex;
+  END_TRANSITION
+
+  STEP Step162:
+    runBackMT6_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step162 TO Step3
+    := not sensorCT7_ex;
+  END_TRANSITION
+
+  STEP Step3:
+  END_STEP
+
+  TRANSITION FROM Step3 TO Step161
+    := sensorMT6_ex;
+  END_TRANSITION
+
+  STEP Step161:
+    runBackMT5_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step161 TO Step2
+    := not sensorMT6_ex;
+  END_TRANSITION
+
+  STEP Step2:
+  END_STEP
+
+  TRANSITION FROM Step2 TO Step151
+    := sensorMT5_ex;
+  END_TRANSITION
+
+  STEP Step151:
+    runBackScT6_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step151 TO Step1
+    := not sensorMT5_ex;
+  END_TRANSITION
+
+  STEP Step1:
+  END_STEP
+
+  TRANSITION FROM Step1 TO Step149
+    := sensorScT6_ex;
+  END_TRANSITION
+
+  STEP Step149:
+    runBackScT7_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step149 TO Step0
+    := not sensorScT6_ex;
+  END_TRANSITION
+
+  STEP Step0:
+  END_STEP
+
+  TRANSITION FROM Step0 TO Step147
+    := sensorScT7_ex;
+  END_TRANSITION
+
+  STEP Step147:
+    runBackSbT6_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step147 TO Step148
+    := not sensorScT7_ex;
+  END_TRANSITION
+
+  STEP Step148:
+  END_STEP
+
+  TRANSITION FROM Step148 TO Step152
+    := sensorSbT6_ex;
+  END_TRANSITION
+
+  STEP Step152:
+    runBackSbT7_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step152 TO Step153
+    := not sensorSbT6_ex;
+  END_TRANSITION
+
+  STEP Step153:
+  END_STEP
+
+  TRANSITION FROM Step153 TO Step154
+    := sensorSbT7_ex;
+  END_TRANSITION
+
+  STEP Step154:
+    runBackSaT6_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step154 TO Step156
+    := not sensorSbT7_ex;
+  END_TRANSITION
+
+  STEP Step156:
+  END_STEP
+
+  TRANSITION FROM Step156 TO Step157
+    := sensorSaT6_ex;
+  END_TRANSITION
+
+  STEP Step157:
+    runBackSaT7_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step157 TO Step150
+    := not sensorSaT6_ex;
+  END_TRANSITION
+
+  STEP Step150:
+  END_STEP
+
+  TRANSITION FROM Step150 TO Step155
+    := sensorSaT7_ex;
+  END_TRANSITION
+
+  STEP Step155:
+    putPieceInSignal_ex(N);
+    cell3Busy(R);
+  END_STEP
+
+  TRANSITION FROM Step155 TO Step158
+    := not sensorSaT7_ex;
+  END_TRANSITION
+
+  STEP Step158:
+  END_STEP
+
+  TRANSITION FROM Step158 TO Step159
+    := sensorAT2_ex;
+  END_TRANSITION
+
+  STEP Step159:
+  END_STEP
+
+  TRANSITION FROM Step159 TO Step160
+    := not sensorAT2_ex;
+  END_TRANSITION
+
+  STEP Step160:
+  END_STEP
 
 END_PROGRAM
 
@@ -4793,6 +5092,7 @@ CONFIGURATION config
     sendLeftDownSaT6_ex : BOOL;
     sendLeftDownSbT6_ex : BOOL;
     sendLeftDownScT6_ex : BOOL;
+    sendLeftDownCT8_ex : BOOL;
     sensorAT1_ex : BOOL;
     sensorSaT1_ex : BOOL;
     sensorSaT2_ex : BOOL;
@@ -4884,5 +5184,6 @@ CONFIGURATION config
     PROGRAM instance3 WITH task0 : gantryProgram;
     PROGRAM instance1 WITH task0 : unloadProgram;
     PROGRAM instance2 WITH task0 : transformProgram;
+    PROGRAM instance4 WITH task0 : loadProgram;
   END_RESOURCE
 END_CONFIGURATION
