@@ -3787,7 +3787,7 @@ PROGRAM program1
   STEP Step160:
   END_STEP
 
-  TRANSITION FROM Step160 TO machineTransform1
+  TRANSITION FROM Step160 TO machineTransform3
     := true;
   END_TRANSITION
 

@@ -11827,8 +11827,8 @@ void PROGRAM1_body__(PROGRAM1 *data__) {
     data__->STEP160.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[163])) {
-    __SET_VAR(data__->,MACHINETRANSFORM1.X,,1);
-    data__->MACHINETRANSFORM1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,MACHINETRANSFORM3.X,,1);
+    data__->MACHINETRANSFORM3.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
 
   // Steps association
