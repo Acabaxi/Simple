@@ -1,6 +1,7 @@
 package Communication;
 
 import MES.*;
+import Communication.*;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.*;
@@ -13,6 +14,7 @@ import java.net.*;
 import java.util.*;
 
 import static java.lang.Thread.sleep;
+
 
 public class SendOrder extends Modbus implements Runnable {
 	public static final String ANSI_BLUE = "\u001B[34m";
@@ -31,6 +33,8 @@ public class SendOrder extends Modbus implements Runnable {
 	private int loadP2 = 0;
 	private int reLoadP2 = 0;
 	private int idle = 0;
+
+	private int estadopecaDB = 0;
 
 	private WriteSingleRegisterRequest register = null;
 
@@ -242,39 +246,42 @@ public class SendOrder extends Modbus implements Runnable {
 											switch (machine) {
 												case "b":
 													//send it to cell 3
-													WriteCoil(4,true);
+													WriteCoil(4, true);
 													break;
 												case "a":
 													if (checkCell(6)) {
 														//send to cell 2
-														WriteCoil(3,true);
+														WriteCoil(3, true);
 													} else {
 														//send to cell 1
-														WriteCoil(2,true);
+														WriteCoil(2, true);
 													}
 													break;
 												case "c":
 													if (checkCell(7)) {
 														//send to cell 3
-														WriteCoil(4,true);
+														WriteCoil(4, true);
 													} else if (checkCell(6)) {
 														//send to cell 2
-														WriteCoil(3,true);
+														WriteCoil(3, true);
 													} else {
 														//send to cell 1
-														WriteCoil(2,true);
+														WriteCoil(2, true);
 													}
 													break;
 											}
 											sleepMethod(2000);
 											//decrease quantity
 											transform.decreaseQuantity();
+
 											Main.stock.increaseQuantity(transform.getTo());
 											System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 											System.out.println("");
 											//Remove order if quantity equals zero
 											if (transform.getQuantity() == 0) {
 												//TODO send to DB
+												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('id ordem', '')");
+												//Add time stamp end order
 												Main.ordersReceived.remove(transform);
 											}
 										}
@@ -308,6 +315,8 @@ public class SendOrder extends Modbus implements Runnable {
 											System.out.println("");
 											//Remove Order and Send completed time to data base
 											if (unLoad.getQuantity() == 0) {
+												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('2')");
+												//Add time stamp end time
 												Main.ordersReceived.remove(unLoad);
 											}
 										}

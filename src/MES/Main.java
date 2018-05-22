@@ -7,6 +7,7 @@ import Communication.SendOrder;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Vector;
@@ -31,9 +32,10 @@ public class Main{
         UDPServer server = new UDPServer(54321);
         //temporary block
         for (int i = 1; i <= 9; i++) {
-        	String type = "P" + i;
-        	m.stock.setQuantity(type, 20);
-        }
+                String type = "P" + i;
+                //Add quantity from data base
+                m.stock.setQuantity(type, 20);
+            }
         //end of block
         m.MainMenu(server);
     }
@@ -74,11 +76,14 @@ public class Main{
 
         else if(startedSendOrders && startedUdp){
             System.out.println("1 - Check Orders");
-
+            System.out.println("2 - Query Database");
             String resp = ss.next();
             switch (resp) {
                 case "1":
                     CheckOrders(server);
+                    break;
+                case "2":
+                    DataBaseQuery(server);
                     break;
                 default: System.out.println("Wrong option");
                     MainMenu(server);
@@ -92,7 +97,7 @@ public class Main{
     }
     public void ControlUDP(UDPServer server){
         try {
-            //JDBC.connect();
+            JDBC.connect();
             server.listen();
             startedUdp = true;
         } catch (Exception e) {
@@ -151,5 +156,15 @@ public class Main{
             e.printStackTrace();
         }
         MainMenu(server);
+    }
+
+    private void DataBaseQuery(UDPServer server){
+        System.out.println(ANSI_BLUE + "Select test from data base" +ANSI_RESET);
+        try {
+            String help = JDBC.queryStringReturn("SELECT n_tipo_peca FROM armazem WHERE tipo_peca = '2'", "n_tipo_peca");
+            System.out.println(help);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
     }

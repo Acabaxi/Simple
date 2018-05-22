@@ -59,6 +59,7 @@ public class UDPServer implements Runnable{
                         e.printStackTrace();
                     }
                     InetAddress IPAddress = packet.getAddress();
+                    int portaux = packet.getPort();
                     msg = new String(packet.getData()).trim();
                     Date timeReceived = new Date();
                     String[] splited = msg.split("]>");
@@ -98,7 +99,7 @@ public class UDPServer implements Runnable{
                                 }
                                 //System.out.println(list);
                                 byte[] listBuff = list.getBytes();
-                                DatagramPacket sendXML = new DatagramPacket(listBuff, listBuff.length, IPAddress, port);
+                                DatagramPacket sendXML = new DatagramPacket(listBuff, listBuff.length, IPAddress, portaux);
                                 try {
                                     udpSocket.send(sendXML);
                                 } catch (IOException e) {
