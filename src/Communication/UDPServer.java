@@ -105,11 +105,6 @@ public class UDPServer implements Runnable{
                                     e.printStackTrace();
                                 }
                             }
-
-                            //Order o1 = Main.ordersReceived.peek();
-                            //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
-                            //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
-                            //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
                         }
                     }
                 }

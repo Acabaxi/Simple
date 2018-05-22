@@ -302,7 +302,7 @@ public class SendOrder extends Modbus implements Runnable {
 											//Send unLoad command to PLC Boolean
 											WriteCoil(1,true);
 											//ms for line to receive
-											sleepMethod(2000);
+											sleepMethod(5000);
 											unLoad.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
 											System.out.println("");
@@ -353,7 +353,7 @@ public class SendOrder extends Modbus implements Runnable {
 							else if (idle == 1) {
 								//Sleep for power saving purposes
 								//System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
-								sleepMethod(1000);
+								sleepMethod(2000);
 							}
 						}
 					}
