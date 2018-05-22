@@ -99,9 +99,13 @@ public class SendOrder extends Modbus implements Runnable {
 		} catch (ModbusException e) {
 			e.printStackTrace();
 		}
-		//50 ms for line to respond
+		//250 ms for line to respond
+		sleepMethod(250);
+	}
+
+	public void sleepMethod(int timeMs){
 		try {
-			sleep(50);
+			sleep(timeMs);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -184,19 +188,13 @@ public class SendOrder extends Modbus implements Runnable {
 					if (getOrder() != null) {
 						while (true) {
 							//delay to compensate for real time vs plc time
-							try {
-								sleep(500);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-							//Reset coils and registers written
+							sleepMethod(500);
+							//Reset coils and registers needed
 							reset();
 
 							//Check if load order is on the line to manage Stock
 							loadP1 = checkCoil(9);
-
 							loadP2 = checkCoil(10);
-
 							//Rising edge mechanism
 							if (loadP1 == 1) {
 								if (loadP1 != reLoadP1) {
@@ -234,20 +232,10 @@ public class SendOrder extends Modbus implements Runnable {
 											//Write on register to tell what piece to remove from stock
 											WriteRegister(4,valFrom);
 											Main.stock.decreaseQuantity(transform.getFrom());
-											//50 ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(50);
 											//Write on register to tell what piece to transform into
 											WriteRegister(3,valTo);
-											//50 ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(50);
 
 											//Choose place where to transform Cell 1, 2 or 3s
 											String machine = transform.getMachine();
@@ -278,12 +266,7 @@ public class SendOrder extends Modbus implements Runnable {
 													}
 													break;
 											}
-											// for line to respond
-											try {
-												sleep(2000);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(2000);
 											//decrease quantity
 											transform.decreaseQuantity();
 											Main.stock.increaseQuantity(transform.getTo());
@@ -296,11 +279,7 @@ public class SendOrder extends Modbus implements Runnable {
 											}
 										}
 										//500 ms for line to respond
-										try {
-											sleep(500);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
+										sleepMethod(500);
 									}
 									//Check if there are unload orders on queue to send
 									else if (order.getDo().equals("U")) {
@@ -315,28 +294,15 @@ public class SendOrder extends Modbus implements Runnable {
 										if (unLoad.getQuantity() > 0) {
 											Main.stock.decreaseQuantity(unLoad.getType());
 											WriteRegister(0,valT);
-											// ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(250);
 											//unLoad destination zone PM1, PM2 or PM3
 											WriteRegister(2,valD);
 											// ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(50);
 											//Send unLoad command to PLC Boolean
 											WriteCoil(1,true);
 											//ms for line to receive
-											try {
-												sleep(2000);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(2000);
 											unLoad.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
 											System.out.println("");
@@ -345,12 +311,7 @@ public class SendOrder extends Modbus implements Runnable {
 												Main.ordersReceived.remove(unLoad);
 											}
 										}
-										//ms for line to receive
-										try {
-											sleep(500);
-										} catch (InterruptedException e) {
-											e.printStackTrace();
-										}
+										sleepMethod(500);
 									}
 									//Send mount commands to line
 									else if (order.getDo().equals("M")) {
@@ -367,20 +328,11 @@ public class SendOrder extends Modbus implements Runnable {
 										if (mount.getQuantity() > 0) {
 											//Write on register piece to remove from stock
 											WriteRegister(5,valBot);
-											//50 ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											//250 ms for line to respond
+											sleepMethod(250);
 											//Write on register piece for top
 											WriteRegister(1,valTop);
-											//50 ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
-											}
+											sleepMethod(250);
 
 											//Send command to PLC mount
 											WriteCoil(8,true);
@@ -401,11 +353,7 @@ public class SendOrder extends Modbus implements Runnable {
 							else if (idle == 1) {
 								//Sleep for power saving purposes
 								//System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
-								try {
-									sleep(1000);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
+								sleepMethod(1000);
 							}
 						}
 					}

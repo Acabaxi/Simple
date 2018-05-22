@@ -88,7 +88,6 @@ public class Main{
 
         else{
             System.out.println("1 - Check Orders");
-
         }
     }
     public void ControlUDP(UDPServer server){
