@@ -12,49 +12,29 @@ import java.io.IOException;
 import java.net.*;
 import java.util.*;
 
+import static java.lang.Thread.sleep;
+
 public class SendOrder extends Modbus implements Runnable {
 	public static final String ANSI_BLUE = "\u001B[34m";
 	public static final String ANSI_RESET = "\u001B[0m";
 
 	private ModbusTCPTransaction trans = null; // the transaction
-	private WriteCoilRequest unLoadCommand = null; // the request
-	private WriteCoilRequest runCell1 = null;
-	private WriteCoilRequest runCell2 = null;
-	private WriteCoilRequest runCell3 = null;
-	private WriteCoilRequest claw = null;
+	private WriteCoilRequest writeCoil = null;
 
-	private ReadCoilsRequest reqIdleState = null;
-	private ReadCoilsRequest reqCell1State = null;
-	private ReadCoilsRequest reqCell2State = null;
-	private ReadCoilsRequest reqCell3State = null;
+	private ReadCoilsRequest reqCoil = null;
+	private ReadCoilsRequest reqCellState = null;
+	private ReadCoilsResponse respCoil = null;
+	private ReadCoilsResponse respCellState = null;
 
-	private ReadCoilsRequest reqLoadP1 = null;
-	private ReadCoilsRequest reqLoadP2 = null;
-	private ReadCoilsResponse resLoadP1 = null;
-	private ReadCoilsResponse resLoadP2 = null;
 	private int loadP1 = 0;
 	private int reLoadP1 = 0;
 	private int loadP2 = 0;
 	private int reLoadP2 = 0;
+	private int idle = 0;
 
 	private WriteSingleRegisterRequest register = null;
 
-	private WriteSingleRegisterRequest unLoadDestination = null;
-	private WriteSingleRegisterRequest pieceType = null;
-	private WriteSingleRegisterRequest pieceFrom = null;
-	private WriteSingleRegisterRequest pieceBottom = null;
-	private WriteSingleRegisterRequest pieceTop = null;
-	private WriteSingleRegisterRequest pieceTo = null;
-
 	private SimpleRegister reg = new SimpleRegister(0);
-
-	private ReadCoilsResponse respIdle = null;
-	private ReadCoilsResponse respCell1State = null;
-	private ReadCoilsResponse respCell2State = null;
-	private ReadCoilsResponse respCell3State = null;
-
-
-	private int idle = 0;
 
 	private boolean runningOrders;
 
@@ -66,13 +46,7 @@ public class SendOrder extends Modbus implements Runnable {
 	}
 
 	public void reset() {
-		unLoadCommand = new WriteCoilRequest(1, false);
-		trans.setRequest(unLoadCommand);
-		try {
-			trans.execute();
-		} catch (ModbusException e) {
-			e.printStackTrace();
-		}
+		WriteCoil(1,false);
 	}
 
 	public void WriteRegister(int registerNumber, int numberToInsert){
@@ -90,17 +64,47 @@ public class SendOrder extends Modbus implements Runnable {
 
 	public boolean checkCell(int numberOfCell) {
 		int cell = 0;
-		reqCell1State = new ReadCoilsRequest(numberOfCell, 1);
-		trans.setRequest(reqCell1State);
+		reqCellState = new ReadCoilsRequest(numberOfCell, 1);
+		trans.setRequest(reqCellState);
 		try {
 			trans.execute();
 		} catch (ModbusException e) {
 			e.printStackTrace();
 		}
-		respCell1State = (ReadCoilsResponse) trans.getResponse();
-		cell = Integer.parseInt(respCell1State.getCoils().toString().trim());
+		respCellState = (ReadCoilsResponse) trans.getResponse();
+		cell = Integer.parseInt(respCellState.getCoils().toString().trim());
 		if (cell == 0) return true;
 		else return false;
+	}
+
+	public int checkCoil(int numberOfCoil){
+		int coil = 0;
+		reqCoil = new ReadCoilsRequest(numberOfCoil, 1);
+		trans.setRequest(reqCoil);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		respCoil = (ReadCoilsResponse) trans.getResponse();
+		coil = Integer.parseInt(respCoil.getCoils().toString().trim());
+		return coil;
+	}
+
+	public void WriteCoil(int numberOfCoil, boolean value){
+		writeCoil = new WriteCoilRequest(numberOfCoil, value);
+		trans.setRequest(writeCoil);
+		try {
+			trans.execute();
+		} catch (ModbusException e) {
+			e.printStackTrace();
+		}
+		//50 ms for line to respond
+		try {
+			sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private Order getOrder() {
@@ -189,25 +193,11 @@ public class SendOrder extends Modbus implements Runnable {
 							reset();
 
 							//Check if load order is on the line to manage Stock
-							reqLoadP1 = new ReadCoilsRequest(9, 1);
-							trans.setRequest(reqLoadP1);
-							try {
-								trans.execute();
-							} catch (ModbusException e) {
-								e.printStackTrace();
-							}
-							resLoadP1 = (ReadCoilsResponse) trans.getResponse();
-							loadP1 = Integer.parseInt(resLoadP1.getCoils().toString().trim());
-							reqLoadP2 = new ReadCoilsRequest(10, 1);
-							trans.setRequest(reqLoadP2);
-							try {
-								trans.execute();
-							} catch (ModbusException e) {
-								e.printStackTrace();
-							}
-							resLoadP2 = (ReadCoilsResponse) trans.getResponse();
-							loadP2 = Integer.parseInt(resLoadP2.getCoils().toString().trim());
+							loadP1 = checkCoil(9);
 
+							loadP2 = checkCoil(10);
+
+							//Rising edge mechanism
 							if (loadP1 == 1) {
 								if (loadP1 != reLoadP1) {
 									Main.stock.increaseQuantity("P1");
@@ -223,15 +213,7 @@ public class SendOrder extends Modbus implements Runnable {
 							reLoadP2 = loadP2;
 
 							//check if line can receive orders
-							reqIdleState = new ReadCoilsRequest(0, 1);
-							trans.setRequest(reqIdleState);
-							try {
-								trans.execute();
-							} catch (ModbusException e) {
-								e.printStackTrace();
-							}
-							respIdle = (ReadCoilsResponse) trans.getResponse();
-							idle = Integer.parseInt(respIdle.getCoils().toString().trim());
+							idle = checkCoil(0);
 
 							//if it can receive orders
 							if (idle == 0) {
@@ -272,99 +254,27 @@ public class SendOrder extends Modbus implements Runnable {
 											switch (machine) {
 												case "b":
 													//send it to cell 3
-													runCell3 = new WriteCoilRequest(4, true);
-													trans.setRequest(runCell3);
-													try {
-														trans.execute();
-													} catch (ModbusException e) {
-														e.printStackTrace();
-													}
-													//20 ms for line to respond
-													try {
-														sleep(20);
-													} catch (InterruptedException e) {
-														e.printStackTrace();
-													}
+													WriteCoil(4,true);
 													break;
 												case "a":
 													if (checkCell(6)) {
 														//send to cell 2
-														runCell2 = new WriteCoilRequest(3, true);
-														trans.setRequest(runCell2);
-														try {
-															trans.execute();
-														} catch (ModbusException e) {
-															e.printStackTrace();
-														}
-														//20 ms for line to respond
-														try {
-															sleep(20);
-														} catch (InterruptedException e) {
-															e.printStackTrace();
-														}
+														WriteCoil(3,true);
 													} else {
 														//send to cell 1
-														runCell1 = new WriteCoilRequest(2, true);
-														trans.setRequest(runCell1);
-														try {
-															trans.execute();
-														} catch (ModbusException e) {
-															e.printStackTrace();
-														}
-														//20 ms for line to respond
-														try {
-															sleep(20);
-														} catch (InterruptedException e) {
-															e.printStackTrace();
-														}
+														WriteCoil(2,true);
 													}
 													break;
 												case "c":
 													if (checkCell(7)) {
 														//send to cell 3
-														runCell3 = new WriteCoilRequest(4, true);
-														trans.setRequest(runCell3);
-														try {
-															trans.execute();
-														} catch (ModbusException e) {
-															e.printStackTrace();
-														}
-														//20 ms for line to respond
-														try {
-															sleep(20);
-														} catch (InterruptedException e) {
-															e.printStackTrace();
-														}
+														WriteCoil(4,true);
 													} else if (checkCell(6)) {
 														//send to cell 2
-														runCell2 = new WriteCoilRequest(3, true);
-														trans.setRequest(runCell2);
-														try {
-															trans.execute();
-														} catch (ModbusException e) {
-															e.printStackTrace();
-														}
-														//50 ms for line to respond
-														try {
-															sleep(50);
-														} catch (InterruptedException e) {
-															e.printStackTrace();
-														}
+														WriteCoil(3,true);
 													} else {
 														//send to cell 1
-														runCell1 = new WriteCoilRequest(2, true);
-														trans.setRequest(runCell1);
-														try {
-															trans.execute();
-														} catch (ModbusException e) {
-															e.printStackTrace();
-														}
-														//50 ms for line to respond
-														try {
-															sleep(50);
-														} catch (InterruptedException e) {
-															e.printStackTrace();
-														}
+														WriteCoil(2,true);
 													}
 													break;
 											}
@@ -383,12 +293,6 @@ public class SendOrder extends Modbus implements Runnable {
 											if (transform.getQuantity() == 0) {
 												//TODO send to DB
 												Main.ordersReceived.remove(transform);
-											}
-											//50 ms for line to respond
-											try {
-												sleep(50);
-											} catch (InterruptedException e) {
-												e.printStackTrace();
 											}
 										}
 										//500 ms for line to respond
@@ -413,7 +317,6 @@ public class SendOrder extends Modbus implements Runnable {
 											WriteRegister(0,valT);
 											// ms for line to respond
 											try {
-
 												sleep(50);
 											} catch (InterruptedException e) {
 												e.printStackTrace();
@@ -427,13 +330,7 @@ public class SendOrder extends Modbus implements Runnable {
 												e.printStackTrace();
 											}
 											//Send unLoad command to PLC Boolean
-											unLoadCommand = new WriteCoilRequest(1, true);
-											trans.setRequest(unLoadCommand);
-											try {
-												trans.execute();
-											} catch (ModbusException e) {
-												e.printStackTrace();
-											}
+											WriteCoil(1,true);
 											//ms for line to receive
 											try {
 												sleep(2000);
@@ -472,7 +369,6 @@ public class SendOrder extends Modbus implements Runnable {
 											WriteRegister(5,valBot);
 											//50 ms for line to respond
 											try {
-
 												sleep(50);
 											} catch (InterruptedException e) {
 												e.printStackTrace();
@@ -487,13 +383,7 @@ public class SendOrder extends Modbus implements Runnable {
 											}
 
 											//Send command to PLC mount
-											claw = new WriteCoilRequest(8, true);
-											trans.setRequest(claw);
-											try {
-												trans.execute();
-											} catch (ModbusException e) {
-												e.printStackTrace();
-											}
+											WriteCoil(8,true);
 
 											//Decrease quantity
 											mount.decreaseQuantity();
