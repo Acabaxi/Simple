@@ -3535,6 +3535,8 @@ __end:
 void ROTARYCONVEYOR_init__(ROTARYCONVEYOR *data__, BOOL retain) {
   __INIT_VAR(data__->EN,__BOOL_LITERAL(TRUE),retain)
   __INIT_VAR(data__->ENO,__BOOL_LITERAL(TRUE),retain)
+  __INIT_VAR(data__->SENDUPRIGHTSIGNAL,__BOOL_LITERAL(FALSE),retain)
+  __INIT_VAR(data__->SENDRIGHTUPSIGNAL,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->RECEIVEPIECE,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->BACKSIGNAL,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->FORWARDTIMERON,__BOOL_LITERAL(FALSE),retain)
@@ -3559,7 +3561,7 @@ void ROTARYCONVEYOR_init__(ROTARYCONVEYOR *data__, BOOL retain) {
   __INIT_VAR(data__->LEFTROTMOTOR,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->ISBUSY,__BOOL_LITERAL(FALSE),retain)
   UINT i;
-  data__->__nb_steps = 25;
+  data__->__nb_steps = 36;
   static const STEP temp_step = {{0, 0}, 0, {{0, 0}, 0}};
   for(i = 0; i < data__->__nb_steps; i++) {
     data__->__step_list[i] = temp_step;
@@ -3570,7 +3572,7 @@ void ROTARYCONVEYOR_init__(ROTARYCONVEYOR *data__, BOOL retain) {
   for(i = 0; i < data__->__nb_actions; i++) {
     data__->__action_list[i] = temp_action;
   }
-  data__->__nb_transitions = 29;
+  data__->__nb_transitions = 42;
   data__->__lasttick_time = __CURRENT_TIME;
 }
 
@@ -3597,34 +3599,56 @@ void ROTARYCONVEYOR_init__(ROTARYCONVEYOR *data__, BOOL retain) {
 #define __SFC_STEP2 9
 #define TURNOFFBACK __step_list[10]
 #define __SFC_TURNOFFBACK 10
-#define ROTATERIGHT __step_list[11]
-#define __SFC_ROTATERIGHT 11
-#define RIGHTROTATEED __step_list[12]
-#define __SFC_RIGHTROTATEED 12
-#define ROTATINGLEFT __step_list[13]
-#define __SFC_ROTATINGLEFT 13
-#define NOTBUSYBACK0 __step_list[14]
-#define __SFC_NOTBUSYBACK0 14
-#define MOVEBACKSTEP0 __step_list[15]
-#define __SFC_MOVEBACKSTEP0 15
-#define TURNOFFBACK0 __step_list[16]
-#define __SFC_TURNOFFBACK0 16
-#define MOVEFRONT0 __step_list[17]
-#define __SFC_MOVEFRONT0 17
-#define ROTATINGRIGHT __step_list[18]
-#define __SFC_ROTATINGRIGHT 18
-#define NOTBUSYFRONT0 __step_list[19]
-#define __SFC_NOTBUSYFRONT0 19
-#define MOVEFRONTSTEP0 __step_list[20]
-#define __SFC_MOVEFRONTSTEP0 20
-#define TURNOFFFRONT0 __step_list[21]
-#define __SFC_TURNOFFFRONT0 21
-#define RESETROTATE __step_list[22]
-#define __SFC_RESETROTATE 22
-#define RESETDONER __step_list[23]
-#define __SFC_RESETDONER 23
-#define MOVEFRONT1 __step_list[24]
-#define __SFC_MOVEFRONT1 24
+#define ROTATERIGHT1 __step_list[11]
+#define __SFC_ROTATERIGHT1 11
+#define RIGHTROTATEED1 __step_list[12]
+#define __SFC_RIGHTROTATEED1 12
+#define NOTBUSYFRONT1 __step_list[13]
+#define __SFC_NOTBUSYFRONT1 13
+#define ROTATINGLEFT1 __step_list[14]
+#define __SFC_ROTATINGLEFT1 14
+#define STEP0 __step_list[15]
+#define __SFC_STEP0 15
+#define ROTATERIGHT0 __step_list[16]
+#define __SFC_ROTATERIGHT0 16
+#define RIGHTROTATEED0 __step_list[17]
+#define __SFC_RIGHTROTATEED0 17
+#define ROTATINGLEFT0 __step_list[18]
+#define __SFC_ROTATINGLEFT0 18
+#define NOTBUSYBACK1 __step_list[19]
+#define __SFC_NOTBUSYBACK1 19
+#define MOVEBACKSTEP1 __step_list[20]
+#define __SFC_MOVEBACKSTEP1 20
+#define TURNOFFBACK1 __step_list[21]
+#define __SFC_TURNOFFBACK1 21
+#define ROTATERIGHT __step_list[22]
+#define __SFC_ROTATERIGHT 22
+#define RIGHTROTATEED __step_list[23]
+#define __SFC_RIGHTROTATEED 23
+#define ROTATINGLEFT __step_list[24]
+#define __SFC_ROTATINGLEFT 24
+#define NOTBUSYBACK0 __step_list[25]
+#define __SFC_NOTBUSYBACK0 25
+#define MOVEBACKSTEP0 __step_list[26]
+#define __SFC_MOVEBACKSTEP0 26
+#define TURNOFFBACK0 __step_list[27]
+#define __SFC_TURNOFFBACK0 27
+#define MOVEFRONT0 __step_list[28]
+#define __SFC_MOVEFRONT0 28
+#define ROTATINGRIGHT __step_list[29]
+#define __SFC_ROTATINGRIGHT 29
+#define NOTBUSYFRONT0 __step_list[30]
+#define __SFC_NOTBUSYFRONT0 30
+#define MOVEFRONTSTEP0 __step_list[31]
+#define __SFC_MOVEFRONTSTEP0 31
+#define TURNOFFFRONT0 __step_list[32]
+#define __SFC_TURNOFFFRONT0 32
+#define RESETROTATE __step_list[33]
+#define __SFC_RESETROTATE 33
+#define RESETDONER __step_list[34]
+#define __SFC_RESETDONER 34
+#define MOVEFRONT1 __step_list[35]
+#define __SFC_MOVEFRONT1 35
 
 // Actions definitions
 #define __SFC_RESETPOSITION 0
@@ -3835,102 +3859,102 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     __SET_VAR(data__->,__transition_list[11],,0);
   }
   if (__GET_VAR(data__->INITLINEARSTEP.X)) {
-    __SET_VAR(data__->,__transition_list[12],,__GET_VAR(data__->SENDLEFTDOWNSIGNAL,));
+    __SET_VAR(data__->,__transition_list[12],,__GET_VAR(data__->SENDRIGHTUPSIGNAL,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->__transition_list[12]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->SENDLEFTDOWNSIGNAL,));
+      __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->SENDRIGHTUPSIGNAL,));
     }
     __SET_VAR(data__->,__transition_list[12],,0);
   }
-  if (__GET_VAR(data__->ROTATERIGHT.X)) {
-    __SET_VAR(data__->,__transition_list[13],,__GET_VAR(data__->SENSORROTRIGHT,));
+  if (__GET_VAR(data__->ROTATERIGHT1.X)) {
+    __SET_VAR(data__->,__transition_list[13],,__GET_VAR(data__->REACHEDSENSOR,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->__transition_list[13]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->SENSORROTRIGHT,));
+      __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->REACHEDSENSOR,));
     }
     __SET_VAR(data__->,__transition_list[13],,0);
   }
-  if (__GET_VAR(data__->RIGHTROTATEED.X)) {
-    __SET_VAR(data__->,__transition_list[14],,__GET_VAR(data__->REACHEDSENSOR,));
+  if (__GET_VAR(data__->RIGHTROTATEED1.X)) {
+    __SET_VAR(data__->,__transition_list[14],,__GET_VAR(data__->SENSORROTRIGHT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->__transition_list[14]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->REACHEDSENSOR,));
+      __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->SENSORROTRIGHT,));
     }
     __SET_VAR(data__->,__transition_list[14],,0);
   }
-  if (__GET_VAR(data__->ROTATINGLEFT.X)) {
-    __SET_VAR(data__->,__transition_list[15],,__GET_VAR(data__->SENSORROTLEFT,));
+  if (__GET_VAR(data__->NOTBUSYFRONT1.X)) {
+    __SET_VAR(data__->,__transition_list[15],,!(__GET_VAR(data__->UPNOTBUSY,)));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[15],,__GET_VAR(data__->__transition_list[15]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[15],,__GET_VAR(data__->SENSORROTLEFT,));
+      __SET_VAR(data__->,__debug_transition_list[15],,!(__GET_VAR(data__->UPNOTBUSY,)));
     }
     __SET_VAR(data__->,__transition_list[15],,0);
   }
-  if (__GET_VAR(data__->NOTBUSYBACK0.X)) {
-    __SET_VAR(data__->,__transition_list[16],,!(__GET_VAR(data__->BACKNOTBUSY,)));
+  if (__GET_VAR(data__->ROTATINGLEFT1.X)) {
+    __SET_VAR(data__->,__transition_list[16],,__GET_VAR(data__->REACHEDSENSORUP,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[16],,__GET_VAR(data__->__transition_list[16]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[16],,!(__GET_VAR(data__->BACKNOTBUSY,)));
+      __SET_VAR(data__->,__debug_transition_list[16],,__GET_VAR(data__->REACHEDSENSORUP,));
     }
     __SET_VAR(data__->,__transition_list[16],,0);
   }
-  if (__GET_VAR(data__->MOVEBACKSTEP0.X)) {
-    __SET_VAR(data__->,__transition_list[17],,__GET_VAR(data__->REACHEDSENSORBACK,));
+  if (__GET_VAR(data__->STEP0.X)) {
+    __SET_VAR(data__->,__transition_list[17],,__BOOL_LITERAL(TRUE));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[17],,__GET_VAR(data__->__transition_list[17]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[17],,__GET_VAR(data__->REACHEDSENSORBACK,));
+      __SET_VAR(data__->,__debug_transition_list[17],,__BOOL_LITERAL(TRUE));
     }
     __SET_VAR(data__->,__transition_list[17],,0);
   }
-  if (__GET_VAR(data__->TURNOFFBACK0.X)) {
-    __SET_VAR(data__->,__transition_list[18],,__BOOL_LITERAL(TRUE));
+  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
+    __SET_VAR(data__->,__transition_list[18],,__GET_VAR(data__->SENDUPRIGHTSIGNAL,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[18],,__GET_VAR(data__->__transition_list[18]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[18],,__BOOL_LITERAL(TRUE));
+      __SET_VAR(data__->,__debug_transition_list[18],,__GET_VAR(data__->SENDUPRIGHTSIGNAL,));
     }
     __SET_VAR(data__->,__transition_list[18],,0);
   }
-  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
-    __SET_VAR(data__->,__transition_list[19],,__GET_VAR(data__->SENDDOWNSIGNAL,));
+  if (__GET_VAR(data__->ROTATERIGHT0.X)) {
+    __SET_VAR(data__->,__transition_list[19],,__GET_VAR(data__->SENSORROTRIGHT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->__transition_list[19]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->SENDDOWNSIGNAL,));
+      __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->SENSORROTRIGHT,));
     }
     __SET_VAR(data__->,__transition_list[19],,0);
   }
-  if (__GET_VAR(data__->MOVEFRONT0.X)) {
+  if (__GET_VAR(data__->RIGHTROTATEED0.X)) {
     __SET_VAR(data__->,__transition_list[20],,__GET_VAR(data__->REACHEDSENSOR,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[20],,__GET_VAR(data__->__transition_list[20]));
@@ -3942,43 +3966,43 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     }
     __SET_VAR(data__->,__transition_list[20],,0);
   }
-  if (__GET_VAR(data__->ROTATINGRIGHT.X)) {
-    __SET_VAR(data__->,__transition_list[21],,__GET_VAR(data__->SENSORROTRIGHT,));
+  if (__GET_VAR(data__->ROTATINGLEFT0.X)) {
+    __SET_VAR(data__->,__transition_list[21],,__GET_VAR(data__->SENSORROTLEFT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->__transition_list[21]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->SENSORROTRIGHT,));
+      __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->SENSORROTLEFT,));
     }
     __SET_VAR(data__->,__transition_list[21],,0);
   }
-  if (__GET_VAR(data__->NOTBUSYFRONT0.X)) {
-    __SET_VAR(data__->,__transition_list[22],,!(__GET_VAR(data__->DOWNNOTBUSY,)));
+  if (__GET_VAR(data__->NOTBUSYBACK1.X)) {
+    __SET_VAR(data__->,__transition_list[22],,!(__GET_VAR(data__->FRONTNOTBUSY,)));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[22],,__GET_VAR(data__->__transition_list[22]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[22],,!(__GET_VAR(data__->DOWNNOTBUSY,)));
+      __SET_VAR(data__->,__debug_transition_list[22],,!(__GET_VAR(data__->FRONTNOTBUSY,)));
     }
     __SET_VAR(data__->,__transition_list[22],,0);
   }
-  if (__GET_VAR(data__->MOVEFRONTSTEP0.X)) {
-    __SET_VAR(data__->,__transition_list[23],,__GET_VAR(data__->REACHEDSENSORDOWN,));
+  if (__GET_VAR(data__->MOVEBACKSTEP1.X)) {
+    __SET_VAR(data__->,__transition_list[23],,__GET_VAR(data__->REACHEDSENSORFRONT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->__transition_list[23]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->REACHEDSENSORDOWN,));
+      __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->REACHEDSENSORFRONT,));
     }
     __SET_VAR(data__->,__transition_list[23],,0);
   }
-  if (__GET_VAR(data__->TURNOFFFRONT0.X)) {
+  if (__GET_VAR(data__->TURNOFFBACK1.X)) {
     __SET_VAR(data__->,__transition_list[24],,__BOOL_LITERAL(TRUE));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[24],,__GET_VAR(data__->__transition_list[24]));
@@ -3990,53 +4014,209 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     }
     __SET_VAR(data__->,__transition_list[24],,0);
   }
-  if (__GET_VAR(data__->RESETROTATE.X)) {
-    __SET_VAR(data__->,__transition_list[25],,__GET_VAR(data__->SENSORROTLEFT,));
+  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
+    __SET_VAR(data__->,__transition_list[25],,__GET_VAR(data__->SENDLEFTDOWNSIGNAL,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->__transition_list[25]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->SENSORROTLEFT,));
+      __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->SENDLEFTDOWNSIGNAL,));
     }
     __SET_VAR(data__->,__transition_list[25],,0);
   }
-  if (__GET_VAR(data__->RESETDONER.X)) {
-    __SET_VAR(data__->,__transition_list[26],,__BOOL_LITERAL(TRUE));
+  if (__GET_VAR(data__->ROTATERIGHT.X)) {
+    __SET_VAR(data__->,__transition_list[26],,__GET_VAR(data__->SENSORROTRIGHT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[26],,__GET_VAR(data__->__transition_list[26]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[26],,__BOOL_LITERAL(TRUE));
+      __SET_VAR(data__->,__debug_transition_list[26],,__GET_VAR(data__->SENSORROTRIGHT,));
     }
     __SET_VAR(data__->,__transition_list[26],,0);
   }
-  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
-    __SET_VAR(data__->,__transition_list[27],,__GET_VAR(data__->RECEIVEPIECE,));
+  if (__GET_VAR(data__->RIGHTROTATEED.X)) {
+    __SET_VAR(data__->,__transition_list[27],,__GET_VAR(data__->REACHEDSENSOR,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[27],,__GET_VAR(data__->__transition_list[27]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[27],,__GET_VAR(data__->RECEIVEPIECE,));
+      __SET_VAR(data__->,__debug_transition_list[27],,__GET_VAR(data__->REACHEDSENSOR,));
     }
     __SET_VAR(data__->,__transition_list[27],,0);
   }
-  if (__GET_VAR(data__->MOVEFRONT1.X)) {
-    __SET_VAR(data__->,__transition_list[28],,__GET_VAR(data__->REACHEDSENSOR,));
+  if (__GET_VAR(data__->ROTATINGLEFT.X)) {
+    __SET_VAR(data__->,__transition_list[28],,__GET_VAR(data__->SENSORROTLEFT,));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[28],,__GET_VAR(data__->__transition_list[28]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[28],,__GET_VAR(data__->REACHEDSENSOR,));
+      __SET_VAR(data__->,__debug_transition_list[28],,__GET_VAR(data__->SENSORROTLEFT,));
     }
     __SET_VAR(data__->,__transition_list[28],,0);
+  }
+  if (__GET_VAR(data__->NOTBUSYBACK0.X)) {
+    __SET_VAR(data__->,__transition_list[29],,!(__GET_VAR(data__->BACKNOTBUSY,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[29],,__GET_VAR(data__->__transition_list[29]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[29],,!(__GET_VAR(data__->BACKNOTBUSY,)));
+    }
+    __SET_VAR(data__->,__transition_list[29],,0);
+  }
+  if (__GET_VAR(data__->MOVEBACKSTEP0.X)) {
+    __SET_VAR(data__->,__transition_list[30],,__GET_VAR(data__->REACHEDSENSORBACK,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[30],,__GET_VAR(data__->__transition_list[30]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[30],,__GET_VAR(data__->REACHEDSENSORBACK,));
+    }
+    __SET_VAR(data__->,__transition_list[30],,0);
+  }
+  if (__GET_VAR(data__->TURNOFFBACK0.X)) {
+    __SET_VAR(data__->,__transition_list[31],,__BOOL_LITERAL(TRUE));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[31],,__GET_VAR(data__->__transition_list[31]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[31],,__BOOL_LITERAL(TRUE));
+    }
+    __SET_VAR(data__->,__transition_list[31],,0);
+  }
+  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
+    __SET_VAR(data__->,__transition_list[32],,__GET_VAR(data__->SENDDOWNSIGNAL,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[32],,__GET_VAR(data__->__transition_list[32]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[32],,__GET_VAR(data__->SENDDOWNSIGNAL,));
+    }
+    __SET_VAR(data__->,__transition_list[32],,0);
+  }
+  if (__GET_VAR(data__->MOVEFRONT0.X)) {
+    __SET_VAR(data__->,__transition_list[33],,__GET_VAR(data__->REACHEDSENSOR,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[33],,__GET_VAR(data__->__transition_list[33]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[33],,__GET_VAR(data__->REACHEDSENSOR,));
+    }
+    __SET_VAR(data__->,__transition_list[33],,0);
+  }
+  if (__GET_VAR(data__->ROTATINGRIGHT.X)) {
+    __SET_VAR(data__->,__transition_list[34],,__GET_VAR(data__->SENSORROTRIGHT,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[34],,__GET_VAR(data__->__transition_list[34]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[34],,__GET_VAR(data__->SENSORROTRIGHT,));
+    }
+    __SET_VAR(data__->,__transition_list[34],,0);
+  }
+  if (__GET_VAR(data__->NOTBUSYFRONT0.X)) {
+    __SET_VAR(data__->,__transition_list[35],,!(__GET_VAR(data__->DOWNNOTBUSY,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[35],,__GET_VAR(data__->__transition_list[35]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[35],,!(__GET_VAR(data__->DOWNNOTBUSY,)));
+    }
+    __SET_VAR(data__->,__transition_list[35],,0);
+  }
+  if (__GET_VAR(data__->MOVEFRONTSTEP0.X)) {
+    __SET_VAR(data__->,__transition_list[36],,__GET_VAR(data__->REACHEDSENSORDOWN,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[36],,__GET_VAR(data__->__transition_list[36]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[36],,__GET_VAR(data__->REACHEDSENSORDOWN,));
+    }
+    __SET_VAR(data__->,__transition_list[36],,0);
+  }
+  if (__GET_VAR(data__->TURNOFFFRONT0.X)) {
+    __SET_VAR(data__->,__transition_list[37],,__BOOL_LITERAL(TRUE));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[37],,__GET_VAR(data__->__transition_list[37]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[37],,__BOOL_LITERAL(TRUE));
+    }
+    __SET_VAR(data__->,__transition_list[37],,0);
+  }
+  if (__GET_VAR(data__->RESETROTATE.X)) {
+    __SET_VAR(data__->,__transition_list[38],,__GET_VAR(data__->SENSORROTLEFT,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[38],,__GET_VAR(data__->__transition_list[38]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[38],,__GET_VAR(data__->SENSORROTLEFT,));
+    }
+    __SET_VAR(data__->,__transition_list[38],,0);
+  }
+  if (__GET_VAR(data__->RESETDONER.X)) {
+    __SET_VAR(data__->,__transition_list[39],,__BOOL_LITERAL(TRUE));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[39],,__GET_VAR(data__->__transition_list[39]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[39],,__BOOL_LITERAL(TRUE));
+    }
+    __SET_VAR(data__->,__transition_list[39],,0);
+  }
+  if (__GET_VAR(data__->INITLINEARSTEP.X)) {
+    __SET_VAR(data__->,__transition_list[40],,__GET_VAR(data__->RECEIVEPIECE,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[40],,__GET_VAR(data__->__transition_list[40]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[40],,__GET_VAR(data__->RECEIVEPIECE,));
+    }
+    __SET_VAR(data__->,__transition_list[40],,0);
+  }
+  if (__GET_VAR(data__->MOVEFRONT1.X)) {
+    __SET_VAR(data__->,__transition_list[41],,__GET_VAR(data__->REACHEDSENSOR,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[41],,__GET_VAR(data__->__transition_list[41]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[41],,__GET_VAR(data__->REACHEDSENSOR,));
+    }
+    __SET_VAR(data__->,__transition_list[41],,0);
   }
 
   // Transitions reset steps
@@ -4080,51 +4260,90 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     __SET_VAR(data__->,INITLINEARSTEP.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[13])) {
-    __SET_VAR(data__->,ROTATERIGHT.X,,0);
+    __SET_VAR(data__->,ROTATERIGHT1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[14])) {
-    __SET_VAR(data__->,RIGHTROTATEED.X,,0);
+    __SET_VAR(data__->,RIGHTROTATEED1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[15])) {
-    __SET_VAR(data__->,ROTATINGLEFT.X,,0);
+    __SET_VAR(data__->,NOTBUSYFRONT1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[16])) {
-    __SET_VAR(data__->,NOTBUSYBACK0.X,,0);
+    __SET_VAR(data__->,ROTATINGLEFT1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[17])) {
-    __SET_VAR(data__->,MOVEBACKSTEP0.X,,0);
+    __SET_VAR(data__->,STEP0.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[18])) {
-    __SET_VAR(data__->,TURNOFFBACK0.X,,0);
+    __SET_VAR(data__->,INITLINEARSTEP.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[19])) {
-    __SET_VAR(data__->,INITLINEARSTEP.X,,0);
+    __SET_VAR(data__->,ROTATERIGHT0.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[20])) {
-    __SET_VAR(data__->,MOVEFRONT0.X,,0);
+    __SET_VAR(data__->,RIGHTROTATEED0.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[21])) {
-    __SET_VAR(data__->,ROTATINGRIGHT.X,,0);
+    __SET_VAR(data__->,ROTATINGLEFT0.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[22])) {
-    __SET_VAR(data__->,NOTBUSYFRONT0.X,,0);
+    __SET_VAR(data__->,NOTBUSYBACK1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[23])) {
-    __SET_VAR(data__->,MOVEFRONTSTEP0.X,,0);
+    __SET_VAR(data__->,MOVEBACKSTEP1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[24])) {
-    __SET_VAR(data__->,TURNOFFFRONT0.X,,0);
+    __SET_VAR(data__->,TURNOFFBACK1.X,,0);
   }
   if (__GET_VAR(data__->__transition_list[25])) {
-    __SET_VAR(data__->,RESETROTATE.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[26])) {
-    __SET_VAR(data__->,RESETDONER.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[27])) {
     __SET_VAR(data__->,INITLINEARSTEP.X,,0);
   }
+  if (__GET_VAR(data__->__transition_list[26])) {
+    __SET_VAR(data__->,ROTATERIGHT.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[27])) {
+    __SET_VAR(data__->,RIGHTROTATEED.X,,0);
+  }
   if (__GET_VAR(data__->__transition_list[28])) {
+    __SET_VAR(data__->,ROTATINGLEFT.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[29])) {
+    __SET_VAR(data__->,NOTBUSYBACK0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[30])) {
+    __SET_VAR(data__->,MOVEBACKSTEP0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[31])) {
+    __SET_VAR(data__->,TURNOFFBACK0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[32])) {
+    __SET_VAR(data__->,INITLINEARSTEP.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[33])) {
+    __SET_VAR(data__->,MOVEFRONT0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[34])) {
+    __SET_VAR(data__->,ROTATINGRIGHT.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[35])) {
+    __SET_VAR(data__->,NOTBUSYFRONT0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[36])) {
+    __SET_VAR(data__->,MOVEFRONTSTEP0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[37])) {
+    __SET_VAR(data__->,TURNOFFFRONT0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[38])) {
+    __SET_VAR(data__->,RESETROTATE.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[39])) {
+    __SET_VAR(data__->,RESETDONER.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[40])) {
+    __SET_VAR(data__->,INITLINEARSTEP.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[41])) {
     __SET_VAR(data__->,MOVEFRONT1.X,,0);
   }
 
@@ -4178,70 +4397,122 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
   if (__GET_VAR(data__->__transition_list[12])) {
+    __SET_VAR(data__->,ROTATERIGHT1.X,,1);
+    data__->ROTATERIGHT1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[13])) {
+    __SET_VAR(data__->,RIGHTROTATEED1.X,,1);
+    data__->RIGHTROTATEED1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[14])) {
+    __SET_VAR(data__->,NOTBUSYFRONT1.X,,1);
+    data__->NOTBUSYFRONT1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[15])) {
+    __SET_VAR(data__->,ROTATINGLEFT1.X,,1);
+    data__->ROTATINGLEFT1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[16])) {
+    __SET_VAR(data__->,STEP0.X,,1);
+    data__->STEP0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[17])) {
+    __SET_VAR(data__->,INITLINEARSTEP.X,,1);
+    data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[18])) {
+    __SET_VAR(data__->,ROTATERIGHT0.X,,1);
+    data__->ROTATERIGHT0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[19])) {
+    __SET_VAR(data__->,RIGHTROTATEED0.X,,1);
+    data__->RIGHTROTATEED0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[20])) {
+    __SET_VAR(data__->,ROTATINGLEFT0.X,,1);
+    data__->ROTATINGLEFT0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[21])) {
+    __SET_VAR(data__->,NOTBUSYBACK1.X,,1);
+    data__->NOTBUSYBACK1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[22])) {
+    __SET_VAR(data__->,MOVEBACKSTEP1.X,,1);
+    data__->MOVEBACKSTEP1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[23])) {
+    __SET_VAR(data__->,TURNOFFBACK1.X,,1);
+    data__->TURNOFFBACK1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[24])) {
+    __SET_VAR(data__->,INITLINEARSTEP.X,,1);
+    data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[25])) {
     __SET_VAR(data__->,ROTATERIGHT.X,,1);
     data__->ROTATERIGHT.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[13])) {
+  if (__GET_VAR(data__->__transition_list[26])) {
     __SET_VAR(data__->,RIGHTROTATEED.X,,1);
     data__->RIGHTROTATEED.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[14])) {
+  if (__GET_VAR(data__->__transition_list[27])) {
     __SET_VAR(data__->,ROTATINGLEFT.X,,1);
     data__->ROTATINGLEFT.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[15])) {
+  if (__GET_VAR(data__->__transition_list[28])) {
     __SET_VAR(data__->,NOTBUSYBACK0.X,,1);
     data__->NOTBUSYBACK0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[16])) {
+  if (__GET_VAR(data__->__transition_list[29])) {
     __SET_VAR(data__->,MOVEBACKSTEP0.X,,1);
     data__->MOVEBACKSTEP0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[17])) {
+  if (__GET_VAR(data__->__transition_list[30])) {
     __SET_VAR(data__->,TURNOFFBACK0.X,,1);
     data__->TURNOFFBACK0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[18])) {
+  if (__GET_VAR(data__->__transition_list[31])) {
     __SET_VAR(data__->,INITLINEARSTEP.X,,1);
     data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[19])) {
+  if (__GET_VAR(data__->__transition_list[32])) {
     __SET_VAR(data__->,MOVEFRONT0.X,,1);
     data__->MOVEFRONT0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[20])) {
+  if (__GET_VAR(data__->__transition_list[33])) {
     __SET_VAR(data__->,ROTATINGRIGHT.X,,1);
     data__->ROTATINGRIGHT.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[21])) {
+  if (__GET_VAR(data__->__transition_list[34])) {
     __SET_VAR(data__->,NOTBUSYFRONT0.X,,1);
     data__->NOTBUSYFRONT0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[22])) {
+  if (__GET_VAR(data__->__transition_list[35])) {
     __SET_VAR(data__->,MOVEFRONTSTEP0.X,,1);
     data__->MOVEFRONTSTEP0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[23])) {
+  if (__GET_VAR(data__->__transition_list[36])) {
     __SET_VAR(data__->,TURNOFFFRONT0.X,,1);
     data__->TURNOFFFRONT0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[24])) {
+  if (__GET_VAR(data__->__transition_list[37])) {
     __SET_VAR(data__->,RESETROTATE.X,,1);
     data__->RESETROTATE.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[25])) {
+  if (__GET_VAR(data__->__transition_list[38])) {
     __SET_VAR(data__->,RESETDONER.X,,1);
     data__->RESETDONER.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[26])) {
+  if (__GET_VAR(data__->__transition_list[39])) {
     __SET_VAR(data__->,INITLINEARSTEP.X,,1);
     data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[27])) {
+  if (__GET_VAR(data__->__transition_list[40])) {
     __SET_VAR(data__->,MOVEFRONT1.X,,1);
     data__->MOVEFRONT1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
-  if (__GET_VAR(data__->__transition_list[28])) {
+  if (__GET_VAR(data__->__transition_list[41])) {
     __SET_VAR(data__->,INITLINEARSTEP.X,,1);
     data__->INITLINEARSTEP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
   }
@@ -4345,6 +4616,97 @@ void ROTARYCONVEYOR_body__(ROTARYCONVEYOR *data__) {
     char desactivated = !active && data__->TURNOFFBACK.prev_state;
 
     if (active)       {data__->__action_list[__SFC_BACKMOTOR].reset = 1;}
+
+  }
+
+  // ROTATERIGHT1 action associations
+  {
+    char active = __GET_VAR(data__->ROTATERIGHT1.X);
+    char activated = active && !data__->ROTATERIGHT1.prev_state;
+    char desactivated = !active && data__->ROTATERIGHT1.prev_state;
+
+    if (active)       {__SET_VAR(data__->,FORWARDMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,FORWARDMOTOR,,0);};
+
+  }
+
+  // RIGHTROTATEED1 action associations
+  {
+    char active = __GET_VAR(data__->RIGHTROTATEED1.X);
+    char activated = active && !data__->RIGHTROTATEED1.prev_state;
+    char desactivated = !active && data__->RIGHTROTATEED1.prev_state;
+
+    if (active)       {__SET_VAR(data__->,RIGHTROTMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,RIGHTROTMOTOR,,0);};
+
+  }
+
+  // ROTATINGLEFT1 action associations
+  {
+    char active = __GET_VAR(data__->ROTATINGLEFT1.X);
+    char activated = active && !data__->ROTATINGLEFT1.prev_state;
+    char desactivated = !active && data__->ROTATINGLEFT1.prev_state;
+
+    if (active)       {__SET_VAR(data__->,BACKMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,BACKMOTOR,,0);};
+
+  }
+
+  // ROTATERIGHT0 action associations
+  {
+    char active = __GET_VAR(data__->ROTATERIGHT0.X);
+    char activated = active && !data__->ROTATERIGHT0.prev_state;
+    char desactivated = !active && data__->ROTATERIGHT0.prev_state;
+
+    if (active)       {__SET_VAR(data__->,RIGHTROTMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,RIGHTROTMOTOR,,0);};
+
+    if (active)       {data__->__action_list[__SFC_ISBUSY].set = 1;}
+
+  }
+
+  // RIGHTROTATEED0 action associations
+  {
+    char active = __GET_VAR(data__->RIGHTROTATEED0.X);
+    char activated = active && !data__->RIGHTROTATEED0.prev_state;
+    char desactivated = !active && data__->RIGHTROTATEED0.prev_state;
+
+    if (active)       {__SET_VAR(data__->,FORWARDMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,FORWARDMOTOR,,0);};
+
+    if (active)       {__SET_VAR(data__->,READYTORECEIVE,,1);};
+    if (desactivated) {__SET_VAR(data__->,READYTORECEIVE,,0);};
+
+  }
+
+  // ROTATINGLEFT0 action associations
+  {
+    char active = __GET_VAR(data__->ROTATINGLEFT0.X);
+    char activated = active && !data__->ROTATINGLEFT0.prev_state;
+    char desactivated = !active && data__->ROTATINGLEFT0.prev_state;
+
+    if (active)       {__SET_VAR(data__->,LEFTROTMOTOR,,1);};
+    if (desactivated) {__SET_VAR(data__->,LEFTROTMOTOR,,0);};
+
+  }
+
+  // MOVEBACKSTEP1 action associations
+  {
+    char active = __GET_VAR(data__->MOVEBACKSTEP1.X);
+    char activated = active && !data__->MOVEBACKSTEP1.prev_state;
+    char desactivated = !active && data__->MOVEBACKSTEP1.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_FORWARDMOTOR].set = 1;}
+
+  }
+
+  // TURNOFFBACK1 action associations
+  {
+    char active = __GET_VAR(data__->TURNOFFBACK1.X);
+    char activated = active && !data__->TURNOFFBACK1.prev_state;
+    char desactivated = !active && data__->TURNOFFBACK1.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_FORWARDMOTOR].reset = 1;}
 
   }
 
@@ -4570,6 +4932,28 @@ __end:
 #undef __SFC_STEP2
 #undef TURNOFFBACK
 #undef __SFC_TURNOFFBACK
+#undef ROTATERIGHT1
+#undef __SFC_ROTATERIGHT1
+#undef RIGHTROTATEED1
+#undef __SFC_RIGHTROTATEED1
+#undef NOTBUSYFRONT1
+#undef __SFC_NOTBUSYFRONT1
+#undef ROTATINGLEFT1
+#undef __SFC_ROTATINGLEFT1
+#undef STEP0
+#undef __SFC_STEP0
+#undef ROTATERIGHT0
+#undef __SFC_ROTATERIGHT0
+#undef RIGHTROTATEED0
+#undef __SFC_RIGHTROTATEED0
+#undef ROTATINGLEFT0
+#undef __SFC_ROTATINGLEFT0
+#undef NOTBUSYBACK1
+#undef __SFC_NOTBUSYBACK1
+#undef MOVEBACKSTEP1
+#undef __SFC_MOVEBACKSTEP1
+#undef TURNOFFBACK1
+#undef __SFC_TURNOFFBACK1
 #undef ROTATERIGHT
 #undef __SFC_ROTATERIGHT
 #undef RIGHTROTATEED
@@ -8858,6 +9242,9 @@ __end:
 
 
 void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT7_EX,data__->RUNFRONTCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDRIGHTUPCT8_EX,data__->SENDRIGHTUPCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDUPRIGHTMT6_EX,data__->SENDUPRIGHTMT6_EX,retain)
   __INIT_EXTERNAL(INT,CELL1INITIAL,data__->CELL1INITIAL,retain)
   __INIT_EXTERNAL(INT,CELL1FINAL,data__->CELL1FINAL,retain)
   __INIT_EXTERNAL(INT,CELL2INITIAL,data__->CELL2INITIAL,retain)
@@ -8963,6 +9350,7 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSAT6_EX,data__->SENDLEFTDOWNSAT6_EX,retain)
   __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSBT6_EX,data__->SENDLEFTDOWNSBT6_EX,retain)
   __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSCT6_EX,data__->SENDLEFTDOWNSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT3_EX,data__->RECEIVEPIECEMT3_EX,retain)
   ROTARYCONVEYOR_init__(&data__->SBT2,retain);
   __INIT_LOCATED(BOOL,__QX0_0_1_0,data__->BACKAT1,retain)
   __INIT_LOCATED_VALUE(data__->BACKAT1,__BOOL_LITERAL(FALSE))
@@ -9114,7 +9502,7 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   __INIT_LOCATED_VALUE(data__->SENSORSCT7,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(BOOL,__IX0_0_0_65,data__->SENSORMT1,retain)
   __INIT_LOCATED_VALUE(data__->SENSORMT1,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__IX0_0_0_69,data__->SENSORMT3,retain)
+  __INIT_LOCATED(BOOL,__IX0_0_0_70,data__->SENSORMT3,retain)
   __INIT_LOCATED_VALUE(data__->SENSORMT3,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(BOOL,__IX0_0_0_71,data__->SENSORMT4,retain)
   __INIT_LOCATED_VALUE(data__->SENSORMT4,__BOOL_LITERAL(FALSE))
@@ -9329,6 +9717,7 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   LINEARCONVEYOR_init__(&data__->CT9,retain);
   __INIT_EXTERNAL(BOOL,SENDUPSAT6_EX,data__->SENDUPSAT6_EX,retain)
   __INIT_EXTERNAL(BOOL,SENSORSBT7_EX,data__->SENSORSBT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT4_EX,data__->SENSORMT4_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNBACKSBT7_EX,data__->RUNBACKSBT7_EX,retain)
   __INIT_EXTERNAL(BOOL,SENSORSBT6_EX,data__->SENSORSBT6_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNFRONTSBT6_EX,data__->RUNFRONTSBT6_EX,retain)
@@ -9342,8 +9731,12 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   __INIT_EXTERNAL(BOOL,RUNFRONTSCT5_EX,data__->RUNFRONTSCT5_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNBACKSCT6_EX,data__->RUNBACKSCT6_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNBACKMT6_EX,data__->RUNBACKMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT4_EX,data__->RECEIVEPIECEMT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT4_EX,data__->RUNFRONTMT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT3_EX,data__->RUNFRONTMT3_EX,retain)
   __INIT_EXTERNAL(BOOL,SENDDOWNSCT6_EX,data__->SENDDOWNSCT6_EX,retain)
   __INIT_EXTERNAL(BOOL,SENDDOWNMT6_EX,data__->SENDDOWNMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT3_EX,data__->SENSORMT3_EX,retain)
   __INIT_EXTERNAL(BOOL,SENSORMT5_EX,data__->SENSORMT5_EX,retain)
   __INIT_EXTERNAL(BOOL,SENSORMT6_EX,data__->SENSORMT6_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNBACKMT5_EX,data__->RUNBACKMT5_EX,retain)
@@ -9563,6 +9956,8 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   __INIT_LOCATED_VALUE(data__->SENSORX0GANTRY,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(BOOL,__IX0_0_0_88,data__->SENSORPIECEGANTRY,retain)
   __INIT_LOCATED_VALUE(data__->SENSORPIECEGANTRY,__BOOL_LITERAL(FALSE))
+  LINEARCONVEYOR_init__(&data__->MT4,retain);
+  LINEARCONVEYOR_init__(&data__->MT3,retain);
   __INIT_VAR(data__->OR210_OUT,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->OR209_OUT,__BOOL_LITERAL(FALSE),retain)
 }
@@ -9632,14 +10027,26 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_VAR(data__->CT1.,FRONTNOTBUSY,,__GET_VAR(data__->CT2.ISBUSY,));
   __SET_VAR(data__->CT1.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT2,));
   LINEARCONVEYOR_body__(&data__->CT1);
+  __SET_VAR(data__->MT4.,RECEIVEPIECE,,__GET_EXTERNAL(data__->RECEIVEPIECEMT4_EX,));
+  __SET_VAR(data__->MT4.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORMT4,));
+  __SET_VAR(data__->MT4.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTMT4_EX,));
+  LINEARCONVEYOR_body__(&data__->MT4);
+  __SET_VAR(data__->MT3.,RECEIVEPIECE,,__GET_EXTERNAL(data__->RECEIVEPIECEMT3_EX,));
+  __SET_VAR(data__->MT3.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORMT3,));
+  __SET_VAR(data__->MT3.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTMT3_EX,));
+  __SET_VAR(data__->MT3.,FRONTNOTBUSY,,__GET_VAR(data__->MT4.ISBUSY,));
+  __SET_VAR(data__->MT3.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORMT4,));
+  LINEARCONVEYOR_body__(&data__->MT3);
   __SET_VAR(data__->MT2.,RECEIVEPIECE,,__GET_EXTERNAL(data__->RECEIVEPIECEMT2_EX,));
   __SET_VAR(data__->MT2.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTMT2_EX,));
   __SET_VAR(data__->MT2.,SENDDOWNSIGNAL,,__GET_EXTERNAL(data__->SENDDOWNMT2_EX,));
   __SET_VAR(data__->MT2.,SENSORROTRIGHT,,__GET_LOCATED(data__->SENSORROTRIGHTMT2,));
   __SET_VAR(data__->MT2.,SENSORROTLEFT,,__GET_LOCATED(data__->SENSORROTLEFTMT2,));
   __SET_VAR(data__->MT2.,FRONTNOTBUSY,,__GET_VAR(data__->CT1.ISBUSY,));
+  __SET_VAR(data__->MT2.,DOWNNOTBUSY,,__GET_VAR(data__->MT3.ISBUSY,));
   __SET_VAR(data__->MT2.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT1,));
   __SET_VAR(data__->MT2.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORMT2,));
+  __SET_VAR(data__->MT2.,REACHEDSENSORDOWN,,__GET_LOCATED(data__->SENSORMT3,));
   ROTARYCONVEYOR_body__(&data__->MT2);
   __SET_VAR(data__->MT1.,RECEIVEPIECE,,__GET_EXTERNAL(data__->RECEIVEPIECEMT1_EX,));
   __SET_VAR(data__->MT1.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORMT1,));
@@ -9955,9 +10362,12 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_LOCATED(data__->,PUSHBACKCT5,,__GET_VAR(data__->CT5.PUSHMOTORBACK,));
   __SET_LOCATED(data__->,FORWARDSBT4,,__GET_VAR(data__->SBT4.FORWARDMOTOR,));
   __SET_EXTERNAL(data__->,SENSORCT6_EX,,__GET_LOCATED(data__->SENSORCT6,));
+  __SET_EXTERNAL(data__->,SENSORMT3_EX,,__GET_LOCATED(data__->SENSORMT3,));
   __SET_LOCATED(data__->,FORWARDCT6,,__GET_VAR(data__->CT6.FORWARDMOTOR,));
   __SET_LOCATED(data__->,PUSHFORWARDCT6,,__GET_VAR(data__->CT6.PUSHMOTORFORWARD,));
+  __SET_LOCATED(data__->,FORWARDMT3,,__GET_VAR(data__->MT3.FORWARDMOTOR,));
   __SET_LOCATED(data__->,PUSHBACKCT6,,__GET_VAR(data__->CT6.PUSHMOTORBACK,));
+  __SET_LOCATED(data__->,BACKMT3,,__GET_VAR(data__->MT3.BACKMOTOR,));
   __SET_EXTERNAL(data__->,SENSORSAT5_EX,,__GET_LOCATED(data__->SENSORSAT5,));
   __SET_LOCATED(data__->,USETOOLSAT5,,__GET_VAR(data__->SAT5.USETOOL,));
   __SET_LOCATED(data__->,USETOOLSCT5,,__GET_VAR(data__->SCT5.USETOOL,));
@@ -9973,6 +10383,7 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_EXTERNAL(data__->,READYTOSENDSBT5_EX,,__GET_VAR(data__->SBT5.READYTOSEND,));
   __SET_LOCATED(data__->,TOOLMINUSSCT5,,__GET_VAR(data__->SCT5.TOOLMINUS,));
   __SET_LOCATED(data__->,ZUPSAT5,,__GET_VAR(data__->SAT5.MOTORUP,));
+  __SET_EXTERNAL(data__->,SENSORMT4_EX,,__GET_LOCATED(data__->SENSORMT4,));
   __SET_LOCATED(data__->,TOOLMINUSSBT5,,__GET_VAR(data__->SBT5.TOOLMINUS,));
   __SET_LOCATED(data__->,ZUPSCT5,,__GET_VAR(data__->SCT5.MOTORUP,));
   __SET_LOCATED(data__->,XLEFTSAT5,,__GET_VAR(data__->SAT5.MOTORLEFT,));
@@ -9986,8 +10397,10 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_LOCATED(data__->,FORWARDSAT5,,__GET_VAR(data__->SAT5.FORWARDMOTOR,));
   __SET_LOCATED(data__->,ZDOWNSBT5,,__GET_VAR(data__->SBT5.MOTORDOWN,));
   __SET_LOCATED(data__->,FORWARDSCT5,,__GET_VAR(data__->SCT5.FORWARDMOTOR,));
+  __SET_LOCATED(data__->,FORWARDMT4,,__GET_VAR(data__->MT4.FORWARDMOTOR,));
   __SET_LOCATED(data__->,XRIGHTSBT5,,__GET_VAR(data__->SBT5.MOTORRIGHT,));
   __SET_LOCATED(data__->,FORWARDSBT5,,__GET_VAR(data__->SBT5.FORWARDMOTOR,));
+  __SET_LOCATED(data__->,BACKMT4,,__GET_VAR(data__->MT4.BACKMOTOR,));
   __SET_EXTERNAL(data__->,SENSORSCT6_EX,,__GET_LOCATED(data__->SENSORSCT6,));
   __SET_EXTERNAL(data__->,SENSORSBT6_EX,,__GET_LOCATED(data__->SENSORSBT6,));
   __SET_EXTERNAL(data__->,SENSORSCT7_EX,,__GET_LOCATED(data__->SENSORSCT7,));
@@ -10006,20 +10419,25 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_VAR(data__->MT5.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORMT6,));
   __SET_VAR(data__->MT5.,REACHEDSENSORBACK,,__GET_LOCATED(data__->SENSORSCT6,));
   LINEARCONVEYOR_body__(&data__->MT5);
+  __SET_VAR(data__->MT6.,SENDUPRIGHTSIGNAL,,__GET_EXTERNAL(data__->SENDUPRIGHTMT6_EX,));
   __SET_VAR(data__->MT6.,BACKSIGNAL,,__GET_EXTERNAL(data__->RUNBACKMT6_EX,));
   __SET_VAR(data__->MT6.,SENDDOWNSIGNAL,,__GET_EXTERNAL(data__->SENDDOWNMT6_EX,));
   __SET_VAR(data__->MT6.,SENSORROTRIGHT,,__GET_LOCATED(data__->SENSORROTRIGHTMT6,));
   __SET_VAR(data__->MT6.,SENSORROTLEFT,,__GET_LOCATED(data__->SENSORROTLEFTMT6,));
   __SET_VAR(data__->MT6.,BACKNOTBUSY,,__GET_VAR(data__->MT5.ISBUSY,));
+  __SET_VAR(data__->MT6.,FRONTNOTBUSY,,__GET_VAR(data__->CT7.ISBUSY,));
+  __SET_VAR(data__->MT6.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT7,));
   __SET_VAR(data__->MT6.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORMT6,));
   __SET_VAR(data__->MT6.,REACHEDSENSORBACK,,__GET_LOCATED(data__->SENSORMT5,));
   ROTARYCONVEYOR_body__(&data__->MT6);
   __SET_VAR(data__->CT7.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORCT7,));
   __SET_VAR(data__->CT7.,BACKSIGNAL,,__GET_EXTERNAL(data__->RUNBACKCT7_EX,));
+  __SET_VAR(data__->CT7.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTCT7_EX,));
   __SET_VAR(data__->CT7.,BACKNOTBUSY,,__GET_VAR(data__->MT6.ISBUSY,));
   __SET_VAR(data__->CT7.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT8,));
   __SET_VAR(data__->CT7.,REACHEDSENSORBACK,,__GET_LOCATED(data__->SENSORMT6,));
   LINEARCONVEYOR_body__(&data__->CT7);
+  __SET_VAR(data__->CT8.,SENDRIGHTUPSIGNAL,,__GET_EXTERNAL(data__->SENDRIGHTUPCT8_EX,));
   __SET_VAR(data__->CT8.,BACKSIGNAL,,__GET_EXTERNAL(data__->RUNBACKCT8_EX,));
   __SET_VAR(data__->CT8.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTCT8_EX,));
   __SET_VAR(data__->CT8.,SENDDOWNSIGNAL,,__GET_EXTERNAL(data__->SENDDOWNCT8_EX,));
@@ -10049,9 +10467,9 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_LOCATED(data__->,FORWARDAT2,,__GET_VAR(data__->AT2.FORWARDMOTOR,));
   __SET_LOCATED(data__->,RIGHTROTSBT6,,__GET_VAR(data__->SBT6.RIGHTROTMOTOR,));
   __SET_LOCATED(data__->,LEFTROTSCT6,,__GET_VAR(data__->SCT6.LEFTROTMOTOR,));
+  __SET_LOCATED(data__->,BACKSAT7,,__GET_VAR(data__->SAT7.BACKMOTOR,));
   __SET_LOCATED(data__->,BACKSBT7,,__GET_VAR(data__->SBT7.BACKMOTOR,));
   __SET_LOCATED(data__->,FORWARDMT5,,__GET_VAR(data__->MT5.FORWARDMOTOR,));
-  __SET_LOCATED(data__->,BACKSAT7,,__GET_VAR(data__->SAT7.BACKMOTOR,));
   __SET_LOCATED(data__->,RIGHTROTMT6,,__GET_VAR(data__->MT6.RIGHTROTMOTOR,));
   __SET_LOCATED(data__->,LEFTROTSAT6,,__GET_VAR(data__->SAT6.LEFTROTMOTOR,));
   __SET_LOCATED(data__->,BACKCT7,,__GET_VAR(data__->CT7.BACKMOTOR,));
@@ -13101,1073 +13519,7 @@ __end:
 
 
 
-void LOADPROGRAM_init__(LOADPROGRAM *data__, BOOL retain) {
-  __INIT_LOCATED(INT,__IW0_0_2_0,data__->WAREHOUSEIN,retain)
-  __INIT_LOCATED_VALUE(data__->WAREHOUSEIN,0)
-  __INIT_LOCATED(BOOL,__IX0_0_0_0,data__->SENSORAT1,retain)
-  __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
-  __INIT_LOCATED_VALUE(data__->PM,0)
-  __INIT_VAR(data__->INITIALPIECE,0,retain)
-  __INIT_VAR(data__->FINALPIECE,0,retain)
-  __INIT_EXTERNAL(BOOL,WAREHOUSEBUSY,data__->WAREHOUSEBUSY,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTAT1_EX,data__->RUNFRONTAT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSAT1_EX,data__->RUNFRONTSAT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSAT2_EX,data__->RUNFRONTSAT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSAT4_EX,data__->RUNFRONTSAT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSBT1_EX,data__->RUNFRONTSBT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSBT2_EX,data__->RUNFRONTSBT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSBT4_EX,data__->RUNFRONTSBT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSCT1_EX,data__->RUNFRONTSCT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSCT2_EX,data__->RUNFRONTSCT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTSCT4_EX,data__->RUNFRONTSCT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTMT1_EX,data__->RUNFRONTMT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTMT2_EX,data__->RUNFRONTMT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKMT5_EX,data__->RUNBACKMT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTCT1_EX,data__->RUNFRONTCT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTCT3_EX,data__->RUNFRONTCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTCT4_EX,data__->RUNFRONTCT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNFRONTCT5_EX,data__->RUNFRONTCT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSAT7_EX,data__->RUNBACKSAT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSCT7_EX,data__->RUNBACKSCT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSBT7_EX,data__->RUNBACKSBT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSBT6_EX,data__->RUNBACKSBT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSAT6_EX,data__->RUNBACKSAT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKSCT6_EX,data__->RUNBACKSCT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKCT9_EX,data__->RUNBACKCT9_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKCT3_EX,data__->RUNBACKCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDDOWNSAT2_EX,data__->SENDDOWNSAT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDDOWNSBT2_EX,data__->SENDDOWNSBT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDDOWNSCT2_EX,data__->SENDDOWNSCT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESAT3_EX,data__->TOOLPIECESAT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESAT5_EX,data__->TOOLPIECESAT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESBT3_EX,data__->TOOLPIECESBT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESBT5_EX,data__->TOOLPIECESBT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESCT3_EX,data__->TOOLPIECESCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,TOOLPIECESCT5_EX,data__->TOOLPIECESCT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDDOWNCT2_EX,data__->SENDDOWNCT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORAT1_EX,data__->SENSORAT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORAT2_EX,data__->SENSORAT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT1_EX,data__->SENSORSAT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT2_EX,data__->SENSORSAT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT3_EX,data__->SENSORSAT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT4_EX,data__->SENSORSAT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT5_EX,data__->SENSORSAT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT6_EX,data__->SENSORSAT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSAT7_EX,data__->SENSORSAT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT1_EX,data__->SENSORSBT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT2_EX,data__->SENSORSBT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT3_EX,data__->SENSORSBT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT4_EX,data__->SENSORSBT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT5_EX,data__->SENSORSBT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT6_EX,data__->SENSORSBT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSBT7_EX,data__->SENSORSBT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT1_EX,data__->SENSORSCT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT2_EX,data__->SENSORSCT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT3_EX,data__->SENSORSCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT4_EX,data__->SENSORSCT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT5_EX,data__->SENSORSCT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT6_EX,data__->SENSORSCT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORSCT7_EX,data__->SENSORSCT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORMT1_EX,data__->SENSORMT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORMT2_EX,data__->SENSORMT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT1_EX,data__->SENSORCT1_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT2_EX,data__->SENSORCT2_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT3_EX,data__->SENSORCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT4_EX,data__->SENSORCT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT5_EX,data__->SENSORCT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT7_EX,data__->SENSORCT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT8_EX,data__->SENSORCT8_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORCT9_EX,data__->SENSORCT9_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORMT6_EX,data__->SENSORMT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENSORMT5_EX,data__->SENSORMT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT4_EX,data__->PUSHTOROLLCT4_EX,retain)
-  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT5_EX,data__->PUSHTOROLLCT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT6_EX,data__->PUSHTOROLLCT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSAT6_EX,data__->SENDLEFTDOWNSAT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSBT6_EX,data__->SENDLEFTDOWNSBT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSCT6_EX,data__->SENDLEFTDOWNSCT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNCT8_EX,data__->SENDLEFTDOWNCT8_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKCT8_EX,data__->RUNBACKCT8_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKMT6_EX,data__->RUNBACKMT6_EX,retain)
-  __INIT_EXTERNAL(BOOL,RUNBACKCT7_EX,data__->RUNBACKCT7_EX,retain)
-  __INIT_EXTERNAL(BOOL,PUTPIECEINSIGNAL_EX,data__->PUTPIECEINSIGNAL_EX,retain)
-  REMOVEFROMWAREHOUSE_init__(&data__->REMOVEFROMWAREHOUSE0,retain);
-  __INIT_LOCATED(BOOL,__IX0_1_0_1,data__->RUNUNLOAD,retain)
-  __INIT_LOCATED_VALUE(data__->RUNUNLOAD,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__IX0_1_0_2,data__->RUNTRANSFORMMACH1,retain)
-  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH1,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__IX0_1_0_3,data__->RUNTRANSFORMMACH2,retain)
-  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH2,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__IX0_1_0_4,data__->RUNTRANSFORMMACH3,retain)
-  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH3,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__QX0_1_0_5,data__->CELL1BUSY,retain)
-  __INIT_LOCATED_VALUE(data__->CELL1BUSY,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__QX0_1_0_6,data__->CELL2BUSY,retain)
-  __INIT_LOCATED_VALUE(data__->CELL2BUSY,__BOOL_LITERAL(FALSE))
-  __INIT_LOCATED(BOOL,__QX0_1_0_7,data__->CELL3BUSY,retain)
-  __INIT_LOCATED_VALUE(data__->CELL3BUSY,__BOOL_LITERAL(FALSE))
-  __INIT_EXTERNAL(BOOL,READYTOSENDSAT3_EX,data__->READYTOSENDSAT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,READYTOSENDSAT5_EX,data__->READYTOSENDSAT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,READYTOSENDSBT3_EX,data__->READYTOSENDSBT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,READYTOSENDSBT5_EX,data__->READYTOSENDSBT5_EX,retain)
-  __INIT_EXTERNAL(BOOL,READYTOSENDSCT3_EX,data__->READYTOSENDSCT3_EX,retain)
-  __INIT_EXTERNAL(BOOL,READYTOSENDSCT5_EX,data__->READYTOSENDSCT5_EX,retain)
-  UINT i;
-  data__->__nb_steps = 28;
-  static const STEP temp_step = {{0, 0}, 0, {{0, 0}, 0}};
-  for(i = 0; i < data__->__nb_steps; i++) {
-    data__->__step_list[i] = temp_step;
-  }
-  __SET_VAR(data__->,__step_list[0].X,,1);
-  __SET_VAR(data__->,__step_list[25].X,,1);
-  data__->__nb_actions = 13;
-  static const ACTION temp_action = {0, {0, 0}, 0, 0, {0, 0}, {0, 0}};
-  for(i = 0; i < data__->__nb_actions; i++) {
-    data__->__action_list[i] = temp_action;
-  }
-  data__->__nb_transitions = 26;
-  data__->__lasttick_time = __CURRENT_TIME;
-}
-
-// Steps definitions
-#define STEP5 __step_list[0]
-#define __SFC_STEP5 0
-#define STEP164 __step_list[1]
-#define __SFC_STEP164 1
-#define STEP6 __step_list[2]
-#define __SFC_STEP6 2
-#define STEP163 __step_list[3]
-#define __SFC_STEP163 3
-#define STEP4 __step_list[4]
-#define __SFC_STEP4 4
-#define STEP162 __step_list[5]
-#define __SFC_STEP162 5
-#define STEP3 __step_list[6]
-#define __SFC_STEP3 6
-#define STEP161 __step_list[7]
-#define __SFC_STEP161 7
-#define STEP2 __step_list[8]
-#define __SFC_STEP2 8
-#define STEP151 __step_list[9]
-#define __SFC_STEP151 9
-#define STEP1 __step_list[10]
-#define __SFC_STEP1 10
-#define STEP149 __step_list[11]
-#define __SFC_STEP149 11
-#define STEP0 __step_list[12]
-#define __SFC_STEP0 12
-#define STEP147 __step_list[13]
-#define __SFC_STEP147 13
-#define STEP148 __step_list[14]
-#define __SFC_STEP148 14
-#define STEP152 __step_list[15]
-#define __SFC_STEP152 15
-#define STEP153 __step_list[16]
-#define __SFC_STEP153 16
-#define STEP154 __step_list[17]
-#define __SFC_STEP154 17
-#define STEP156 __step_list[18]
-#define __SFC_STEP156 18
-#define STEP157 __step_list[19]
-#define __SFC_STEP157 19
-#define STEP150 __step_list[20]
-#define __SFC_STEP150 20
-#define STEP155 __step_list[21]
-#define __SFC_STEP155 21
-#define STEP158 __step_list[22]
-#define __SFC_STEP158 22
-#define STEP159 __step_list[23]
-#define __SFC_STEP159 23
-#define STEP160 __step_list[24]
-#define __SFC_STEP160 24
-#define STEP7 __step_list[25]
-#define __SFC_STEP7 25
-#define STEP165 __step_list[26]
-#define __SFC_STEP165 26
-#define STEP8 __step_list[27]
-#define __SFC_STEP8 27
-
-// Actions definitions
-#define __SFC_RUNBACKCT8_EX 0
-#define __SFC_RUNBACKCT9_EX 1
-#define __SFC_RUNBACKCT7_EX 2
-#define __SFC_RUNBACKMT6_EX 3
-#define __SFC_RUNBACKMT5_EX 4
-#define __SFC_RUNBACKSCT6_EX 5
-#define __SFC_RUNBACKSCT7_EX 6
-#define __SFC_RUNBACKSBT6_EX 7
-#define __SFC_RUNBACKSBT7_EX 8
-#define __SFC_RUNBACKSAT6_EX 9
-#define __SFC_RUNBACKSAT7_EX 10
-#define __SFC_PUTPIECEINSIGNAL_EX 11
-#define __SFC_CELL3BUSY 12
-
-// Code part
-void LOADPROGRAM_body__(LOADPROGRAM *data__) {
-  // Initialise TEMP variables
-
-  INT i;
-  TIME elapsed_time, current_time;
-
-  // Calculate elapsed_time
-  current_time = __CURRENT_TIME;
-  elapsed_time = __time_sub(current_time, data__->__lasttick_time);
-  data__->__lasttick_time = current_time;
-  // Transitions initialization
-  if (__DEBUG) {
-    for (i = 0; i < data__->__nb_transitions; i++) {
-      data__->__transition_list[i] = data__->__debug_transition_list[i];
-    }
-  }
-  // Steps initialization
-  for (i = 0; i < data__->__nb_steps; i++) {
-    data__->__step_list[i].prev_state = __GET_VAR(data__->__step_list[i].X);
-    if (__GET_VAR(data__->__step_list[i].X)) {
-      data__->__step_list[i].T.value = __time_add(data__->__step_list[i].T.value, elapsed_time);
-    }
-  }
-  // Actions initialization
-  for (i = 0; i < data__->__nb_actions; i++) {
-    __SET_VAR(data__->,__action_list[i].state,,0);
-    data__->__action_list[i].set = 0;
-    data__->__action_list[i].reset = 0;
-    if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
-      data__->__action_list[i].set_remaining_time = __time_sub(data__->__action_list[i].set_remaining_time, elapsed_time);
-      if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
-        data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
-        data__->__action_list[i].set = 1;
-      }
-    }
-    if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
-      data__->__action_list[i].reset_remaining_time = __time_sub(data__->__action_list[i].reset_remaining_time, elapsed_time);
-      if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
-        data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
-        data__->__action_list[i].reset = 1;
-      }
-    }
-  }
-
-  // Transitions fire test
-  if (__GET_VAR(data__->STEP5.X)) {
-    __SET_VAR(data__->,__transition_list[0],,__GET_EXTERNAL(data__->SENSORCT9_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[0],,__GET_VAR(data__->__transition_list[0]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[0],,__GET_EXTERNAL(data__->SENSORCT9_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[0],,0);
-  }
-  if (__GET_VAR(data__->STEP164.X)) {
-    __SET_VAR(data__->,__transition_list[1],,!(__GET_EXTERNAL(data__->SENSORCT9_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[1],,__GET_VAR(data__->__transition_list[1]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[1],,!(__GET_EXTERNAL(data__->SENSORCT9_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[1],,0);
-  }
-  if (__GET_VAR(data__->STEP6.X)) {
-    __SET_VAR(data__->,__transition_list[2],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[2],,__GET_VAR(data__->__transition_list[2]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[2],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[2],,0);
-  }
-  if (__GET_VAR(data__->STEP163.X)) {
-    __SET_VAR(data__->,__transition_list[3],,!(__GET_EXTERNAL(data__->SENSORCT8_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[3],,__GET_VAR(data__->__transition_list[3]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[3],,!(__GET_EXTERNAL(data__->SENSORCT8_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[3],,0);
-  }
-  if (__GET_VAR(data__->STEP4.X)) {
-    __SET_VAR(data__->,__transition_list[4],,__GET_EXTERNAL(data__->SENSORCT7_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[4],,__GET_VAR(data__->__transition_list[4]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[4],,__GET_EXTERNAL(data__->SENSORCT7_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[4],,0);
-  }
-  if (__GET_VAR(data__->STEP162.X)) {
-    __SET_VAR(data__->,__transition_list[5],,!(__GET_EXTERNAL(data__->SENSORCT7_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[5],,__GET_VAR(data__->__transition_list[5]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[5],,!(__GET_EXTERNAL(data__->SENSORCT7_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[5],,0);
-  }
-  if (__GET_VAR(data__->STEP3.X)) {
-    __SET_VAR(data__->,__transition_list[6],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[6],,__GET_VAR(data__->__transition_list[6]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[6],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[6],,0);
-  }
-  if (__GET_VAR(data__->STEP161.X)) {
-    __SET_VAR(data__->,__transition_list[7],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[7],,__GET_VAR(data__->__transition_list[7]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[7],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[7],,0);
-  }
-  if (__GET_VAR(data__->STEP2.X)) {
-    __SET_VAR(data__->,__transition_list[8],,__GET_EXTERNAL(data__->SENSORMT5_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[8],,__GET_VAR(data__->__transition_list[8]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[8],,__GET_EXTERNAL(data__->SENSORMT5_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[8],,0);
-  }
-  if (__GET_VAR(data__->STEP151.X)) {
-    __SET_VAR(data__->,__transition_list[9],,!(__GET_EXTERNAL(data__->SENSORMT5_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[9],,__GET_VAR(data__->__transition_list[9]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[9],,!(__GET_EXTERNAL(data__->SENSORMT5_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[9],,0);
-  }
-  if (__GET_VAR(data__->STEP1.X)) {
-    __SET_VAR(data__->,__transition_list[10],,__GET_EXTERNAL(data__->SENSORSCT6_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[10],,__GET_VAR(data__->__transition_list[10]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[10],,__GET_EXTERNAL(data__->SENSORSCT6_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[10],,0);
-  }
-  if (__GET_VAR(data__->STEP149.X)) {
-    __SET_VAR(data__->,__transition_list[11],,!(__GET_EXTERNAL(data__->SENSORSCT6_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[11],,__GET_VAR(data__->__transition_list[11]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[11],,!(__GET_EXTERNAL(data__->SENSORSCT6_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[11],,0);
-  }
-  if (__GET_VAR(data__->STEP0.X)) {
-    __SET_VAR(data__->,__transition_list[12],,__GET_EXTERNAL(data__->SENSORSCT7_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->__transition_list[12]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[12],,__GET_EXTERNAL(data__->SENSORSCT7_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[12],,0);
-  }
-  if (__GET_VAR(data__->STEP147.X)) {
-    __SET_VAR(data__->,__transition_list[13],,!(__GET_EXTERNAL(data__->SENSORSCT7_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->__transition_list[13]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[13],,!(__GET_EXTERNAL(data__->SENSORSCT7_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[13],,0);
-  }
-  if (__GET_VAR(data__->STEP148.X)) {
-    __SET_VAR(data__->,__transition_list[14],,__GET_EXTERNAL(data__->SENSORSBT6_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->__transition_list[14]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[14],,__GET_EXTERNAL(data__->SENSORSBT6_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[14],,0);
-  }
-  if (__GET_VAR(data__->STEP152.X)) {
-    __SET_VAR(data__->,__transition_list[15],,!(__GET_EXTERNAL(data__->SENSORSBT6_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[15],,__GET_VAR(data__->__transition_list[15]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[15],,!(__GET_EXTERNAL(data__->SENSORSBT6_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[15],,0);
-  }
-  if (__GET_VAR(data__->STEP153.X)) {
-    __SET_VAR(data__->,__transition_list[16],,__GET_EXTERNAL(data__->SENSORSBT7_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[16],,__GET_VAR(data__->__transition_list[16]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[16],,__GET_EXTERNAL(data__->SENSORSBT7_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[16],,0);
-  }
-  if (__GET_VAR(data__->STEP154.X)) {
-    __SET_VAR(data__->,__transition_list[17],,!(__GET_EXTERNAL(data__->SENSORSBT7_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[17],,__GET_VAR(data__->__transition_list[17]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[17],,!(__GET_EXTERNAL(data__->SENSORSBT7_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[17],,0);
-  }
-  if (__GET_VAR(data__->STEP156.X)) {
-    __SET_VAR(data__->,__transition_list[18],,__GET_EXTERNAL(data__->SENSORSAT6_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[18],,__GET_VAR(data__->__transition_list[18]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[18],,__GET_EXTERNAL(data__->SENSORSAT6_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[18],,0);
-  }
-  if (__GET_VAR(data__->STEP157.X)) {
-    __SET_VAR(data__->,__transition_list[19],,!(__GET_EXTERNAL(data__->SENSORSAT6_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->__transition_list[19]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[19],,!(__GET_EXTERNAL(data__->SENSORSAT6_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[19],,0);
-  }
-  if (__GET_VAR(data__->STEP150.X)) {
-    __SET_VAR(data__->,__transition_list[20],,__GET_EXTERNAL(data__->SENSORSAT7_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[20],,__GET_VAR(data__->__transition_list[20]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[20],,__GET_EXTERNAL(data__->SENSORSAT7_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[20],,0);
-  }
-  if (__GET_VAR(data__->STEP155.X)) {
-    __SET_VAR(data__->,__transition_list[21],,!(__GET_EXTERNAL(data__->SENSORSAT7_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->__transition_list[21]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[21],,!(__GET_EXTERNAL(data__->SENSORSAT7_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[21],,0);
-  }
-  if (__GET_VAR(data__->STEP158.X)) {
-    __SET_VAR(data__->,__transition_list[22],,__GET_EXTERNAL(data__->SENSORAT2_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[22],,__GET_VAR(data__->__transition_list[22]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[22],,__GET_EXTERNAL(data__->SENSORAT2_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[22],,0);
-  }
-  if (__GET_VAR(data__->STEP159.X)) {
-    __SET_VAR(data__->,__transition_list[23],,!(__GET_EXTERNAL(data__->SENSORAT2_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->__transition_list[23]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[23],,!(__GET_EXTERNAL(data__->SENSORAT2_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[23],,0);
-  }
-  if (__GET_VAR(data__->STEP7.X)) {
-    __SET_VAR(data__->,__transition_list[24],,__GET_EXTERNAL(data__->SENSORCT3_EX,));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[24],,__GET_VAR(data__->__transition_list[24]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[24],,__GET_EXTERNAL(data__->SENSORCT3_EX,));
-    }
-    __SET_VAR(data__->,__transition_list[24],,0);
-  }
-  if (__GET_VAR(data__->STEP165.X)) {
-    __SET_VAR(data__->,__transition_list[25],,!(__GET_EXTERNAL(data__->SENSORCT3_EX,)));
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->__transition_list[25]));
-    }
-  }
-  else {
-    if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[25],,!(__GET_EXTERNAL(data__->SENSORCT3_EX,)));
-    }
-    __SET_VAR(data__->,__transition_list[25],,0);
-  }
-
-  // Transitions reset steps
-  if (__GET_VAR(data__->__transition_list[0])) {
-    __SET_VAR(data__->,STEP5.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[1])) {
-    __SET_VAR(data__->,STEP164.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[2])) {
-    __SET_VAR(data__->,STEP6.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[3])) {
-    __SET_VAR(data__->,STEP163.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[4])) {
-    __SET_VAR(data__->,STEP4.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[5])) {
-    __SET_VAR(data__->,STEP162.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[6])) {
-    __SET_VAR(data__->,STEP3.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[7])) {
-    __SET_VAR(data__->,STEP161.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[8])) {
-    __SET_VAR(data__->,STEP2.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[9])) {
-    __SET_VAR(data__->,STEP151.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[10])) {
-    __SET_VAR(data__->,STEP1.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[11])) {
-    __SET_VAR(data__->,STEP149.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[12])) {
-    __SET_VAR(data__->,STEP0.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[13])) {
-    __SET_VAR(data__->,STEP147.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[14])) {
-    __SET_VAR(data__->,STEP148.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[15])) {
-    __SET_VAR(data__->,STEP152.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[16])) {
-    __SET_VAR(data__->,STEP153.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[17])) {
-    __SET_VAR(data__->,STEP154.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[18])) {
-    __SET_VAR(data__->,STEP156.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[19])) {
-    __SET_VAR(data__->,STEP157.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[20])) {
-    __SET_VAR(data__->,STEP150.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[21])) {
-    __SET_VAR(data__->,STEP155.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[22])) {
-    __SET_VAR(data__->,STEP158.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[23])) {
-    __SET_VAR(data__->,STEP159.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[24])) {
-    __SET_VAR(data__->,STEP7.X,,0);
-  }
-  if (__GET_VAR(data__->__transition_list[25])) {
-    __SET_VAR(data__->,STEP165.X,,0);
-  }
-
-  // Transitions set steps
-  if (__GET_VAR(data__->__transition_list[0])) {
-    __SET_VAR(data__->,STEP164.X,,1);
-    data__->STEP164.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[1])) {
-    __SET_VAR(data__->,STEP6.X,,1);
-    data__->STEP6.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[2])) {
-    __SET_VAR(data__->,STEP163.X,,1);
-    data__->STEP163.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[3])) {
-    __SET_VAR(data__->,STEP4.X,,1);
-    data__->STEP4.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[4])) {
-    __SET_VAR(data__->,STEP162.X,,1);
-    data__->STEP162.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[5])) {
-    __SET_VAR(data__->,STEP3.X,,1);
-    data__->STEP3.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[6])) {
-    __SET_VAR(data__->,STEP161.X,,1);
-    data__->STEP161.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[7])) {
-    __SET_VAR(data__->,STEP2.X,,1);
-    data__->STEP2.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[8])) {
-    __SET_VAR(data__->,STEP151.X,,1);
-    data__->STEP151.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[9])) {
-    __SET_VAR(data__->,STEP1.X,,1);
-    data__->STEP1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[10])) {
-    __SET_VAR(data__->,STEP149.X,,1);
-    data__->STEP149.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[11])) {
-    __SET_VAR(data__->,STEP0.X,,1);
-    data__->STEP0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[12])) {
-    __SET_VAR(data__->,STEP147.X,,1);
-    data__->STEP147.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[13])) {
-    __SET_VAR(data__->,STEP148.X,,1);
-    data__->STEP148.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[14])) {
-    __SET_VAR(data__->,STEP152.X,,1);
-    data__->STEP152.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[15])) {
-    __SET_VAR(data__->,STEP153.X,,1);
-    data__->STEP153.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[16])) {
-    __SET_VAR(data__->,STEP154.X,,1);
-    data__->STEP154.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[17])) {
-    __SET_VAR(data__->,STEP156.X,,1);
-    data__->STEP156.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[18])) {
-    __SET_VAR(data__->,STEP157.X,,1);
-    data__->STEP157.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[19])) {
-    __SET_VAR(data__->,STEP150.X,,1);
-    data__->STEP150.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[20])) {
-    __SET_VAR(data__->,STEP155.X,,1);
-    data__->STEP155.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[21])) {
-    __SET_VAR(data__->,STEP158.X,,1);
-    data__->STEP158.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[22])) {
-    __SET_VAR(data__->,STEP159.X,,1);
-    data__->STEP159.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[23])) {
-    __SET_VAR(data__->,STEP160.X,,1);
-    data__->STEP160.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[24])) {
-    __SET_VAR(data__->,STEP165.X,,1);
-    data__->STEP165.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-  if (__GET_VAR(data__->__transition_list[25])) {
-    __SET_VAR(data__->,STEP8.X,,1);
-    data__->STEP8.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
-  }
-
-  // Steps association
-  // STEP164 action associations
-  {
-    char active = __GET_VAR(data__->STEP164.X);
-    char activated = active && !data__->STEP164.prev_state;
-    char desactivated = !active && data__->STEP164.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);};
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);};
-
-  }
-
-  // STEP163 action associations
-  {
-    char active = __GET_VAR(data__->STEP163.X);
-    char activated = active && !data__->STEP163.prev_state;
-    char desactivated = !active && data__->STEP163.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT7_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT7_EX,,0);};
-
-  }
-
-  // STEP162 action associations
-  {
-    char active = __GET_VAR(data__->STEP162.X);
-    char activated = active && !data__->STEP162.prev_state;
-    char desactivated = !active && data__->STEP162.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,0);};
-
-  }
-
-  // STEP161 action associations
-  {
-    char active = __GET_VAR(data__->STEP161.X);
-    char activated = active && !data__->STEP161.prev_state;
-    char desactivated = !active && data__->STEP161.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKMT5_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKMT5_EX,,0);};
-
-  }
-
-  // STEP151 action associations
-  {
-    char active = __GET_VAR(data__->STEP151.X);
-    char activated = active && !data__->STEP151.prev_state;
-    char desactivated = !active && data__->STEP151.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,0);};
-
-  }
-
-  // STEP149 action associations
-  {
-    char active = __GET_VAR(data__->STEP149.X);
-    char activated = active && !data__->STEP149.prev_state;
-    char desactivated = !active && data__->STEP149.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,0);};
-
-  }
-
-  // STEP147 action associations
-  {
-    char active = __GET_VAR(data__->STEP147.X);
-    char activated = active && !data__->STEP147.prev_state;
-    char desactivated = !active && data__->STEP147.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,0);};
-
-  }
-
-  // STEP152 action associations
-  {
-    char active = __GET_VAR(data__->STEP152.X);
-    char activated = active && !data__->STEP152.prev_state;
-    char desactivated = !active && data__->STEP152.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,0);};
-
-  }
-
-  // STEP154 action associations
-  {
-    char active = __GET_VAR(data__->STEP154.X);
-    char activated = active && !data__->STEP154.prev_state;
-    char desactivated = !active && data__->STEP154.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,0);};
-
-  }
-
-  // STEP157 action associations
-  {
-    char active = __GET_VAR(data__->STEP157.X);
-    char activated = active && !data__->STEP157.prev_state;
-    char desactivated = !active && data__->STEP157.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,0);};
-
-  }
-
-  // STEP155 action associations
-  {
-    char active = __GET_VAR(data__->STEP155.X);
-    char activated = active && !data__->STEP155.prev_state;
-    char desactivated = !active && data__->STEP155.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,0);};
-
-    if (active)       {data__->__action_list[__SFC_CELL3BUSY].reset = 1;}
-
-  }
-
-  // STEP165 action associations
-  {
-    char active = __GET_VAR(data__->STEP165.X);
-    char activated = active && !data__->STEP165.prev_state;
-    char desactivated = !active && data__->STEP165.prev_state;
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);};
-
-    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);};
-    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);};
-
-  }
-
-
-  // Actions state evaluation
-  for (i = 0; i < data__->__nb_actions; i++) {
-    if (data__->__action_list[i].set) {
-      data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
-      data__->__action_list[i].stored = 1;
-    }
-    if (data__->__action_list[i].reset) {
-      data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
-      data__->__action_list[i].stored = 0;
-    }
-    __SET_VAR(data__->,__action_list[i].state,,__GET_VAR(data__->__action_list[i].state) | data__->__action_list[i].stored);
-  }
-
-  // Actions execution
-  if (data__->__action_list[__SFC_RUNBACKCT8_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKCT8_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKCT9_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKCT9_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKCT7_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKCT7_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKCT7_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKCT7_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKMT6_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKMT6_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKMT6_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKMT5_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKMT5_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKMT5_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKMT5_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSCT6_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSCT6_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSCT7_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSCT7_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSBT6_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSBT6_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSBT7_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSBT7_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSAT6_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSAT6_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,1);
-  }
-  if (data__->__action_list[__SFC_RUNBACKSAT7_EX].reset) {
-    __SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_RUNBACKSAT7_EX].set) {
-    __SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,1);
-  }
-  if (data__->__action_list[__SFC_PUTPIECEINSIGNAL_EX].reset) {
-    __SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,0);
-  }
-  else if (data__->__action_list[__SFC_PUTPIECEINSIGNAL_EX].set) {
-    __SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,1);
-  }
-  if (data__->__action_list[__SFC_CELL3BUSY].reset) {
-    __SET_LOCATED(data__->,CELL3BUSY,,0);
-  }
-  else if (data__->__action_list[__SFC_CELL3BUSY].set) {
-    __SET_LOCATED(data__->,CELL3BUSY,,1);
-  }
-
-
-  goto __end;
-
-__end:
-  return;
-} // LOADPROGRAM_body__() 
-
-// Steps undefinitions
-#undef STEP5
-#undef __SFC_STEP5
-#undef STEP164
-#undef __SFC_STEP164
-#undef STEP6
-#undef __SFC_STEP6
-#undef STEP163
-#undef __SFC_STEP163
-#undef STEP4
-#undef __SFC_STEP4
-#undef STEP162
-#undef __SFC_STEP162
-#undef STEP3
-#undef __SFC_STEP3
-#undef STEP161
-#undef __SFC_STEP161
-#undef STEP2
-#undef __SFC_STEP2
-#undef STEP151
-#undef __SFC_STEP151
-#undef STEP1
-#undef __SFC_STEP1
-#undef STEP149
-#undef __SFC_STEP149
-#undef STEP0
-#undef __SFC_STEP0
-#undef STEP147
-#undef __SFC_STEP147
-#undef STEP148
-#undef __SFC_STEP148
-#undef STEP152
-#undef __SFC_STEP152
-#undef STEP153
-#undef __SFC_STEP153
-#undef STEP154
-#undef __SFC_STEP154
-#undef STEP156
-#undef __SFC_STEP156
-#undef STEP157
-#undef __SFC_STEP157
-#undef STEP150
-#undef __SFC_STEP150
-#undef STEP155
-#undef __SFC_STEP155
-#undef STEP158
-#undef __SFC_STEP158
-#undef STEP159
-#undef __SFC_STEP159
-#undef STEP160
-#undef __SFC_STEP160
-#undef STEP7
-#undef __SFC_STEP7
-#undef STEP165
-#undef __SFC_STEP165
-#undef STEP8
-#undef __SFC_STEP8
-
-// Actions undefinitions
-#undef __SFC_RUNBACKCT8_EX
-#undef __SFC_RUNBACKCT9_EX
-#undef __SFC_RUNBACKCT7_EX
-#undef __SFC_RUNBACKMT6_EX
-#undef __SFC_RUNBACKMT5_EX
-#undef __SFC_RUNBACKSCT6_EX
-#undef __SFC_RUNBACKSCT7_EX
-#undef __SFC_RUNBACKSBT6_EX
-#undef __SFC_RUNBACKSBT7_EX
-#undef __SFC_RUNBACKSAT6_EX
-#undef __SFC_RUNBACKSAT7_EX
-#undef __SFC_PUTPIECEINSIGNAL_EX
-#undef __SFC_CELL3BUSY
-
-
-
-
-
-void GANTRYPROGRAM_init__(GANTRYPROGRAM *data__, BOOL retain) {
+void GANTRYPROGRAMGOOD_init__(GANTRYPROGRAMGOOD *data__, BOOL retain) {
   __INIT_EXTERNAL(BOOL,SENSORCT6_EX,data__->SENSORCT6_EX,retain)
   __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT1_EX,data__->RECEIVEPIECEMT1_EX,retain)
   __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT2_EX,data__->RECEIVEPIECEMT2_EX,retain)
@@ -14433,7 +13785,7 @@ void GANTRYPROGRAM_init__(GANTRYPROGRAM *data__, BOOL retain) {
 #define __SFC_RECEIVEPIECEMT1_EX 23
 
 // Code part
-void GANTRYPROGRAM_body__(GANTRYPROGRAM *data__) {
+void GANTRYPROGRAMGOOD_body__(GANTRYPROGRAMGOOD *data__) {
   // Initialise TEMP variables
 
   INT i;
@@ -15986,7 +15338,7 @@ void GANTRYPROGRAM_body__(GANTRYPROGRAM *data__) {
 
 __end:
   return;
-} // GANTRYPROGRAM_body__() 
+} // GANTRYPROGRAMGOOD_body__() 
 
 // Steps undefinitions
 #undef STEP9
@@ -16122,6 +15474,3193 @@ __end:
 #undef __SFC_RUNFRONTCT4_EX
 #undef __SFC_RUNFRONTCT5_EX
 #undef __SFC_PUSHTOROLLCT6_EX
+#undef __SFC_RECEIVEPIECEMT1_EX
+
+
+
+
+
+void LOADPROGRAM_init__(LOADPROGRAM *data__, BOOL retain) {
+  __INIT_LOCATED(INT,__IW0_0_2_0,data__->WAREHOUSEIN,retain)
+  __INIT_LOCATED_VALUE(data__->WAREHOUSEIN,0)
+  __INIT_LOCATED(BOOL,__IX0_0_0_0,data__->SENSORAT1,retain)
+  __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
+  __INIT_LOCATED_VALUE(data__->PM,0)
+  __INIT_VAR(data__->INITIALPIECE,0,retain)
+  __INIT_VAR(data__->FINALPIECE,0,retain)
+  __INIT_EXTERNAL(BOOL,WAREHOUSEBUSY,data__->WAREHOUSEBUSY,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTAT1_EX,data__->RUNFRONTAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT1_EX,data__->RUNFRONTSAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT2_EX,data__->RUNFRONTSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT4_EX,data__->RUNFRONTSAT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT1_EX,data__->RUNFRONTSBT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT2_EX,data__->RUNFRONTSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT4_EX,data__->RUNFRONTSBT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT1_EX,data__->RUNFRONTSCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT2_EX,data__->RUNFRONTSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT4_EX,data__->RUNFRONTSCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT1_EX,data__->RUNFRONTMT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT2_EX,data__->RUNFRONTMT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKMT5_EX,data__->RUNBACKMT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT1_EX,data__->RUNFRONTCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT3_EX,data__->RUNFRONTCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT4_EX,data__->RUNFRONTCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT5_EX,data__->RUNFRONTCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSAT7_EX,data__->RUNBACKSAT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSCT7_EX,data__->RUNBACKSCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSBT7_EX,data__->RUNBACKSBT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSBT6_EX,data__->RUNBACKSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSAT6_EX,data__->RUNBACKSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSCT6_EX,data__->RUNBACKSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKCT9_EX,data__->RUNBACKCT9_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKCT3_EX,data__->RUNBACKCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSAT2_EX,data__->SENDDOWNSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSBT2_EX,data__->SENDDOWNSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSCT2_EX,data__->SENDDOWNSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESAT3_EX,data__->TOOLPIECESAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESAT5_EX,data__->TOOLPIECESAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESBT3_EX,data__->TOOLPIECESBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESBT5_EX,data__->TOOLPIECESBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESCT3_EX,data__->TOOLPIECESCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESCT5_EX,data__->TOOLPIECESCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNCT2_EX,data__->SENDDOWNCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORAT1_EX,data__->SENSORAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORAT2_EX,data__->SENSORAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT1_EX,data__->SENSORSAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT2_EX,data__->SENSORSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT3_EX,data__->SENSORSAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT4_EX,data__->SENSORSAT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT5_EX,data__->SENSORSAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT6_EX,data__->SENSORSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT7_EX,data__->SENSORSAT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT1_EX,data__->SENSORSBT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT2_EX,data__->SENSORSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT3_EX,data__->SENSORSBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT4_EX,data__->SENSORSBT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT5_EX,data__->SENSORSBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT6_EX,data__->SENSORSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT7_EX,data__->SENSORSBT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT1_EX,data__->SENSORSCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT2_EX,data__->SENSORSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT3_EX,data__->SENSORSCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT4_EX,data__->SENSORSCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT5_EX,data__->SENSORSCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT6_EX,data__->SENSORSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT7_EX,data__->SENSORSCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT1_EX,data__->SENSORMT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT2_EX,data__->SENSORMT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT1_EX,data__->SENSORCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT2_EX,data__->SENSORCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT3_EX,data__->SENSORCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT4_EX,data__->SENSORCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT5_EX,data__->SENSORCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT7_EX,data__->SENSORCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT8_EX,data__->SENSORCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT9_EX,data__->SENSORCT9_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT6_EX,data__->SENSORMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT5_EX,data__->SENSORMT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT4_EX,data__->PUSHTOROLLCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT5_EX,data__->PUSHTOROLLCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT6_EX,data__->PUSHTOROLLCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSAT6_EX,data__->SENDLEFTDOWNSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSBT6_EX,data__->SENDLEFTDOWNSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSCT6_EX,data__->SENDLEFTDOWNSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNCT8_EX,data__->SENDLEFTDOWNCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKCT8_EX,data__->RUNBACKCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKMT6_EX,data__->RUNBACKMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKCT7_EX,data__->RUNBACKCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUTPIECEINSIGNAL_EX,data__->PUTPIECEINSIGNAL_EX,retain)
+  REMOVEFROMWAREHOUSE_init__(&data__->REMOVEFROMWAREHOUSE0,retain);
+  __INIT_LOCATED(BOOL,__IX0_1_0_1,data__->RUNUNLOAD,retain)
+  __INIT_LOCATED_VALUE(data__->RUNUNLOAD,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_2,data__->RUNTRANSFORMMACH1,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH1,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_3,data__->RUNTRANSFORMMACH2,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH2,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_4,data__->RUNTRANSFORMMACH3,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH3,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__QX0_1_0_5,data__->CELL1BUSY,retain)
+  __INIT_LOCATED_VALUE(data__->CELL1BUSY,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__QX0_1_0_6,data__->CELL2BUSY,retain)
+  __INIT_LOCATED_VALUE(data__->CELL2BUSY,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__QX0_1_0_7,data__->CELL3BUSY,retain)
+  __INIT_LOCATED_VALUE(data__->CELL3BUSY,__BOOL_LITERAL(FALSE))
+  __INIT_EXTERNAL(BOOL,READYTOSENDSAT3_EX,data__->READYTOSENDSAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSAT5_EX,data__->READYTOSENDSAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSBT3_EX,data__->READYTOSENDSBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSBT5_EX,data__->READYTOSENDSBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSCT3_EX,data__->READYTOSENDSCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSCT5_EX,data__->READYTOSENDSCT5_EX,retain)
+  UINT i;
+  data__->__nb_steps = 28;
+  static const STEP temp_step = {{0, 0}, 0, {{0, 0}, 0}};
+  for(i = 0; i < data__->__nb_steps; i++) {
+    data__->__step_list[i] = temp_step;
+  }
+  __SET_VAR(data__->,__step_list[0].X,,1);
+  __SET_VAR(data__->,__step_list[25].X,,1);
+  data__->__nb_actions = 13;
+  static const ACTION temp_action = {0, {0, 0}, 0, 0, {0, 0}, {0, 0}};
+  for(i = 0; i < data__->__nb_actions; i++) {
+    data__->__action_list[i] = temp_action;
+  }
+  data__->__nb_transitions = 26;
+  data__->__lasttick_time = __CURRENT_TIME;
+}
+
+// Steps definitions
+#define STEP5 __step_list[0]
+#define __SFC_STEP5 0
+#define STEP164 __step_list[1]
+#define __SFC_STEP164 1
+#define STEP6 __step_list[2]
+#define __SFC_STEP6 2
+#define STEP163 __step_list[3]
+#define __SFC_STEP163 3
+#define STEP4 __step_list[4]
+#define __SFC_STEP4 4
+#define STEP162 __step_list[5]
+#define __SFC_STEP162 5
+#define STEP3 __step_list[6]
+#define __SFC_STEP3 6
+#define STEP161 __step_list[7]
+#define __SFC_STEP161 7
+#define STEP2 __step_list[8]
+#define __SFC_STEP2 8
+#define STEP151 __step_list[9]
+#define __SFC_STEP151 9
+#define STEP1 __step_list[10]
+#define __SFC_STEP1 10
+#define STEP149 __step_list[11]
+#define __SFC_STEP149 11
+#define STEP0 __step_list[12]
+#define __SFC_STEP0 12
+#define STEP147 __step_list[13]
+#define __SFC_STEP147 13
+#define STEP148 __step_list[14]
+#define __SFC_STEP148 14
+#define STEP152 __step_list[15]
+#define __SFC_STEP152 15
+#define STEP153 __step_list[16]
+#define __SFC_STEP153 16
+#define STEP154 __step_list[17]
+#define __SFC_STEP154 17
+#define STEP156 __step_list[18]
+#define __SFC_STEP156 18
+#define STEP157 __step_list[19]
+#define __SFC_STEP157 19
+#define STEP150 __step_list[20]
+#define __SFC_STEP150 20
+#define STEP155 __step_list[21]
+#define __SFC_STEP155 21
+#define STEP158 __step_list[22]
+#define __SFC_STEP158 22
+#define STEP159 __step_list[23]
+#define __SFC_STEP159 23
+#define STEP160 __step_list[24]
+#define __SFC_STEP160 24
+#define STEP7 __step_list[25]
+#define __SFC_STEP7 25
+#define STEP165 __step_list[26]
+#define __SFC_STEP165 26
+#define STEP8 __step_list[27]
+#define __SFC_STEP8 27
+
+// Actions definitions
+#define __SFC_RUNBACKCT8_EX 0
+#define __SFC_RUNBACKCT9_EX 1
+#define __SFC_RUNBACKCT7_EX 2
+#define __SFC_RUNBACKMT6_EX 3
+#define __SFC_RUNBACKMT5_EX 4
+#define __SFC_RUNBACKSCT6_EX 5
+#define __SFC_RUNBACKSCT7_EX 6
+#define __SFC_RUNBACKSBT6_EX 7
+#define __SFC_RUNBACKSBT7_EX 8
+#define __SFC_RUNBACKSAT6_EX 9
+#define __SFC_RUNBACKSAT7_EX 10
+#define __SFC_PUTPIECEINSIGNAL_EX 11
+#define __SFC_CELL3BUSY 12
+
+// Code part
+void LOADPROGRAM_body__(LOADPROGRAM *data__) {
+  // Initialise TEMP variables
+
+  INT i;
+  TIME elapsed_time, current_time;
+
+  // Calculate elapsed_time
+  current_time = __CURRENT_TIME;
+  elapsed_time = __time_sub(current_time, data__->__lasttick_time);
+  data__->__lasttick_time = current_time;
+  // Transitions initialization
+  if (__DEBUG) {
+    for (i = 0; i < data__->__nb_transitions; i++) {
+      data__->__transition_list[i] = data__->__debug_transition_list[i];
+    }
+  }
+  // Steps initialization
+  for (i = 0; i < data__->__nb_steps; i++) {
+    data__->__step_list[i].prev_state = __GET_VAR(data__->__step_list[i].X);
+    if (__GET_VAR(data__->__step_list[i].X)) {
+      data__->__step_list[i].T.value = __time_add(data__->__step_list[i].T.value, elapsed_time);
+    }
+  }
+  // Actions initialization
+  for (i = 0; i < data__->__nb_actions; i++) {
+    __SET_VAR(data__->,__action_list[i].state,,0);
+    data__->__action_list[i].set = 0;
+    data__->__action_list[i].reset = 0;
+    if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
+      data__->__action_list[i].set_remaining_time = __time_sub(data__->__action_list[i].set_remaining_time, elapsed_time);
+      if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
+        data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+        data__->__action_list[i].set = 1;
+      }
+    }
+    if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
+      data__->__action_list[i].reset_remaining_time = __time_sub(data__->__action_list[i].reset_remaining_time, elapsed_time);
+      if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
+        data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+        data__->__action_list[i].reset = 1;
+      }
+    }
+  }
+
+  // Transitions fire test
+  if (__GET_VAR(data__->STEP5.X)) {
+    __SET_VAR(data__->,__transition_list[0],,__GET_EXTERNAL(data__->SENSORCT9_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[0],,__GET_VAR(data__->__transition_list[0]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[0],,__GET_EXTERNAL(data__->SENSORCT9_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[0],,0);
+  }
+  if (__GET_VAR(data__->STEP164.X)) {
+    __SET_VAR(data__->,__transition_list[1],,!(__GET_EXTERNAL(data__->SENSORCT9_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[1],,__GET_VAR(data__->__transition_list[1]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[1],,!(__GET_EXTERNAL(data__->SENSORCT9_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[1],,0);
+  }
+  if (__GET_VAR(data__->STEP6.X)) {
+    __SET_VAR(data__->,__transition_list[2],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[2],,__GET_VAR(data__->__transition_list[2]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[2],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[2],,0);
+  }
+  if (__GET_VAR(data__->STEP163.X)) {
+    __SET_VAR(data__->,__transition_list[3],,!(__GET_EXTERNAL(data__->SENSORCT8_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[3],,__GET_VAR(data__->__transition_list[3]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[3],,!(__GET_EXTERNAL(data__->SENSORCT8_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[3],,0);
+  }
+  if (__GET_VAR(data__->STEP4.X)) {
+    __SET_VAR(data__->,__transition_list[4],,__GET_EXTERNAL(data__->SENSORCT7_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[4],,__GET_VAR(data__->__transition_list[4]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[4],,__GET_EXTERNAL(data__->SENSORCT7_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[4],,0);
+  }
+  if (__GET_VAR(data__->STEP162.X)) {
+    __SET_VAR(data__->,__transition_list[5],,!(__GET_EXTERNAL(data__->SENSORCT7_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[5],,__GET_VAR(data__->__transition_list[5]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[5],,!(__GET_EXTERNAL(data__->SENSORCT7_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[5],,0);
+  }
+  if (__GET_VAR(data__->STEP3.X)) {
+    __SET_VAR(data__->,__transition_list[6],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[6],,__GET_VAR(data__->__transition_list[6]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[6],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[6],,0);
+  }
+  if (__GET_VAR(data__->STEP161.X)) {
+    __SET_VAR(data__->,__transition_list[7],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[7],,__GET_VAR(data__->__transition_list[7]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[7],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[7],,0);
+  }
+  if (__GET_VAR(data__->STEP2.X)) {
+    __SET_VAR(data__->,__transition_list[8],,__GET_EXTERNAL(data__->SENSORMT5_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[8],,__GET_VAR(data__->__transition_list[8]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[8],,__GET_EXTERNAL(data__->SENSORMT5_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[8],,0);
+  }
+  if (__GET_VAR(data__->STEP151.X)) {
+    __SET_VAR(data__->,__transition_list[9],,!(__GET_EXTERNAL(data__->SENSORMT5_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[9],,__GET_VAR(data__->__transition_list[9]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[9],,!(__GET_EXTERNAL(data__->SENSORMT5_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[9],,0);
+  }
+  if (__GET_VAR(data__->STEP1.X)) {
+    __SET_VAR(data__->,__transition_list[10],,__GET_EXTERNAL(data__->SENSORSCT6_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[10],,__GET_VAR(data__->__transition_list[10]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[10],,__GET_EXTERNAL(data__->SENSORSCT6_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[10],,0);
+  }
+  if (__GET_VAR(data__->STEP149.X)) {
+    __SET_VAR(data__->,__transition_list[11],,!(__GET_EXTERNAL(data__->SENSORSCT6_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[11],,__GET_VAR(data__->__transition_list[11]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[11],,!(__GET_EXTERNAL(data__->SENSORSCT6_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[11],,0);
+  }
+  if (__GET_VAR(data__->STEP0.X)) {
+    __SET_VAR(data__->,__transition_list[12],,__GET_EXTERNAL(data__->SENSORSCT7_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->__transition_list[12]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[12],,__GET_EXTERNAL(data__->SENSORSCT7_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[12],,0);
+  }
+  if (__GET_VAR(data__->STEP147.X)) {
+    __SET_VAR(data__->,__transition_list[13],,!(__GET_EXTERNAL(data__->SENSORSCT7_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->__transition_list[13]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[13],,!(__GET_EXTERNAL(data__->SENSORSCT7_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[13],,0);
+  }
+  if (__GET_VAR(data__->STEP148.X)) {
+    __SET_VAR(data__->,__transition_list[14],,__GET_EXTERNAL(data__->SENSORSBT6_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->__transition_list[14]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[14],,__GET_EXTERNAL(data__->SENSORSBT6_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[14],,0);
+  }
+  if (__GET_VAR(data__->STEP152.X)) {
+    __SET_VAR(data__->,__transition_list[15],,!(__GET_EXTERNAL(data__->SENSORSBT6_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[15],,__GET_VAR(data__->__transition_list[15]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[15],,!(__GET_EXTERNAL(data__->SENSORSBT6_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[15],,0);
+  }
+  if (__GET_VAR(data__->STEP153.X)) {
+    __SET_VAR(data__->,__transition_list[16],,__GET_EXTERNAL(data__->SENSORSBT7_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[16],,__GET_VAR(data__->__transition_list[16]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[16],,__GET_EXTERNAL(data__->SENSORSBT7_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[16],,0);
+  }
+  if (__GET_VAR(data__->STEP154.X)) {
+    __SET_VAR(data__->,__transition_list[17],,!(__GET_EXTERNAL(data__->SENSORSBT7_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[17],,__GET_VAR(data__->__transition_list[17]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[17],,!(__GET_EXTERNAL(data__->SENSORSBT7_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[17],,0);
+  }
+  if (__GET_VAR(data__->STEP156.X)) {
+    __SET_VAR(data__->,__transition_list[18],,__GET_EXTERNAL(data__->SENSORSAT6_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[18],,__GET_VAR(data__->__transition_list[18]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[18],,__GET_EXTERNAL(data__->SENSORSAT6_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[18],,0);
+  }
+  if (__GET_VAR(data__->STEP157.X)) {
+    __SET_VAR(data__->,__transition_list[19],,!(__GET_EXTERNAL(data__->SENSORSAT6_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->__transition_list[19]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[19],,!(__GET_EXTERNAL(data__->SENSORSAT6_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[19],,0);
+  }
+  if (__GET_VAR(data__->STEP150.X)) {
+    __SET_VAR(data__->,__transition_list[20],,__GET_EXTERNAL(data__->SENSORSAT7_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[20],,__GET_VAR(data__->__transition_list[20]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[20],,__GET_EXTERNAL(data__->SENSORSAT7_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[20],,0);
+  }
+  if (__GET_VAR(data__->STEP155.X)) {
+    __SET_VAR(data__->,__transition_list[21],,!(__GET_EXTERNAL(data__->SENSORSAT7_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->__transition_list[21]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[21],,!(__GET_EXTERNAL(data__->SENSORSAT7_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[21],,0);
+  }
+  if (__GET_VAR(data__->STEP158.X)) {
+    __SET_VAR(data__->,__transition_list[22],,__GET_EXTERNAL(data__->SENSORAT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[22],,__GET_VAR(data__->__transition_list[22]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[22],,__GET_EXTERNAL(data__->SENSORAT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[22],,0);
+  }
+  if (__GET_VAR(data__->STEP159.X)) {
+    __SET_VAR(data__->,__transition_list[23],,!(__GET_EXTERNAL(data__->SENSORAT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->__transition_list[23]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[23],,!(__GET_EXTERNAL(data__->SENSORAT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[23],,0);
+  }
+  if (__GET_VAR(data__->STEP7.X)) {
+    __SET_VAR(data__->,__transition_list[24],,__GET_EXTERNAL(data__->SENSORCT3_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[24],,__GET_VAR(data__->__transition_list[24]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[24],,__GET_EXTERNAL(data__->SENSORCT3_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[24],,0);
+  }
+  if (__GET_VAR(data__->STEP165.X)) {
+    __SET_VAR(data__->,__transition_list[25],,!(__GET_EXTERNAL(data__->SENSORCT3_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->__transition_list[25]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[25],,!(__GET_EXTERNAL(data__->SENSORCT3_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[25],,0);
+  }
+
+  // Transitions reset steps
+  if (__GET_VAR(data__->__transition_list[0])) {
+    __SET_VAR(data__->,STEP5.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[1])) {
+    __SET_VAR(data__->,STEP164.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[2])) {
+    __SET_VAR(data__->,STEP6.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[3])) {
+    __SET_VAR(data__->,STEP163.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[4])) {
+    __SET_VAR(data__->,STEP4.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[5])) {
+    __SET_VAR(data__->,STEP162.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[6])) {
+    __SET_VAR(data__->,STEP3.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[7])) {
+    __SET_VAR(data__->,STEP161.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[8])) {
+    __SET_VAR(data__->,STEP2.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[9])) {
+    __SET_VAR(data__->,STEP151.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[10])) {
+    __SET_VAR(data__->,STEP1.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[11])) {
+    __SET_VAR(data__->,STEP149.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[12])) {
+    __SET_VAR(data__->,STEP0.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[13])) {
+    __SET_VAR(data__->,STEP147.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[14])) {
+    __SET_VAR(data__->,STEP148.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[15])) {
+    __SET_VAR(data__->,STEP152.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[16])) {
+    __SET_VAR(data__->,STEP153.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[17])) {
+    __SET_VAR(data__->,STEP154.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[18])) {
+    __SET_VAR(data__->,STEP156.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[19])) {
+    __SET_VAR(data__->,STEP157.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[20])) {
+    __SET_VAR(data__->,STEP150.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[21])) {
+    __SET_VAR(data__->,STEP155.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[22])) {
+    __SET_VAR(data__->,STEP158.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[23])) {
+    __SET_VAR(data__->,STEP159.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[24])) {
+    __SET_VAR(data__->,STEP7.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[25])) {
+    __SET_VAR(data__->,STEP165.X,,0);
+  }
+
+  // Transitions set steps
+  if (__GET_VAR(data__->__transition_list[0])) {
+    __SET_VAR(data__->,STEP164.X,,1);
+    data__->STEP164.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[1])) {
+    __SET_VAR(data__->,STEP6.X,,1);
+    data__->STEP6.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[2])) {
+    __SET_VAR(data__->,STEP163.X,,1);
+    data__->STEP163.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[3])) {
+    __SET_VAR(data__->,STEP4.X,,1);
+    data__->STEP4.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[4])) {
+    __SET_VAR(data__->,STEP162.X,,1);
+    data__->STEP162.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[5])) {
+    __SET_VAR(data__->,STEP3.X,,1);
+    data__->STEP3.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[6])) {
+    __SET_VAR(data__->,STEP161.X,,1);
+    data__->STEP161.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[7])) {
+    __SET_VAR(data__->,STEP2.X,,1);
+    data__->STEP2.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[8])) {
+    __SET_VAR(data__->,STEP151.X,,1);
+    data__->STEP151.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[9])) {
+    __SET_VAR(data__->,STEP1.X,,1);
+    data__->STEP1.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[10])) {
+    __SET_VAR(data__->,STEP149.X,,1);
+    data__->STEP149.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[11])) {
+    __SET_VAR(data__->,STEP0.X,,1);
+    data__->STEP0.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[12])) {
+    __SET_VAR(data__->,STEP147.X,,1);
+    data__->STEP147.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[13])) {
+    __SET_VAR(data__->,STEP148.X,,1);
+    data__->STEP148.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[14])) {
+    __SET_VAR(data__->,STEP152.X,,1);
+    data__->STEP152.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[15])) {
+    __SET_VAR(data__->,STEP153.X,,1);
+    data__->STEP153.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[16])) {
+    __SET_VAR(data__->,STEP154.X,,1);
+    data__->STEP154.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[17])) {
+    __SET_VAR(data__->,STEP156.X,,1);
+    data__->STEP156.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[18])) {
+    __SET_VAR(data__->,STEP157.X,,1);
+    data__->STEP157.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[19])) {
+    __SET_VAR(data__->,STEP150.X,,1);
+    data__->STEP150.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[20])) {
+    __SET_VAR(data__->,STEP155.X,,1);
+    data__->STEP155.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[21])) {
+    __SET_VAR(data__->,STEP158.X,,1);
+    data__->STEP158.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[22])) {
+    __SET_VAR(data__->,STEP159.X,,1);
+    data__->STEP159.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[23])) {
+    __SET_VAR(data__->,STEP160.X,,1);
+    data__->STEP160.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[24])) {
+    __SET_VAR(data__->,STEP165.X,,1);
+    data__->STEP165.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[25])) {
+    __SET_VAR(data__->,STEP8.X,,1);
+    data__->STEP8.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+
+  // Steps association
+  // STEP164 action associations
+  {
+    char active = __GET_VAR(data__->STEP164.X);
+    char activated = active && !data__->STEP164.prev_state;
+    char desactivated = !active && data__->STEP164.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);};
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);};
+
+  }
+
+  // STEP163 action associations
+  {
+    char active = __GET_VAR(data__->STEP163.X);
+    char activated = active && !data__->STEP163.prev_state;
+    char desactivated = !active && data__->STEP163.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT7_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT7_EX,,0);};
+
+  }
+
+  // STEP162 action associations
+  {
+    char active = __GET_VAR(data__->STEP162.X);
+    char activated = active && !data__->STEP162.prev_state;
+    char desactivated = !active && data__->STEP162.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,0);};
+
+  }
+
+  // STEP161 action associations
+  {
+    char active = __GET_VAR(data__->STEP161.X);
+    char activated = active && !data__->STEP161.prev_state;
+    char desactivated = !active && data__->STEP161.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKMT5_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKMT5_EX,,0);};
+
+  }
+
+  // STEP151 action associations
+  {
+    char active = __GET_VAR(data__->STEP151.X);
+    char activated = active && !data__->STEP151.prev_state;
+    char desactivated = !active && data__->STEP151.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,0);};
+
+  }
+
+  // STEP149 action associations
+  {
+    char active = __GET_VAR(data__->STEP149.X);
+    char activated = active && !data__->STEP149.prev_state;
+    char desactivated = !active && data__->STEP149.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,0);};
+
+  }
+
+  // STEP147 action associations
+  {
+    char active = __GET_VAR(data__->STEP147.X);
+    char activated = active && !data__->STEP147.prev_state;
+    char desactivated = !active && data__->STEP147.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,0);};
+
+  }
+
+  // STEP152 action associations
+  {
+    char active = __GET_VAR(data__->STEP152.X);
+    char activated = active && !data__->STEP152.prev_state;
+    char desactivated = !active && data__->STEP152.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,0);};
+
+  }
+
+  // STEP154 action associations
+  {
+    char active = __GET_VAR(data__->STEP154.X);
+    char activated = active && !data__->STEP154.prev_state;
+    char desactivated = !active && data__->STEP154.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,0);};
+
+  }
+
+  // STEP157 action associations
+  {
+    char active = __GET_VAR(data__->STEP157.X);
+    char activated = active && !data__->STEP157.prev_state;
+    char desactivated = !active && data__->STEP157.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,0);};
+
+  }
+
+  // STEP155 action associations
+  {
+    char active = __GET_VAR(data__->STEP155.X);
+    char activated = active && !data__->STEP155.prev_state;
+    char desactivated = !active && data__->STEP155.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,0);};
+
+    if (active)       {data__->__action_list[__SFC_CELL3BUSY].reset = 1;}
+
+  }
+
+  // STEP165 action associations
+  {
+    char active = __GET_VAR(data__->STEP165.X);
+    char activated = active && !data__->STEP165.prev_state;
+    char desactivated = !active && data__->STEP165.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);};
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);};
+
+  }
+
+
+  // Actions state evaluation
+  for (i = 0; i < data__->__nb_actions; i++) {
+    if (data__->__action_list[i].set) {
+      data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+      data__->__action_list[i].stored = 1;
+    }
+    if (data__->__action_list[i].reset) {
+      data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+      data__->__action_list[i].stored = 0;
+    }
+    __SET_VAR(data__->,__action_list[i].state,,__GET_VAR(data__->__action_list[i].state) | data__->__action_list[i].stored);
+  }
+
+  // Actions execution
+  if (data__->__action_list[__SFC_RUNBACKCT8_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKCT8_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKCT9_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKCT9_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKCT7_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKCT7_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKCT7_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKCT7_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKMT6_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKMT6_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKMT6_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKMT5_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKMT5_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKMT5_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKMT5_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSCT6_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSCT6_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSCT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSCT7_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSCT7_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSCT7_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSBT6_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSBT6_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSBT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSBT7_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSBT7_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSBT7_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSAT6_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSAT6_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSAT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNBACKSAT7_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNBACKSAT7_EX].set) {
+    __SET_EXTERNAL(data__->,RUNBACKSAT7_EX,,1);
+  }
+  if (data__->__action_list[__SFC_PUTPIECEINSIGNAL_EX].reset) {
+    __SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_PUTPIECEINSIGNAL_EX].set) {
+    __SET_EXTERNAL(data__->,PUTPIECEINSIGNAL_EX,,1);
+  }
+  if (data__->__action_list[__SFC_CELL3BUSY].reset) {
+    __SET_LOCATED(data__->,CELL3BUSY,,0);
+  }
+  else if (data__->__action_list[__SFC_CELL3BUSY].set) {
+    __SET_LOCATED(data__->,CELL3BUSY,,1);
+  }
+
+
+  goto __end;
+
+__end:
+  return;
+} // LOADPROGRAM_body__() 
+
+// Steps undefinitions
+#undef STEP5
+#undef __SFC_STEP5
+#undef STEP164
+#undef __SFC_STEP164
+#undef STEP6
+#undef __SFC_STEP6
+#undef STEP163
+#undef __SFC_STEP163
+#undef STEP4
+#undef __SFC_STEP4
+#undef STEP162
+#undef __SFC_STEP162
+#undef STEP3
+#undef __SFC_STEP3
+#undef STEP161
+#undef __SFC_STEP161
+#undef STEP2
+#undef __SFC_STEP2
+#undef STEP151
+#undef __SFC_STEP151
+#undef STEP1
+#undef __SFC_STEP1
+#undef STEP149
+#undef __SFC_STEP149
+#undef STEP0
+#undef __SFC_STEP0
+#undef STEP147
+#undef __SFC_STEP147
+#undef STEP148
+#undef __SFC_STEP148
+#undef STEP152
+#undef __SFC_STEP152
+#undef STEP153
+#undef __SFC_STEP153
+#undef STEP154
+#undef __SFC_STEP154
+#undef STEP156
+#undef __SFC_STEP156
+#undef STEP157
+#undef __SFC_STEP157
+#undef STEP150
+#undef __SFC_STEP150
+#undef STEP155
+#undef __SFC_STEP155
+#undef STEP158
+#undef __SFC_STEP158
+#undef STEP159
+#undef __SFC_STEP159
+#undef STEP160
+#undef __SFC_STEP160
+#undef STEP7
+#undef __SFC_STEP7
+#undef STEP165
+#undef __SFC_STEP165
+#undef STEP8
+#undef __SFC_STEP8
+
+// Actions undefinitions
+#undef __SFC_RUNBACKCT8_EX
+#undef __SFC_RUNBACKCT9_EX
+#undef __SFC_RUNBACKCT7_EX
+#undef __SFC_RUNBACKMT6_EX
+#undef __SFC_RUNBACKMT5_EX
+#undef __SFC_RUNBACKSCT6_EX
+#undef __SFC_RUNBACKSCT7_EX
+#undef __SFC_RUNBACKSBT6_EX
+#undef __SFC_RUNBACKSBT7_EX
+#undef __SFC_RUNBACKSAT6_EX
+#undef __SFC_RUNBACKSAT7_EX
+#undef __SFC_PUTPIECEINSIGNAL_EX
+#undef __SFC_CELL3BUSY
+
+
+
+
+
+void GANTRYPROGRAM_init__(GANTRYPROGRAM *data__, BOOL retain) {
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT7_EX,data__->RUNFRONTCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT8_EX,data__->SENSORCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDUPRIGHTMT6_EX,data__->SENDUPRIGHTMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDRIGHTUPCT8_EX,data__->SENDRIGHTUPCT8_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT3_EX,data__->RUNFRONTMT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT4_EX,data__->RUNFRONTMT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT6_EX,data__->SENSORCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT3_EX,data__->SENSORMT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT4_EX,data__->SENSORMT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT6_EX,data__->SENSORMT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT1_EX,data__->RECEIVEPIECEMT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT2_EX,data__->RECEIVEPIECEMT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RECEIVEPIECEMT4_EX,data__->RECEIVEPIECEMT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNMT2_EX,data__->SENDDOWNMT2_EX,retain)
+  __INIT_LOCATED(BOOL,__IX0_1_0_8,data__->MOUNT,retain)
+  __INIT_LOCATED_VALUE(data__->MOUNT,__BOOL_LITERAL(FALSE))
+  __INIT_EXTERNAL(BOOL,GANTRYBUSY_EX,data__->GANTRYBUSY_EX,retain)
+  __INIT_EXTERNAL(BOOL,PICKPIECE_EX,data__->PICKPIECE_EX,retain)
+  __INIT_EXTERNAL(BOOL,RELEASEPIECE_EX,data__->RELEASEPIECE_EX,retain)
+  __INIT_EXTERNAL(BOOL,X0Y0_EX,data__->X0Y0_EX,retain)
+  __INIT_EXTERNAL(BOOL,X0Y1_EX,data__->X0Y1_EX,retain)
+  __INIT_EXTERNAL(BOOL,X0Y2_EX,data__->X0Y2_EX,retain)
+  __INIT_EXTERNAL(BOOL,X0Y3_EX,data__->X0Y3_EX,retain)
+  __INIT_EXTERNAL(BOOL,X0Y4_EX,data__->X0Y4_EX,retain)
+  __INIT_EXTERNAL(BOOL,X1Y0_EX,data__->X1Y0_EX,retain)
+  __INIT_EXTERNAL(BOOL,X1Y1_EX,data__->X1Y1_EX,retain)
+  __INIT_EXTERNAL(BOOL,X1Y2_EX,data__->X1Y2_EX,retain)
+  __INIT_EXTERNAL(BOOL,X1Y3_EX,data__->X1Y3_EX,retain)
+  __INIT_EXTERNAL(BOOL,X1Y4_EX,data__->X1Y4_EX,retain)
+  __INIT_LOCATED(INT,__IW0_0_2_0,data__->WAREHOUSEIN,retain)
+  __INIT_LOCATED_VALUE(data__->WAREHOUSEIN,0)
+  __INIT_LOCATED(BOOL,__IX0_0_0_0,data__->SENSORAT1,retain)
+  __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
+  __INIT_LOCATED_VALUE(data__->PM,0)
+  __INIT_LOCATED(INT,__IW0_1_1_5,data__->BOTTOMPIECE,retain)
+  __INIT_LOCATED_VALUE(data__->BOTTOMPIECE,0)
+  __INIT_LOCATED(INT,__IW0_1_1_1,data__->TOPPIECE,retain)
+  __INIT_LOCATED_VALUE(data__->TOPPIECE,0)
+  __INIT_VAR(data__->PIECETOUNLOAD,1,retain)
+  __INIT_LOCATED(BOOL,__QX0_1_0_0,data__->WAREHOUSEBUSY,retain)
+  __INIT_LOCATED_VALUE(data__->WAREHOUSEBUSY,__BOOL_LITERAL(FALSE))
+  __INIT_EXTERNAL(BOOL,RUNFRONTAT1_EX,data__->RUNFRONTAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT1_EX,data__->RUNFRONTSAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT2_EX,data__->RUNFRONTSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSAT4_EX,data__->RUNFRONTSAT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT1_EX,data__->RUNFRONTSBT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT2_EX,data__->RUNFRONTSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSBT4_EX,data__->RUNFRONTSBT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT1_EX,data__->RUNFRONTSCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT2_EX,data__->RUNFRONTSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTSCT4_EX,data__->RUNFRONTSCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT1_EX,data__->RUNFRONTMT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTMT2_EX,data__->RUNFRONTMT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT1_EX,data__->RUNFRONTCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT4_EX,data__->RUNFRONTCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNFRONTCT5_EX,data__->RUNFRONTCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSAT7_EX,data__->RUNBACKSAT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSCT7_EX,data__->RUNBACKSCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSBT7_EX,data__->RUNBACKSBT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSBT6_EX,data__->RUNBACKSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,RUNBACKSAT6_EX,data__->RUNBACKSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSAT2_EX,data__->SENDDOWNSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSBT2_EX,data__->SENDDOWNSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNSCT2_EX,data__->SENDDOWNSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESAT3_EX,data__->TOOLPIECESAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESAT5_EX,data__->TOOLPIECESAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESBT3_EX,data__->TOOLPIECESBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESBT5_EX,data__->TOOLPIECESBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESCT3_EX,data__->TOOLPIECESCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,TOOLPIECESCT5_EX,data__->TOOLPIECESCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDDOWNCT2_EX,data__->SENDDOWNCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORAT1_EX,data__->SENSORAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORAT2_EX,data__->SENSORAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT1_EX,data__->SENSORSAT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT2_EX,data__->SENSORSAT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT3_EX,data__->SENSORSAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT4_EX,data__->SENSORSAT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT5_EX,data__->SENSORSAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT6_EX,data__->SENSORSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSAT7_EX,data__->SENSORSAT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT1_EX,data__->SENSORSBT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT2_EX,data__->SENSORSBT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT3_EX,data__->SENSORSBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT4_EX,data__->SENSORSBT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT5_EX,data__->SENSORSBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT6_EX,data__->SENSORSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSBT7_EX,data__->SENSORSBT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT1_EX,data__->SENSORSCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT2_EX,data__->SENSORSCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT3_EX,data__->SENSORSCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT4_EX,data__->SENSORSCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT5_EX,data__->SENSORSCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT6_EX,data__->SENSORSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORSCT7_EX,data__->SENSORSCT7_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT1_EX,data__->SENSORMT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORMT2_EX,data__->SENSORMT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT1_EX,data__->SENSORCT1_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT2_EX,data__->SENSORCT2_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT4_EX,data__->SENSORCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENSORCT5_EX,data__->SENSORCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT4_EX,data__->PUSHTOROLLCT4_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT5_EX,data__->PUSHTOROLLCT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUSHTOROLLCT6_EX,data__->PUSHTOROLLCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSAT6_EX,data__->SENDLEFTDOWNSAT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSBT6_EX,data__->SENDLEFTDOWNSBT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,SENDLEFTDOWNSCT6_EX,data__->SENDLEFTDOWNSCT6_EX,retain)
+  __INIT_EXTERNAL(BOOL,PUTPIECEINSIGNAL_EX,data__->PUTPIECEINSIGNAL_EX,retain)
+  REMOVEFROMWAREHOUSE_init__(&data__->REMOVEFROMWAREHOUSE0,retain);
+  __INIT_LOCATED(BOOL,__IX0_1_0_1,data__->RUNUNLOAD,retain)
+  __INIT_LOCATED_VALUE(data__->RUNUNLOAD,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_2,data__->RUNTRANSFORMMACH1,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH1,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_3,data__->RUNTRANSFORMMACH2,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH2,__BOOL_LITERAL(FALSE))
+  __INIT_LOCATED(BOOL,__IX0_1_0_4,data__->RUNTRANSFORMMACH3,retain)
+  __INIT_LOCATED_VALUE(data__->RUNTRANSFORMMACH3,__BOOL_LITERAL(FALSE))
+  __INIT_EXTERNAL(BOOL,READYTOSENDSAT3_EX,data__->READYTOSENDSAT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSAT5_EX,data__->READYTOSENDSAT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSBT3_EX,data__->READYTOSENDSBT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSBT5_EX,data__->READYTOSENDSBT5_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSCT3_EX,data__->READYTOSENDSCT3_EX,retain)
+  __INIT_EXTERNAL(BOOL,READYTOSENDSCT5_EX,data__->READYTOSENDSCT5_EX,retain)
+  UINT i;
+  data__->__nb_steps = 60;
+  static const STEP temp_step = {{0, 0}, 0, {{0, 0}, 0}};
+  for(i = 0; i < data__->__nb_steps; i++) {
+    data__->__step_list[i] = temp_step;
+  }
+  __SET_VAR(data__->,__step_list[0].X,,1);
+  data__->__nb_actions = 23;
+  static const ACTION temp_action = {0, {0, 0}, 0, 0, {0, 0}, {0, 0}};
+  for(i = 0; i < data__->__nb_actions; i++) {
+    data__->__action_list[i] = temp_action;
+  }
+  data__->__nb_transitions = 58;
+  data__->__lasttick_time = __CURRENT_TIME;
+}
+
+// Steps definitions
+#define STEP9 __step_list[0]
+#define __SFC_STEP9 0
+#define STEP30 __step_list[1]
+#define __SFC_STEP30 1
+#define STEP12 __step_list[2]
+#define __SFC_STEP12 2
+#define STEP11 __step_list[3]
+#define __SFC_STEP11 3
+#define STEP10 __step_list[4]
+#define __SFC_STEP10 4
+#define STEP13 __step_list[5]
+#define __SFC_STEP13 5
+#define STEP15 __step_list[6]
+#define __SFC_STEP15 6
+#define STEP16 __step_list[7]
+#define __SFC_STEP16 7
+#define STEP17 __step_list[8]
+#define __SFC_STEP17 8
+#define STEP18 __step_list[9]
+#define __SFC_STEP18 9
+#define STEP19 __step_list[10]
+#define __SFC_STEP19 10
+#define STEP20 __step_list[11]
+#define __SFC_STEP20 11
+#define STEP21 __step_list[12]
+#define __SFC_STEP21 12
+#define STEP22 __step_list[13]
+#define __SFC_STEP22 13
+#define STEP23 __step_list[14]
+#define __SFC_STEP23 14
+#define STEP24 __step_list[15]
+#define __SFC_STEP24 15
+#define STEP25 __step_list[16]
+#define __SFC_STEP25 16
+#define STEP26 __step_list[17]
+#define __SFC_STEP26 17
+#define STEP39 __step_list[18]
+#define __SFC_STEP39 18
+#define STEP53 __step_list[19]
+#define __SFC_STEP53 19
+#define STEP54 __step_list[20]
+#define __SFC_STEP54 20
+#define STEP56 __step_list[21]
+#define __SFC_STEP56 21
+#define STEP55 __step_list[22]
+#define __SFC_STEP55 22
+#define STEP57 __step_list[23]
+#define __SFC_STEP57 23
+#define STEP58 __step_list[24]
+#define __SFC_STEP58 24
+#define STEP59 __step_list[25]
+#define __SFC_STEP59 25
+#define STEP60 __step_list[26]
+#define __SFC_STEP60 26
+#define STEP61 __step_list[27]
+#define __SFC_STEP61 27
+#define STEP62 __step_list[28]
+#define __SFC_STEP62 28
+#define STEP63 __step_list[29]
+#define __SFC_STEP63 29
+#define STEP64 __step_list[30]
+#define __SFC_STEP64 30
+#define STEP65 __step_list[31]
+#define __SFC_STEP65 31
+#define STEP66 __step_list[32]
+#define __SFC_STEP66 32
+#define STEP67 __step_list[33]
+#define __SFC_STEP67 33
+#define STEP68 __step_list[34]
+#define __SFC_STEP68 34
+#define STEP69 __step_list[35]
+#define __SFC_STEP69 35
+#define STEP70 __step_list[36]
+#define __SFC_STEP70 36
+#define STEP71 __step_list[37]
+#define __SFC_STEP71 37
+#define STEP72 __step_list[38]
+#define __SFC_STEP72 38
+#define STEP73 __step_list[39]
+#define __SFC_STEP73 39
+#define STEP74 __step_list[40]
+#define __SFC_STEP74 40
+#define STEP75 __step_list[41]
+#define __SFC_STEP75 41
+#define STEP14 __step_list[42]
+#define __SFC_STEP14 42
+#define SENDTOP __step_list[43]
+#define __SFC_SENDTOP 43
+#define STEP28 __step_list[44]
+#define __SFC_STEP28 44
+#define STEP42 __step_list[45]
+#define __SFC_STEP42 45
+#define STEP41 __step_list[46]
+#define __SFC_STEP41 46
+#define STEP43 __step_list[47]
+#define __SFC_STEP43 47
+#define STEP45 __step_list[48]
+#define __SFC_STEP45 48
+#define STEP29 __step_list[49]
+#define __SFC_STEP29 49
+#define STEP31 __step_list[50]
+#define __SFC_STEP31 50
+#define STEP32 __step_list[51]
+#define __SFC_STEP32 51
+#define STEP33 __step_list[52]
+#define __SFC_STEP33 52
+#define STEP34 __step_list[53]
+#define __SFC_STEP34 53
+#define STEP35 __step_list[54]
+#define __SFC_STEP35 54
+#define STEP36 __step_list[55]
+#define __SFC_STEP36 55
+#define STEP37 __step_list[56]
+#define __SFC_STEP37 56
+#define STEP38 __step_list[57]
+#define __SFC_STEP38 57
+#define STEP40 __step_list[58]
+#define __SFC_STEP40 58
+#define STEP44 __step_list[59]
+#define __SFC_STEP44 59
+
+// Actions definitions
+#define __SFC_ACTION0 0
+#define __SFC_WAREHOUSEBUSY 1
+#define __SFC_MOUNT 2
+#define __SFC_RUNFRONTSAT1_EX 3
+#define __SFC_RUNFRONTAT1_EX 4
+#define __SFC_RUNFRONTSAT2_EX 5
+#define __SFC_RUNFRONTSBT1_EX 6
+#define __SFC_RUNFRONTSBT2_EX 7
+#define __SFC_RUNFRONTSCT1_EX 8
+#define __SFC_RUNFRONTSCT2_EX 9
+#define __SFC_RUNFRONTMT1_EX 10
+#define __SFC_SENDDOWNMT2_EX 11
+#define __SFC_RUNFRONTMT3_EX 12
+#define __SFC_RECEIVEPIECEMT4_EX 13
+#define __SFC_X1Y3_EX 14
+#define __SFC_PICKPIECE_EX 15
+#define __SFC_X0Y3_EX 16
+#define __SFC_RELEASEPIECE_EX 17
+#define __SFC_SENDUPRIGHTMT6_EX 18
+#define __SFC_RUNFRONTMT4_EX 19
+#define __SFC_RUNFRONTCT7_EX 20
+#define __SFC_SENDRIGHTUPCT8_EX 21
+#define __SFC_RECEIVEPIECEMT1_EX 22
+
+// Code part
+void GANTRYPROGRAM_body__(GANTRYPROGRAM *data__) {
+  // Initialise TEMP variables
+
+  INT i;
+  TIME elapsed_time, current_time;
+
+  // Calculate elapsed_time
+  current_time = __CURRENT_TIME;
+  elapsed_time = __time_sub(current_time, data__->__lasttick_time);
+  data__->__lasttick_time = current_time;
+  // Transitions initialization
+  if (__DEBUG) {
+    for (i = 0; i < data__->__nb_transitions; i++) {
+      data__->__transition_list[i] = data__->__debug_transition_list[i];
+    }
+  }
+  // Steps initialization
+  for (i = 0; i < data__->__nb_steps; i++) {
+    data__->__step_list[i].prev_state = __GET_VAR(data__->__step_list[i].X);
+    if (__GET_VAR(data__->__step_list[i].X)) {
+      data__->__step_list[i].T.value = __time_add(data__->__step_list[i].T.value, elapsed_time);
+    }
+  }
+  // Actions initialization
+  for (i = 0; i < data__->__nb_actions; i++) {
+    __SET_VAR(data__->,__action_list[i].state,,0);
+    data__->__action_list[i].set = 0;
+    data__->__action_list[i].reset = 0;
+    if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
+      data__->__action_list[i].set_remaining_time = __time_sub(data__->__action_list[i].set_remaining_time, elapsed_time);
+      if (__time_cmp(data__->__action_list[i].set_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
+        data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+        data__->__action_list[i].set = 1;
+      }
+    }
+    if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) > 0) {
+      data__->__action_list[i].reset_remaining_time = __time_sub(data__->__action_list[i].reset_remaining_time, elapsed_time);
+      if (__time_cmp(data__->__action_list[i].reset_remaining_time, __time_to_timespec(1, 0, 0, 0, 0, 0)) <= 0) {
+        data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+        data__->__action_list[i].reset = 1;
+      }
+    }
+  }
+
+  // Transitions fire test
+  if (__GET_VAR(data__->STEP9.X)) {
+    __SET_VAR(data__->,__transition_list[0],,(__GET_LOCATED(data__->MOUNT,) && !(__GET_LOCATED(data__->WAREHOUSEBUSY,))));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[0],,__GET_VAR(data__->__transition_list[0]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[0],,(__GET_LOCATED(data__->MOUNT,) && !(__GET_LOCATED(data__->WAREHOUSEBUSY,))));
+    }
+    __SET_VAR(data__->,__transition_list[0],,0);
+  }
+  if (__GET_VAR(data__->STEP30.X)) {
+    __SET_VAR(data__->,__transition_list[1],,__GET_EXTERNAL(data__->SENSORAT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[1],,__GET_VAR(data__->__transition_list[1]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[1],,__GET_EXTERNAL(data__->SENSORAT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[1],,0);
+  }
+  if (__GET_VAR(data__->STEP12.X)) {
+    __SET_VAR(data__->,__transition_list[2],,!(__GET_EXTERNAL(data__->SENSORAT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[2],,__GET_VAR(data__->__transition_list[2]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[2],,!(__GET_EXTERNAL(data__->SENSORAT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[2],,0);
+  }
+  if (__GET_VAR(data__->STEP11.X)) {
+    __SET_VAR(data__->,__transition_list[3],,__GET_EXTERNAL(data__->SENSORSAT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[3],,__GET_VAR(data__->__transition_list[3]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[3],,__GET_EXTERNAL(data__->SENSORSAT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[3],,0);
+  }
+  if (__GET_VAR(data__->STEP10.X)) {
+    __SET_VAR(data__->,__transition_list[4],,!(__GET_EXTERNAL(data__->SENSORSAT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[4],,__GET_VAR(data__->__transition_list[4]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[4],,!(__GET_EXTERNAL(data__->SENSORSAT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[4],,0);
+  }
+  if (__GET_VAR(data__->STEP13.X)) {
+    __SET_VAR(data__->,__transition_list[5],,__GET_EXTERNAL(data__->SENSORSAT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[5],,__GET_VAR(data__->__transition_list[5]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[5],,__GET_EXTERNAL(data__->SENSORSAT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[5],,0);
+  }
+  if (__GET_VAR(data__->STEP15.X)) {
+    __SET_VAR(data__->,__transition_list[6],,!(__GET_EXTERNAL(data__->SENSORSAT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[6],,__GET_VAR(data__->__transition_list[6]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[6],,!(__GET_EXTERNAL(data__->SENSORSAT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[6],,0);
+  }
+  if (__GET_VAR(data__->STEP16.X)) {
+    __SET_VAR(data__->,__transition_list[7],,__GET_EXTERNAL(data__->SENSORSBT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[7],,__GET_VAR(data__->__transition_list[7]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[7],,__GET_EXTERNAL(data__->SENSORSBT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[7],,0);
+  }
+  if (__GET_VAR(data__->STEP17.X)) {
+    __SET_VAR(data__->,__transition_list[8],,!(__GET_EXTERNAL(data__->SENSORSBT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[8],,__GET_VAR(data__->__transition_list[8]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[8],,!(__GET_EXTERNAL(data__->SENSORSBT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[8],,0);
+  }
+  if (__GET_VAR(data__->STEP18.X)) {
+    __SET_VAR(data__->,__transition_list[9],,__GET_EXTERNAL(data__->SENSORSBT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[9],,__GET_VAR(data__->__transition_list[9]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[9],,__GET_EXTERNAL(data__->SENSORSBT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[9],,0);
+  }
+  if (__GET_VAR(data__->STEP19.X)) {
+    __SET_VAR(data__->,__transition_list[10],,!(__GET_EXTERNAL(data__->SENSORSBT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[10],,__GET_VAR(data__->__transition_list[10]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[10],,!(__GET_EXTERNAL(data__->SENSORSBT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[10],,0);
+  }
+  if (__GET_VAR(data__->STEP20.X)) {
+    __SET_VAR(data__->,__transition_list[11],,__GET_EXTERNAL(data__->SENSORSCT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[11],,__GET_VAR(data__->__transition_list[11]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[11],,__GET_EXTERNAL(data__->SENSORSCT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[11],,0);
+  }
+  if (__GET_VAR(data__->STEP21.X)) {
+    __SET_VAR(data__->,__transition_list[12],,!(__GET_EXTERNAL(data__->SENSORSCT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[12],,__GET_VAR(data__->__transition_list[12]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[12],,!(__GET_EXTERNAL(data__->SENSORSCT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[12],,0);
+  }
+  if (__GET_VAR(data__->STEP22.X)) {
+    __SET_VAR(data__->,__transition_list[13],,__GET_EXTERNAL(data__->SENSORSCT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[13],,__GET_VAR(data__->__transition_list[13]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[13],,__GET_EXTERNAL(data__->SENSORSCT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[13],,0);
+  }
+  if (__GET_VAR(data__->STEP23.X)) {
+    __SET_VAR(data__->,__transition_list[14],,!(__GET_EXTERNAL(data__->SENSORSCT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[14],,__GET_VAR(data__->__transition_list[14]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[14],,!(__GET_EXTERNAL(data__->SENSORSCT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[14],,0);
+  }
+  if (__GET_VAR(data__->STEP24.X)) {
+    __SET_VAR(data__->,__transition_list[15],,__GET_EXTERNAL(data__->SENSORMT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[15],,__GET_VAR(data__->__transition_list[15]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[15],,__GET_EXTERNAL(data__->SENSORMT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[15],,0);
+  }
+  if (__GET_VAR(data__->STEP25.X)) {
+    __SET_VAR(data__->,__transition_list[16],,!(__GET_EXTERNAL(data__->SENSORMT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[16],,__GET_VAR(data__->__transition_list[16]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[16],,!(__GET_EXTERNAL(data__->SENSORMT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[16],,0);
+  }
+  if (__GET_VAR(data__->STEP26.X)) {
+    __SET_VAR(data__->,__transition_list[17],,__GET_EXTERNAL(data__->SENSORMT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[17],,__GET_VAR(data__->__transition_list[17]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[17],,__GET_EXTERNAL(data__->SENSORMT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[17],,0);
+  }
+  if (__GET_VAR(data__->STEP39.X)) {
+    __SET_VAR(data__->,__transition_list[18],,!(__GET_EXTERNAL(data__->SENSORMT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[18],,__GET_VAR(data__->__transition_list[18]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[18],,!(__GET_EXTERNAL(data__->SENSORMT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[18],,0);
+  }
+  if (__GET_VAR(data__->STEP53.X)) {
+    __SET_VAR(data__->,__transition_list[19],,__GET_EXTERNAL(data__->SENSORMT3_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[19],,__GET_VAR(data__->__transition_list[19]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[19],,__GET_EXTERNAL(data__->SENSORMT3_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[19],,0);
+  }
+  if (__GET_VAR(data__->STEP54.X)) {
+    __SET_VAR(data__->,__transition_list[20],,!(__GET_EXTERNAL(data__->SENSORMT3_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[20],,__GET_VAR(data__->__transition_list[20]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[20],,!(__GET_EXTERNAL(data__->SENSORMT3_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[20],,0);
+  }
+  if (__GET_VAR(data__->STEP56.X)) {
+    __SET_VAR(data__->,__transition_list[21],,__GET_EXTERNAL(data__->SENSORMT4_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[21],,__GET_VAR(data__->__transition_list[21]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[21],,__GET_EXTERNAL(data__->SENSORMT4_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[21],,0);
+  }
+  if (__GET_VAR(data__->STEP55.X)) {
+    __SET_VAR(data__->,__transition_list[22],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[22],,__GET_VAR(data__->__transition_list[22]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[22],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[22],,0);
+  }
+  if (__GET_VAR(data__->STEP57.X)) {
+    __SET_VAR(data__->,__transition_list[23],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[23],,__GET_VAR(data__->__transition_list[23]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[23],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[23],,0);
+  }
+  if (__GET_VAR(data__->STEP58.X)) {
+    __SET_VAR(data__->,__transition_list[24],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[24],,__GET_VAR(data__->__transition_list[24]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[24],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[24],,0);
+  }
+  if (__GET_VAR(data__->STEP59.X)) {
+    __SET_VAR(data__->,__transition_list[25],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[25],,__GET_VAR(data__->__transition_list[25]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[25],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[25],,0);
+  }
+  if (__GET_VAR(data__->STEP60.X)) {
+    __SET_VAR(data__->,__transition_list[26],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[26],,__GET_VAR(data__->__transition_list[26]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[26],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[26],,0);
+  }
+  if (__GET_VAR(data__->STEP61.X)) {
+    __SET_VAR(data__->,__transition_list[27],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[27],,__GET_VAR(data__->__transition_list[27]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[27],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[27],,0);
+  }
+  if (__GET_VAR(data__->STEP62.X)) {
+    __SET_VAR(data__->,__transition_list[28],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[28],,__GET_VAR(data__->__transition_list[28]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[28],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[28],,0);
+  }
+  if (__GET_VAR(data__->STEP63.X)) {
+    __SET_VAR(data__->,__transition_list[29],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[29],,__GET_VAR(data__->__transition_list[29]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[29],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[29],,0);
+  }
+  if (__GET_VAR(data__->STEP64.X)) {
+    __SET_VAR(data__->,__transition_list[30],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[30],,__GET_VAR(data__->__transition_list[30]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[30],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[30],,0);
+  }
+  if (__GET_VAR(data__->STEP65.X)) {
+    __SET_VAR(data__->,__transition_list[31],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[31],,__GET_VAR(data__->__transition_list[31]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[31],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[31],,0);
+  }
+  if (__GET_VAR(data__->STEP66.X)) {
+    __SET_VAR(data__->,__transition_list[32],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[32],,__GET_VAR(data__->__transition_list[32]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[32],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[32],,0);
+  }
+  if (__GET_VAR(data__->STEP67.X)) {
+    __SET_VAR(data__->,__transition_list[33],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[33],,__GET_VAR(data__->__transition_list[33]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[33],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[33],,0);
+  }
+  if (__GET_VAR(data__->STEP68.X)) {
+    __SET_VAR(data__->,__transition_list[34],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[34],,__GET_VAR(data__->__transition_list[34]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[34],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[34],,0);
+  }
+  if (__GET_VAR(data__->STEP69.X)) {
+    __SET_VAR(data__->,__transition_list[35],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[35],,__GET_VAR(data__->__transition_list[35]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[35],,__GET_EXTERNAL(data__->GANTRYBUSY_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[35],,0);
+  }
+  if (__GET_VAR(data__->STEP70.X)) {
+    __SET_VAR(data__->,__transition_list[36],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[36],,__GET_VAR(data__->__transition_list[36]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[36],,!(__GET_EXTERNAL(data__->GANTRYBUSY_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[36],,0);
+  }
+  if (__GET_VAR(data__->STEP71.X)) {
+    __SET_VAR(data__->,__transition_list[37],,!(__GET_EXTERNAL(data__->SENSORMT4_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[37],,__GET_VAR(data__->__transition_list[37]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[37],,!(__GET_EXTERNAL(data__->SENSORMT4_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[37],,0);
+  }
+  if (__GET_VAR(data__->STEP72.X)) {
+    __SET_VAR(data__->,__transition_list[38],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[38],,__GET_VAR(data__->__transition_list[38]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[38],,__GET_EXTERNAL(data__->SENSORMT6_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[38],,0);
+  }
+  if (__GET_VAR(data__->STEP73.X)) {
+    __SET_VAR(data__->,__transition_list[39],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[39],,__GET_VAR(data__->__transition_list[39]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[39],,!(__GET_EXTERNAL(data__->SENSORMT6_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[39],,0);
+  }
+  if (__GET_VAR(data__->STEP74.X)) {
+    __SET_VAR(data__->,__transition_list[40],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[40],,__GET_VAR(data__->__transition_list[40]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[40],,__GET_EXTERNAL(data__->SENSORCT8_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[40],,0);
+  }
+  if (__GET_VAR(data__->STEP14.X)) {
+    __SET_VAR(data__->,__transition_list[41],,__BOOL_LITERAL(FALSE));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[41],,__GET_VAR(data__->__transition_list[41]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[41],,__BOOL_LITERAL(FALSE));
+    }
+    __SET_VAR(data__->,__transition_list[41],,0);
+  }
+  if (__GET_VAR(data__->SENDTOP.X)) {
+    __SET_VAR(data__->,__transition_list[42],,__GET_EXTERNAL(data__->SENSORAT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[42],,__GET_VAR(data__->__transition_list[42]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[42],,__GET_EXTERNAL(data__->SENSORAT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[42],,0);
+  }
+  if (__GET_VAR(data__->STEP28.X)) {
+    __SET_VAR(data__->,__transition_list[43],,!(__GET_EXTERNAL(data__->SENSORAT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[43],,__GET_VAR(data__->__transition_list[43]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[43],,!(__GET_EXTERNAL(data__->SENSORAT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[43],,0);
+  }
+  if (__GET_VAR(data__->STEP42.X)) {
+    __SET_VAR(data__->,__transition_list[44],,__GET_EXTERNAL(data__->SENSORSAT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[44],,__GET_VAR(data__->__transition_list[44]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[44],,__GET_EXTERNAL(data__->SENSORSAT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[44],,0);
+  }
+  if (__GET_VAR(data__->STEP41.X)) {
+    __SET_VAR(data__->,__transition_list[45],,!(__GET_EXTERNAL(data__->SENSORSAT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[45],,__GET_VAR(data__->__transition_list[45]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[45],,!(__GET_EXTERNAL(data__->SENSORSAT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[45],,0);
+  }
+  if (__GET_VAR(data__->STEP43.X)) {
+    __SET_VAR(data__->,__transition_list[46],,__GET_EXTERNAL(data__->SENSORSAT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[46],,__GET_VAR(data__->__transition_list[46]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[46],,__GET_EXTERNAL(data__->SENSORSAT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[46],,0);
+  }
+  if (__GET_VAR(data__->STEP45.X)) {
+    __SET_VAR(data__->,__transition_list[47],,!(__GET_EXTERNAL(data__->SENSORSAT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[47],,__GET_VAR(data__->__transition_list[47]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[47],,!(__GET_EXTERNAL(data__->SENSORSAT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[47],,0);
+  }
+  if (__GET_VAR(data__->STEP29.X)) {
+    __SET_VAR(data__->,__transition_list[48],,__GET_EXTERNAL(data__->SENSORSBT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[48],,__GET_VAR(data__->__transition_list[48]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[48],,__GET_EXTERNAL(data__->SENSORSBT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[48],,0);
+  }
+  if (__GET_VAR(data__->STEP31.X)) {
+    __SET_VAR(data__->,__transition_list[49],,!(__GET_EXTERNAL(data__->SENSORSBT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[49],,__GET_VAR(data__->__transition_list[49]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[49],,!(__GET_EXTERNAL(data__->SENSORSBT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[49],,0);
+  }
+  if (__GET_VAR(data__->STEP32.X)) {
+    __SET_VAR(data__->,__transition_list[50],,__GET_EXTERNAL(data__->SENSORSBT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[50],,__GET_VAR(data__->__transition_list[50]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[50],,__GET_EXTERNAL(data__->SENSORSBT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[50],,0);
+  }
+  if (__GET_VAR(data__->STEP33.X)) {
+    __SET_VAR(data__->,__transition_list[51],,!(__GET_EXTERNAL(data__->SENSORSBT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[51],,__GET_VAR(data__->__transition_list[51]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[51],,!(__GET_EXTERNAL(data__->SENSORSBT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[51],,0);
+  }
+  if (__GET_VAR(data__->STEP34.X)) {
+    __SET_VAR(data__->,__transition_list[52],,__GET_EXTERNAL(data__->SENSORSCT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[52],,__GET_VAR(data__->__transition_list[52]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[52],,__GET_EXTERNAL(data__->SENSORSCT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[52],,0);
+  }
+  if (__GET_VAR(data__->STEP35.X)) {
+    __SET_VAR(data__->,__transition_list[53],,!(__GET_EXTERNAL(data__->SENSORSCT1_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[53],,__GET_VAR(data__->__transition_list[53]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[53],,!(__GET_EXTERNAL(data__->SENSORSCT1_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[53],,0);
+  }
+  if (__GET_VAR(data__->STEP36.X)) {
+    __SET_VAR(data__->,__transition_list[54],,__GET_EXTERNAL(data__->SENSORSCT2_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[54],,__GET_VAR(data__->__transition_list[54]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[54],,__GET_EXTERNAL(data__->SENSORSCT2_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[54],,0);
+  }
+  if (__GET_VAR(data__->STEP37.X)) {
+    __SET_VAR(data__->,__transition_list[55],,!(__GET_EXTERNAL(data__->SENSORSCT2_EX,)));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[55],,__GET_VAR(data__->__transition_list[55]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[55],,!(__GET_EXTERNAL(data__->SENSORSCT2_EX,)));
+    }
+    __SET_VAR(data__->,__transition_list[55],,0);
+  }
+  if (__GET_VAR(data__->STEP38.X)) {
+    __SET_VAR(data__->,__transition_list[56],,__GET_EXTERNAL(data__->SENSORMT1_EX,));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[56],,__GET_VAR(data__->__transition_list[56]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[56],,__GET_EXTERNAL(data__->SENSORMT1_EX,));
+    }
+    __SET_VAR(data__->,__transition_list[56],,0);
+  }
+  if (__GET_VAR(data__->STEP44.X)) {
+    __SET_VAR(data__->,__transition_list[57],,__BOOL_LITERAL(TRUE));
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[57],,__GET_VAR(data__->__transition_list[57]));
+    }
+  }
+  else {
+    if (__DEBUG) {
+      __SET_VAR(data__->,__debug_transition_list[57],,__BOOL_LITERAL(TRUE));
+    }
+    __SET_VAR(data__->,__transition_list[57],,0);
+  }
+
+  // Transitions reset steps
+  if (__GET_VAR(data__->__transition_list[0])) {
+    __SET_VAR(data__->,STEP9.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[1])) {
+    __SET_VAR(data__->,STEP30.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[2])) {
+    __SET_VAR(data__->,STEP12.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[3])) {
+    __SET_VAR(data__->,STEP11.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[4])) {
+    __SET_VAR(data__->,STEP10.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[5])) {
+    __SET_VAR(data__->,STEP13.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[6])) {
+    __SET_VAR(data__->,STEP15.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[7])) {
+    __SET_VAR(data__->,STEP16.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[8])) {
+    __SET_VAR(data__->,STEP17.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[9])) {
+    __SET_VAR(data__->,STEP18.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[10])) {
+    __SET_VAR(data__->,STEP19.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[11])) {
+    __SET_VAR(data__->,STEP20.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[12])) {
+    __SET_VAR(data__->,STEP21.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[13])) {
+    __SET_VAR(data__->,STEP22.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[14])) {
+    __SET_VAR(data__->,STEP23.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[15])) {
+    __SET_VAR(data__->,STEP24.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[16])) {
+    __SET_VAR(data__->,STEP25.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[17])) {
+    __SET_VAR(data__->,STEP26.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[18])) {
+    __SET_VAR(data__->,STEP39.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[19])) {
+    __SET_VAR(data__->,STEP53.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[20])) {
+    __SET_VAR(data__->,STEP54.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[21])) {
+    __SET_VAR(data__->,STEP56.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[22])) {
+    __SET_VAR(data__->,STEP55.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[23])) {
+    __SET_VAR(data__->,STEP57.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[24])) {
+    __SET_VAR(data__->,STEP58.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[25])) {
+    __SET_VAR(data__->,STEP59.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[26])) {
+    __SET_VAR(data__->,STEP60.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[27])) {
+    __SET_VAR(data__->,STEP61.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[28])) {
+    __SET_VAR(data__->,STEP62.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[29])) {
+    __SET_VAR(data__->,STEP63.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[30])) {
+    __SET_VAR(data__->,STEP64.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[31])) {
+    __SET_VAR(data__->,STEP65.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[32])) {
+    __SET_VAR(data__->,STEP66.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[33])) {
+    __SET_VAR(data__->,STEP67.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[34])) {
+    __SET_VAR(data__->,STEP68.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[35])) {
+    __SET_VAR(data__->,STEP69.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[36])) {
+    __SET_VAR(data__->,STEP70.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[37])) {
+    __SET_VAR(data__->,STEP71.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[38])) {
+    __SET_VAR(data__->,STEP72.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[39])) {
+    __SET_VAR(data__->,STEP73.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[40])) {
+    __SET_VAR(data__->,STEP74.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[41])) {
+    __SET_VAR(data__->,STEP14.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[42])) {
+    __SET_VAR(data__->,SENDTOP.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[43])) {
+    __SET_VAR(data__->,STEP28.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[44])) {
+    __SET_VAR(data__->,STEP42.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[45])) {
+    __SET_VAR(data__->,STEP41.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[46])) {
+    __SET_VAR(data__->,STEP43.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[47])) {
+    __SET_VAR(data__->,STEP45.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[48])) {
+    __SET_VAR(data__->,STEP29.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[49])) {
+    __SET_VAR(data__->,STEP31.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[50])) {
+    __SET_VAR(data__->,STEP32.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[51])) {
+    __SET_VAR(data__->,STEP33.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[52])) {
+    __SET_VAR(data__->,STEP34.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[53])) {
+    __SET_VAR(data__->,STEP35.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[54])) {
+    __SET_VAR(data__->,STEP36.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[55])) {
+    __SET_VAR(data__->,STEP37.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[56])) {
+    __SET_VAR(data__->,STEP38.X,,0);
+  }
+  if (__GET_VAR(data__->__transition_list[57])) {
+    __SET_VAR(data__->,STEP44.X,,0);
+  }
+
+  // Transitions set steps
+  if (__GET_VAR(data__->__transition_list[0])) {
+    __SET_VAR(data__->,STEP30.X,,1);
+    data__->STEP30.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[1])) {
+    __SET_VAR(data__->,STEP12.X,,1);
+    data__->STEP12.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[2])) {
+    __SET_VAR(data__->,STEP11.X,,1);
+    data__->STEP11.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP14.X,,1);
+    data__->STEP14.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[3])) {
+    __SET_VAR(data__->,STEP10.X,,1);
+    data__->STEP10.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[4])) {
+    __SET_VAR(data__->,STEP13.X,,1);
+    data__->STEP13.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[5])) {
+    __SET_VAR(data__->,STEP15.X,,1);
+    data__->STEP15.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[6])) {
+    __SET_VAR(data__->,STEP16.X,,1);
+    data__->STEP16.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[7])) {
+    __SET_VAR(data__->,STEP17.X,,1);
+    data__->STEP17.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[8])) {
+    __SET_VAR(data__->,STEP18.X,,1);
+    data__->STEP18.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[9])) {
+    __SET_VAR(data__->,STEP19.X,,1);
+    data__->STEP19.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[10])) {
+    __SET_VAR(data__->,STEP20.X,,1);
+    data__->STEP20.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[11])) {
+    __SET_VAR(data__->,STEP21.X,,1);
+    data__->STEP21.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[12])) {
+    __SET_VAR(data__->,STEP22.X,,1);
+    data__->STEP22.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[13])) {
+    __SET_VAR(data__->,STEP23.X,,1);
+    data__->STEP23.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[14])) {
+    __SET_VAR(data__->,STEP24.X,,1);
+    data__->STEP24.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[15])) {
+    __SET_VAR(data__->,STEP25.X,,1);
+    data__->STEP25.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[16])) {
+    __SET_VAR(data__->,STEP26.X,,1);
+    data__->STEP26.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[17])) {
+    __SET_VAR(data__->,STEP39.X,,1);
+    data__->STEP39.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[18])) {
+    __SET_VAR(data__->,STEP53.X,,1);
+    data__->STEP53.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[19])) {
+    __SET_VAR(data__->,STEP54.X,,1);
+    data__->STEP54.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[20])) {
+    __SET_VAR(data__->,STEP56.X,,1);
+    data__->STEP56.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[21])) {
+    __SET_VAR(data__->,STEP55.X,,1);
+    data__->STEP55.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[22])) {
+    __SET_VAR(data__->,STEP57.X,,1);
+    data__->STEP57.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[23])) {
+    __SET_VAR(data__->,STEP58.X,,1);
+    data__->STEP58.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[24])) {
+    __SET_VAR(data__->,STEP59.X,,1);
+    data__->STEP59.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[25])) {
+    __SET_VAR(data__->,STEP60.X,,1);
+    data__->STEP60.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[26])) {
+    __SET_VAR(data__->,STEP61.X,,1);
+    data__->STEP61.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[27])) {
+    __SET_VAR(data__->,STEP62.X,,1);
+    data__->STEP62.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[28])) {
+    __SET_VAR(data__->,STEP63.X,,1);
+    data__->STEP63.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[29])) {
+    __SET_VAR(data__->,STEP64.X,,1);
+    data__->STEP64.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[30])) {
+    __SET_VAR(data__->,STEP65.X,,1);
+    data__->STEP65.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[31])) {
+    __SET_VAR(data__->,STEP66.X,,1);
+    data__->STEP66.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[32])) {
+    __SET_VAR(data__->,STEP67.X,,1);
+    data__->STEP67.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[33])) {
+    __SET_VAR(data__->,STEP68.X,,1);
+    data__->STEP68.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[34])) {
+    __SET_VAR(data__->,STEP69.X,,1);
+    data__->STEP69.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[35])) {
+    __SET_VAR(data__->,STEP70.X,,1);
+    data__->STEP70.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[36])) {
+    __SET_VAR(data__->,STEP71.X,,1);
+    data__->STEP71.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[37])) {
+    __SET_VAR(data__->,STEP72.X,,1);
+    data__->STEP72.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[38])) {
+    __SET_VAR(data__->,STEP73.X,,1);
+    data__->STEP73.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[39])) {
+    __SET_VAR(data__->,STEP74.X,,1);
+    data__->STEP74.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[40])) {
+    __SET_VAR(data__->,STEP75.X,,1);
+    data__->STEP75.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[41])) {
+    __SET_VAR(data__->,SENDTOP.X,,1);
+    data__->SENDTOP.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[42])) {
+    __SET_VAR(data__->,STEP28.X,,1);
+    data__->STEP28.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[43])) {
+    __SET_VAR(data__->,STEP42.X,,1);
+    data__->STEP42.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+    __SET_VAR(data__->,STEP44.X,,1);
+    data__->STEP44.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[44])) {
+    __SET_VAR(data__->,STEP41.X,,1);
+    data__->STEP41.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[45])) {
+    __SET_VAR(data__->,STEP43.X,,1);
+    data__->STEP43.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[46])) {
+    __SET_VAR(data__->,STEP45.X,,1);
+    data__->STEP45.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[47])) {
+    __SET_VAR(data__->,STEP29.X,,1);
+    data__->STEP29.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[48])) {
+    __SET_VAR(data__->,STEP31.X,,1);
+    data__->STEP31.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[49])) {
+    __SET_VAR(data__->,STEP32.X,,1);
+    data__->STEP32.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[50])) {
+    __SET_VAR(data__->,STEP33.X,,1);
+    data__->STEP33.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[51])) {
+    __SET_VAR(data__->,STEP34.X,,1);
+    data__->STEP34.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[52])) {
+    __SET_VAR(data__->,STEP35.X,,1);
+    data__->STEP35.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[53])) {
+    __SET_VAR(data__->,STEP36.X,,1);
+    data__->STEP36.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[54])) {
+    __SET_VAR(data__->,STEP37.X,,1);
+    data__->STEP37.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[55])) {
+    __SET_VAR(data__->,STEP38.X,,1);
+    data__->STEP38.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[56])) {
+    __SET_VAR(data__->,STEP40.X,,1);
+    data__->STEP40.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+  if (__GET_VAR(data__->__transition_list[57])) {
+    __SET_VAR(data__->,STEP9.X,,1);
+    data__->STEP9.T.value = __time_to_timespec(1, 0, 0, 0, 0, 0);
+  }
+
+  // Steps association
+  // STEP30 action associations
+  {
+    char active = __GET_VAR(data__->STEP30.X);
+    char activated = active && !data__->STEP30.prev_state;
+    char desactivated = !active && data__->STEP30.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].set = 1;}
+
+    if (active)       {data__->__action_list[__SFC_WAREHOUSEBUSY].set = 1;}
+
+    if (active)       {data__->__action_list[__SFC_MOUNT].reset = 1;}
+
+  }
+
+  // STEP12 action associations
+  {
+    char active = __GET_VAR(data__->STEP12.X);
+    char activated = active && !data__->STEP12.prev_state;
+    char desactivated = !active && data__->STEP12.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,0);};
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,0);};
+
+  }
+
+  // STEP10 action associations
+  {
+    char active = __GET_VAR(data__->STEP10.X);
+    char activated = active && !data__->STEP10.prev_state;
+    char desactivated = !active && data__->STEP10.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,0);};
+
+  }
+
+  // STEP15 action associations
+  {
+    char active = __GET_VAR(data__->STEP15.X);
+    char activated = active && !data__->STEP15.prev_state;
+    char desactivated = !active && data__->STEP15.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,0);};
+
+  }
+
+  // STEP17 action associations
+  {
+    char active = __GET_VAR(data__->STEP17.X);
+    char activated = active && !data__->STEP17.prev_state;
+    char desactivated = !active && data__->STEP17.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,0);};
+
+  }
+
+  // STEP19 action associations
+  {
+    char active = __GET_VAR(data__->STEP19.X);
+    char activated = active && !data__->STEP19.prev_state;
+    char desactivated = !active && data__->STEP19.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,0);};
+
+  }
+
+  // STEP21 action associations
+  {
+    char active = __GET_VAR(data__->STEP21.X);
+    char activated = active && !data__->STEP21.prev_state;
+    char desactivated = !active && data__->STEP21.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,0);};
+
+  }
+
+  // STEP23 action associations
+  {
+    char active = __GET_VAR(data__->STEP23.X);
+    char activated = active && !data__->STEP23.prev_state;
+    char desactivated = !active && data__->STEP23.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTMT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTMT1_EX,,0);};
+
+  }
+
+  // STEP25 action associations
+  {
+    char active = __GET_VAR(data__->STEP25.X);
+    char activated = active && !data__->STEP25.prev_state;
+    char desactivated = !active && data__->STEP25.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,SENDDOWNMT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,SENDDOWNMT2_EX,,0);};
+
+  }
+
+  // STEP39 action associations
+  {
+    char active = __GET_VAR(data__->STEP39.X);
+    char activated = active && !data__->STEP39.prev_state;
+    char desactivated = !active && data__->STEP39.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTMT3_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTMT3_EX,,0);};
+
+  }
+
+  // STEP54 action associations
+  {
+    char active = __GET_VAR(data__->STEP54.X);
+    char activated = active && !data__->STEP54.prev_state;
+    char desactivated = !active && data__->STEP54.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RECEIVEPIECEMT4_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RECEIVEPIECEMT4_EX,,0);};
+
+  }
+
+  // STEP57 action associations
+  {
+    char active = __GET_VAR(data__->STEP57.X);
+    char activated = active && !data__->STEP57.prev_state;
+    char desactivated = !active && data__->STEP57.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,X1Y3_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,X1Y3_EX,,0);};
+
+  }
+
+  // STEP59 action associations
+  {
+    char active = __GET_VAR(data__->STEP59.X);
+    char activated = active && !data__->STEP59.prev_state;
+    char desactivated = !active && data__->STEP59.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,PICKPIECE_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,PICKPIECE_EX,,0);};
+
+  }
+
+  // STEP61 action associations
+  {
+    char active = __GET_VAR(data__->STEP61.X);
+    char activated = active && !data__->STEP61.prev_state;
+    char desactivated = !active && data__->STEP61.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,X0Y3_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,X0Y3_EX,,0);};
+
+  }
+
+  // STEP63 action associations
+  {
+    char active = __GET_VAR(data__->STEP63.X);
+    char activated = active && !data__->STEP63.prev_state;
+    char desactivated = !active && data__->STEP63.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RELEASEPIECE_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RELEASEPIECE_EX,,0);};
+
+  }
+
+  // STEP65 action associations
+  {
+    char active = __GET_VAR(data__->STEP65.X);
+    char activated = active && !data__->STEP65.prev_state;
+    char desactivated = !active && data__->STEP65.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,PICKPIECE_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,PICKPIECE_EX,,0);};
+
+  }
+
+  // STEP67 action associations
+  {
+    char active = __GET_VAR(data__->STEP67.X);
+    char activated = active && !data__->STEP67.prev_state;
+    char desactivated = !active && data__->STEP67.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,X1Y3_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,X1Y3_EX,,0);};
+
+  }
+
+  // STEP69 action associations
+  {
+    char active = __GET_VAR(data__->STEP69.X);
+    char activated = active && !data__->STEP69.prev_state;
+    char desactivated = !active && data__->STEP69.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RELEASEPIECE_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RELEASEPIECE_EX,,0);};
+
+  }
+
+  // STEP70 action associations
+  {
+    char active = __GET_VAR(data__->STEP70.X);
+    char activated = active && !data__->STEP70.prev_state;
+    char desactivated = !active && data__->STEP70.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,0);};
+
+  }
+
+  // STEP71 action associations
+  {
+    char active = __GET_VAR(data__->STEP71.X);
+    char activated = active && !data__->STEP71.prev_state;
+    char desactivated = !active && data__->STEP71.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,0);};
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTMT4_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTMT4_EX,,0);};
+
+  }
+
+  // STEP73 action associations
+  {
+    char active = __GET_VAR(data__->STEP73.X);
+    char activated = active && !data__->STEP73.prev_state;
+    char desactivated = !active && data__->STEP73.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTCT7_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTCT7_EX,,0);};
+
+  }
+
+  // STEP74 action associations
+  {
+    char active = __GET_VAR(data__->STEP74.X);
+    char activated = active && !data__->STEP74.prev_state;
+    char desactivated = !active && data__->STEP74.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,SENDRIGHTUPCT8_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,SENDRIGHTUPCT8_EX,,0);};
+
+  }
+
+  // STEP14 action associations
+  {
+    char active = __GET_VAR(data__->STEP14.X);
+    char activated = active && !data__->STEP14.prev_state;
+    char desactivated = !active && data__->STEP14.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].reset = 1;}
+
+  }
+
+  // SENDTOP action associations
+  {
+    char active = __GET_VAR(data__->SENDTOP.X);
+    char activated = active && !data__->SENDTOP.prev_state;
+    char desactivated = !active && data__->SENDTOP.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].set = 1;}
+
+  }
+
+  // STEP28 action associations
+  {
+    char active = __GET_VAR(data__->STEP28.X);
+    char activated = active && !data__->STEP28.prev_state;
+    char desactivated = !active && data__->STEP28.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,0);};
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,0);};
+
+  }
+
+  // STEP41 action associations
+  {
+    char active = __GET_VAR(data__->STEP41.X);
+    char activated = active && !data__->STEP41.prev_state;
+    char desactivated = !active && data__->STEP41.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,0);};
+
+  }
+
+  // STEP45 action associations
+  {
+    char active = __GET_VAR(data__->STEP45.X);
+    char activated = active && !data__->STEP45.prev_state;
+    char desactivated = !active && data__->STEP45.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,0);};
+
+  }
+
+  // STEP31 action associations
+  {
+    char active = __GET_VAR(data__->STEP31.X);
+    char activated = active && !data__->STEP31.prev_state;
+    char desactivated = !active && data__->STEP31.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,0);};
+
+  }
+
+  // STEP33 action associations
+  {
+    char active = __GET_VAR(data__->STEP33.X);
+    char activated = active && !data__->STEP33.prev_state;
+    char desactivated = !active && data__->STEP33.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,0);};
+
+  }
+
+  // STEP35 action associations
+  {
+    char active = __GET_VAR(data__->STEP35.X);
+    char activated = active && !data__->STEP35.prev_state;
+    char desactivated = !active && data__->STEP35.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,0);};
+
+  }
+
+  // STEP37 action associations
+  {
+    char active = __GET_VAR(data__->STEP37.X);
+    char activated = active && !data__->STEP37.prev_state;
+    char desactivated = !active && data__->STEP37.prev_state;
+
+    if (active)       {__SET_EXTERNAL(data__->,RECEIVEPIECEMT1_EX,,1);};
+    if (desactivated) {__SET_EXTERNAL(data__->,RECEIVEPIECEMT1_EX,,0);};
+
+  }
+
+  // STEP44 action associations
+  {
+    char active = __GET_VAR(data__->STEP44.X);
+    char activated = active && !data__->STEP44.prev_state;
+    char desactivated = !active && data__->STEP44.prev_state;
+
+    if (active)       {data__->__action_list[__SFC_WAREHOUSEBUSY].reset = 1;}
+
+    if (active)       {data__->__action_list[__SFC_ACTION0].reset = 1;}
+
+  }
+
+
+  // Actions state evaluation
+  for (i = 0; i < data__->__nb_actions; i++) {
+    if (data__->__action_list[i].set) {
+      data__->__action_list[i].set_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+      data__->__action_list[i].stored = 1;
+    }
+    if (data__->__action_list[i].reset) {
+      data__->__action_list[i].reset_remaining_time = __time_to_timespec(1, 0, 0, 0, 0, 0);
+      data__->__action_list[i].stored = 0;
+    }
+    __SET_VAR(data__->,__action_list[i].state,,__GET_VAR(data__->__action_list[i].state) | data__->__action_list[i].stored);
+  }
+
+  // Actions execution
+  if (data__->__action_list[__SFC_WAREHOUSEBUSY].reset) {
+    __SET_LOCATED(data__->,WAREHOUSEBUSY,,0);
+  }
+  else if (data__->__action_list[__SFC_WAREHOUSEBUSY].set) {
+    __SET_LOCATED(data__->,WAREHOUSEBUSY,,1);
+  }
+  if (data__->__action_list[__SFC_MOUNT].reset) {
+    __SET_LOCATED(data__->,MOUNT,,0);
+  }
+  else if (data__->__action_list[__SFC_MOUNT].set) {
+    __SET_LOCATED(data__->,MOUNT,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSAT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSAT1_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSAT1_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTAT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTAT1_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTAT1_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSAT2_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSAT2_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSAT2_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSBT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSBT1_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSBT1_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSBT2_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSBT2_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSBT2_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSCT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSCT1_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSCT1_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTSCT2_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTSCT2_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTSCT2_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTMT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTMT1_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT1_EX,,1);
+  }
+  if (data__->__action_list[__SFC_SENDDOWNMT2_EX].reset) {
+    __SET_EXTERNAL(data__->,SENDDOWNMT2_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_SENDDOWNMT2_EX].set) {
+    __SET_EXTERNAL(data__->,SENDDOWNMT2_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTMT3_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT3_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTMT3_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT3_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RECEIVEPIECEMT4_EX].reset) {
+    __SET_EXTERNAL(data__->,RECEIVEPIECEMT4_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RECEIVEPIECEMT4_EX].set) {
+    __SET_EXTERNAL(data__->,RECEIVEPIECEMT4_EX,,1);
+  }
+  if (data__->__action_list[__SFC_X1Y3_EX].reset) {
+    __SET_EXTERNAL(data__->,X1Y3_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_X1Y3_EX].set) {
+    __SET_EXTERNAL(data__->,X1Y3_EX,,1);
+  }
+  if (data__->__action_list[__SFC_PICKPIECE_EX].reset) {
+    __SET_EXTERNAL(data__->,PICKPIECE_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_PICKPIECE_EX].set) {
+    __SET_EXTERNAL(data__->,PICKPIECE_EX,,1);
+  }
+  if (data__->__action_list[__SFC_X0Y3_EX].reset) {
+    __SET_EXTERNAL(data__->,X0Y3_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_X0Y3_EX].set) {
+    __SET_EXTERNAL(data__->,X0Y3_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RELEASEPIECE_EX].reset) {
+    __SET_EXTERNAL(data__->,RELEASEPIECE_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RELEASEPIECE_EX].set) {
+    __SET_EXTERNAL(data__->,RELEASEPIECE_EX,,1);
+  }
+  if (data__->__action_list[__SFC_SENDUPRIGHTMT6_EX].reset) {
+    __SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_SENDUPRIGHTMT6_EX].set) {
+    __SET_EXTERNAL(data__->,SENDUPRIGHTMT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTMT4_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT4_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTMT4_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTMT4_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RUNFRONTCT7_EX].reset) {
+    __SET_EXTERNAL(data__->,RUNFRONTCT7_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RUNFRONTCT7_EX].set) {
+    __SET_EXTERNAL(data__->,RUNFRONTCT7_EX,,1);
+  }
+  if (data__->__action_list[__SFC_SENDRIGHTUPCT8_EX].reset) {
+    __SET_EXTERNAL(data__->,SENDRIGHTUPCT8_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_SENDRIGHTUPCT8_EX].set) {
+    __SET_EXTERNAL(data__->,SENDRIGHTUPCT8_EX,,1);
+  }
+  if (data__->__action_list[__SFC_RECEIVEPIECEMT1_EX].reset) {
+    __SET_EXTERNAL(data__->,RECEIVEPIECEMT1_EX,,0);
+  }
+  else if (data__->__action_list[__SFC_RECEIVEPIECEMT1_EX].set) {
+    __SET_EXTERNAL(data__->,RECEIVEPIECEMT1_EX,,1);
+  }
+  if(__GET_VAR(data__->__action_list[__SFC_ACTION0].state)) {
+    __SET_VAR(data__->REMOVEFROMWAREHOUSE0.,PIECENUM,,__GET_VAR(data__->PIECETOUNLOAD,));
+    __SET_VAR(data__->REMOVEFROMWAREHOUSE0.,SENSORAT1,,__GET_LOCATED(data__->SENSORAT1,));
+    REMOVEFROMWAREHOUSE_body__(&data__->REMOVEFROMWAREHOUSE0);
+    __SET_LOCATED(data__->,WAREHOUSEIN,,__GET_VAR(data__->REMOVEFROMWAREHOUSE0.WAREHOUSEIN,));
+  }
+
+
+
+  goto __end;
+
+__end:
+  return;
+} // GANTRYPROGRAM_body__() 
+
+// Steps undefinitions
+#undef STEP9
+#undef __SFC_STEP9
+#undef STEP30
+#undef __SFC_STEP30
+#undef STEP12
+#undef __SFC_STEP12
+#undef STEP11
+#undef __SFC_STEP11
+#undef STEP10
+#undef __SFC_STEP10
+#undef STEP13
+#undef __SFC_STEP13
+#undef STEP15
+#undef __SFC_STEP15
+#undef STEP16
+#undef __SFC_STEP16
+#undef STEP17
+#undef __SFC_STEP17
+#undef STEP18
+#undef __SFC_STEP18
+#undef STEP19
+#undef __SFC_STEP19
+#undef STEP20
+#undef __SFC_STEP20
+#undef STEP21
+#undef __SFC_STEP21
+#undef STEP22
+#undef __SFC_STEP22
+#undef STEP23
+#undef __SFC_STEP23
+#undef STEP24
+#undef __SFC_STEP24
+#undef STEP25
+#undef __SFC_STEP25
+#undef STEP26
+#undef __SFC_STEP26
+#undef STEP39
+#undef __SFC_STEP39
+#undef STEP53
+#undef __SFC_STEP53
+#undef STEP54
+#undef __SFC_STEP54
+#undef STEP56
+#undef __SFC_STEP56
+#undef STEP55
+#undef __SFC_STEP55
+#undef STEP57
+#undef __SFC_STEP57
+#undef STEP58
+#undef __SFC_STEP58
+#undef STEP59
+#undef __SFC_STEP59
+#undef STEP60
+#undef __SFC_STEP60
+#undef STEP61
+#undef __SFC_STEP61
+#undef STEP62
+#undef __SFC_STEP62
+#undef STEP63
+#undef __SFC_STEP63
+#undef STEP64
+#undef __SFC_STEP64
+#undef STEP65
+#undef __SFC_STEP65
+#undef STEP66
+#undef __SFC_STEP66
+#undef STEP67
+#undef __SFC_STEP67
+#undef STEP68
+#undef __SFC_STEP68
+#undef STEP69
+#undef __SFC_STEP69
+#undef STEP70
+#undef __SFC_STEP70
+#undef STEP71
+#undef __SFC_STEP71
+#undef STEP72
+#undef __SFC_STEP72
+#undef STEP73
+#undef __SFC_STEP73
+#undef STEP74
+#undef __SFC_STEP74
+#undef STEP75
+#undef __SFC_STEP75
+#undef STEP14
+#undef __SFC_STEP14
+#undef SENDTOP
+#undef __SFC_SENDTOP
+#undef STEP28
+#undef __SFC_STEP28
+#undef STEP42
+#undef __SFC_STEP42
+#undef STEP41
+#undef __SFC_STEP41
+#undef STEP43
+#undef __SFC_STEP43
+#undef STEP45
+#undef __SFC_STEP45
+#undef STEP29
+#undef __SFC_STEP29
+#undef STEP31
+#undef __SFC_STEP31
+#undef STEP32
+#undef __SFC_STEP32
+#undef STEP33
+#undef __SFC_STEP33
+#undef STEP34
+#undef __SFC_STEP34
+#undef STEP35
+#undef __SFC_STEP35
+#undef STEP36
+#undef __SFC_STEP36
+#undef STEP37
+#undef __SFC_STEP37
+#undef STEP38
+#undef __SFC_STEP38
+#undef STEP40
+#undef __SFC_STEP40
+#undef STEP44
+#undef __SFC_STEP44
+
+// Actions undefinitions
+#undef __SFC_ACTION0
+#undef __SFC_WAREHOUSEBUSY
+#undef __SFC_MOUNT
+#undef __SFC_RUNFRONTSAT1_EX
+#undef __SFC_RUNFRONTAT1_EX
+#undef __SFC_RUNFRONTSAT2_EX
+#undef __SFC_RUNFRONTSBT1_EX
+#undef __SFC_RUNFRONTSBT2_EX
+#undef __SFC_RUNFRONTSCT1_EX
+#undef __SFC_RUNFRONTSCT2_EX
+#undef __SFC_RUNFRONTMT1_EX
+#undef __SFC_SENDDOWNMT2_EX
+#undef __SFC_RUNFRONTMT3_EX
+#undef __SFC_RECEIVEPIECEMT4_EX
+#undef __SFC_X1Y3_EX
+#undef __SFC_PICKPIECE_EX
+#undef __SFC_X0Y3_EX
+#undef __SFC_RELEASEPIECE_EX
+#undef __SFC_SENDUPRIGHTMT6_EX
+#undef __SFC_RUNFRONTMT4_EX
+#undef __SFC_RUNFRONTCT7_EX
+#undef __SFC_SENDRIGHTUPCT8_EX
 #undef __SFC_RECEIVEPIECEMT1_EX
 
 
