@@ -467,6 +467,7 @@ typedef struct {
   // FB Interface - IN, OUT, IN_OUT variables
   __DECLARE_VAR(BOOL,EN)
   __DECLARE_VAR(BOOL,ENO)
+  __DECLARE_VAR(BOOL,MACHINETYPE)
   __DECLARE_VAR(BOOL,REACHEDSENSOR)
   __DECLARE_VAR(BOOL,USETOOL)
   __DECLARE_VAR(BOOL,READYTOSEND)
@@ -515,12 +516,12 @@ typedef struct {
   TON TON8;
   TON TON9;
   TON TON10;
-  STEP __step_list[59];
+  STEP __step_list[60];
   UINT __nb_steps;
   ACTION __action_list[24];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[75];
-  __IEC_BOOL_t __debug_transition_list[75];
+  __IEC_BOOL_t __transition_list[77];
+  __IEC_BOOL_t __debug_transition_list[77];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -1430,7 +1431,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
   STEP __step_list[86];
   UINT __nb_steps;
-  ACTION __action_list[21];
+  ACTION __action_list[19];
   UINT __nb_actions;
   __IEC_BOOL_t __transition_list[87];
   __IEC_BOOL_t __debug_transition_list[87];

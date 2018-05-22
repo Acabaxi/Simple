@@ -1573,6 +1573,7 @@ END_FUNCTION_BLOCK
 
 FUNCTION_BLOCK Machine
   VAR_INPUT
+    machineType : BOOL;
     reachedSensor : BOOL;
   END_VAR
   VAR_OUTPUT
@@ -2140,12 +2141,19 @@ FUNCTION_BLOCK Machine
     := initialPiece_saved = finalPiece_saved;
   END_TRANSITION
 
-  TRANSITION FROM Step2 TO Step34
+  TRANSITION FROM Step2 TO Step46
     := initialPiece_saved = 7 OR initialPiece_saved = 8 ;
   END_TRANSITION
 
-  STEP Step34:
+  STEP Step46:
     currentAsInitial(N);
+  END_STEP
+
+  TRANSITION FROM Step46 TO Step34
+    := machineType = 1;
+  END_TRANSITION
+
+  STEP Step34:
   END_STEP
 
   TRANSITION FROM Step34 TO checkIfFinalC
@@ -2285,6 +2293,10 @@ FUNCTION_BLOCK Machine
 
   TRANSITION FROM checkIfFinalC TO sendToNext
     := currentPiece = finalPiece_saved;
+  END_TRANSITION
+
+  TRANSITION FROM Step46 TO sendToNext
+    := machineType = 0;
   END_TRANSITION
 
 END_FUNCTION_BLOCK
@@ -2799,19 +2811,19 @@ PROGRAM factoryFloorProgram
   SbT6(backSignal := runBackSbT6_ex, forwardSignal := runFrontSbT6_ex, sendDownSignal := sendDownSbT6_ex, sendLeftDownSignal := sendLeftDownSbT6_ex, sensorRotRight := sensorRotRightSbT6, sensorRotLeft := sensorRotLeftSbT6, backNotBusy := SbT7.isBusy, reachedSensorFront := sensorScT7, reachedSensor := sensorSbT6, reachedSensorBack := sensorSbT7);
   ScT7(reachedSensor := sensorScT7, backSignal := runBackScT7_ex, backNotBusy := SbT6.isBusy, reachedSensorFront := sensorScT6, reachedSensorBack := sensorSbT6);
   ScT6(backSignal := runBackScT6_ex, forwardSignal := runFrontScT6_ex, sendDownSignal := sendDownScT6_ex, sendLeftDownSignal := sendLeftDownScT6_ex, sensorRotRight := sensorRotRightScT6, sensorRotLeft := sensorRotLeftScT6, backNotBusy := ScT7.isBusy, reachedSensor := sensorScT6, reachedSensorBack := sensorScT7);
-  ScT5(reachedSensor := sensorScT5, initialPiece := ScT3.currentPiece, finalPiece := cell3Final, nextReadyToReceive := ScT6.readyToReceive, toolPiece := toolPieceScT5_ex, toolSensor := toolSensorScT5, sensorUp := toolUpSensorScT5, sensorLeft := toolLeftSensorScT5, sensorDown := toolDownSensorScT5, sensorRight := toolRightSensorScT5, forwardSignal := runFrontScT5_ex, frontNotBusy := ScT6.isBusy, reachedSensorFront := sensorScT6);
+  ScT5(machineType := 1, reachedSensor := sensorScT5, initialPiece := ScT3.currentPiece, finalPiece := cell3Final, nextReadyToReceive := ScT6.readyToReceive, toolPiece := toolPieceScT5_ex, toolSensor := toolSensorScT5, sensorUp := toolUpSensorScT5, sensorLeft := toolLeftSensorScT5, sensorDown := toolDownSensorScT5, sensorRight := toolRightSensorScT5, forwardSignal := runFrontScT5_ex, frontNotBusy := ScT6.isBusy, reachedSensorFront := sensorScT6);
   ScT4(reachedSensor := sensorScT4, forwardSignal := runFrontScT4_ex, frontNotBusy := ScT5.isBusy, reachedSensorFront := sensorScT5);
-  ScT3(reachedSensor := sensorScT3, initialPiece := cell3Initial, finalPiece := cell3Final, nextReadyToReceive := true, toolPiece := toolPieceScT3_ex, toolSensor := toolSensorScT3, sensorUp := toolUpSensorScT3, sensorLeft := toolLeftSensorScT3, sensorDown := toolDownSensorScT3, sensorRight := toolRightSensorScT3, forwardSignal := runFrontScT3_ex, frontNotBusy := ScT4.isBusy, reachedSensorFront := sensorScT4);
+  ScT3(machineType := 0, reachedSensor := sensorScT3, initialPiece := cell3Initial, finalPiece := cell3Final, nextReadyToReceive := true, toolPiece := toolPieceScT3_ex, toolSensor := toolSensorScT3, sensorUp := toolUpSensorScT3, sensorLeft := toolLeftSensorScT3, sensorDown := toolDownSensorScT3, sensorRight := toolRightSensorScT3, forwardSignal := runFrontScT3_ex, frontNotBusy := ScT4.isBusy, reachedSensorFront := sensorScT4);
   ScT2(forwardSignal := runFrontScT2_ex, sendDownSignal := sendDownScT2_ex, sensorRotRight := sensorRotRightScT2, sensorRotLeft := sensorRotLeftScT2, frontNotBusy := MT1.isBusy, downNotBusy := ScT3.isBusy, reachedSensorFront := sensorMT1, reachedSensor := sensorScT2, reachedSensorDown := sensorScT3);
   ScT1(reachedSensor := sensorScT1, forwardSignal := runFrontScT1_ex, frontNotBusy := ScT2.isBusy, reachedSensorFront := sensorScT2);
-  SbT5(reachedSensor := sensorSbT5, initialPiece := SbT3.currentPiece, finalPiece := cell2Final, nextReadyToReceive := SbT6.readyToReceive, toolPiece := toolPieceSbT5_ex, toolSensor := toolSensorSbT5, sensorUp := toolUpSensorSbT5, sensorLeft := toolLeftSensorSbT5, sensorDown := toolDownSensorSbT5, sensorRight := toolRightSensorSbT5, forwardSignal := runFrontSbT5_ex, frontNotBusy := SbT6.isBusy, reachedSensorFront := sensorSbT6);
+  SbT5(machineType := 1, reachedSensor := sensorSbT5, initialPiece := SbT3.currentPiece, finalPiece := cell2Final, nextReadyToReceive := SbT6.readyToReceive, toolPiece := toolPieceSbT5_ex, toolSensor := toolSensorSbT5, sensorUp := toolUpSensorSbT5, sensorLeft := toolLeftSensorSbT5, sensorDown := toolDownSensorSbT5, sensorRight := toolRightSensorSbT5, forwardSignal := runFrontSbT5_ex, frontNotBusy := SbT6.isBusy, reachedSensorFront := sensorSbT6);
   SbT4(reachedSensor := sensorSbT4, forwardSignal := runFrontSbT4_ex, frontNotBusy := SbT5.isBusy, reachedSensorFront := sensorSbT5);
-  SbT3(reachedSensor := sensorSbT3, initialPiece := cell2Initial, finalPiece := cell2Final, nextReadyToReceive := true, toolPiece := toolPieceSbT3_ex, toolSensor := toolSensorSbT3, sensorUp := toolUpSensorSbT3, sensorLeft := toolLeftSensorSbT3, sensorDown := toolDownSensorSbT3, sensorRight := toolRightSensorSbT3, forwardSignal := runFrontSbT3_ex, frontNotBusy := SbT4.isBusy, reachedSensorFront := sensorSbT4);
+  SbT3(machineType := 0, reachedSensor := sensorSbT3, initialPiece := cell2Initial, finalPiece := cell2Final, nextReadyToReceive := true, toolPiece := toolPieceSbT3_ex, toolSensor := toolSensorSbT3, sensorUp := toolUpSensorSbT3, sensorLeft := toolLeftSensorSbT3, sensorDown := toolDownSensorSbT3, sensorRight := toolRightSensorSbT3, forwardSignal := runFrontSbT3_ex, frontNotBusy := SbT4.isBusy, reachedSensorFront := sensorSbT4);
   SbT2(forwardSignal := runFrontSbT2_ex, sendDownSignal := sendDownSbT2_ex, sensorRotRight := sensorRotRightSbT2, sensorRotLeft := sensorRotLeftSbT2, frontNotBusy := ScT1.isBusy, downNotBusy := SbT3.isBusy, reachedSensorFront := sensorScT1, reachedSensor := sensorSbT2, reachedSensorDown := sensorSbT3);
   SbT1(reachedSensor := sensorSbT1, forwardSignal := runFrontSbT1_ex, frontNotBusy := SbT2.isBusy, reachedSensorFront := sensorSbT2);
-  SaT5(reachedSensor := sensorSaT5, initialPiece := SaT3.currentPiece, finalPiece := cell1Final, nextReadyToReceive := SaT6.readyToReceive, toolPiece := toolPieceSaT5_ex, toolSensor := toolSensorSaT5, sensorUp := toolUpSensorSaT5, sensorLeft := toolLeftSensorSaT5, sensorDown := toolDownSensorSaT5, sensorRight := toolRightSensorSaT5, forwardSignal := runFrontSaT5_ex, frontNotBusy := SaT6.isBusy, reachedSensorFront := sensorSaT6);
+  SaT5(machineType := 1, reachedSensor := sensorSaT5, initialPiece := SaT3.currentPiece, finalPiece := cell1Final, nextReadyToReceive := SaT6.readyToReceive, toolPiece := toolPieceSaT5_ex, toolSensor := toolSensorSaT5, sensorUp := toolUpSensorSaT5, sensorLeft := toolLeftSensorSaT5, sensorDown := toolDownSensorSaT5, sensorRight := toolRightSensorSaT5, forwardSignal := runFrontSaT5_ex, frontNotBusy := SaT6.isBusy, reachedSensorFront := sensorSaT6);
   SaT4(reachedSensor := sensorSaT4, forwardSignal := runFrontSaT4_ex, frontNotBusy := SaT5.isBusy, reachedSensorFront := sensorSaT5);
-  SaT3(reachedSensor := sensorSaT3, initialPiece := cell1Initial, finalPiece := cell1Final, nextReadyToReceive := true, toolPiece := toolPieceSaT3_ex, toolSensor := toolSensorSaT3, sensorUp := toolUpSensorSaT3, sensorLeft := toolLeftSensorSaT3, sensorDown := toolDownSensorSaT3, sensorRight := toolRightSensorSaT3, forwardSignal := runFrontSaT3_ex, frontNotBusy := SaT4.isBusy, reachedSensorFront := sensorSaT4);
+  SaT3(machineType := 0, reachedSensor := sensorSaT3, initialPiece := cell1Initial, finalPiece := cell1Final, nextReadyToReceive := true, toolPiece := toolPieceSaT3_ex, toolSensor := toolSensorSaT3, sensorUp := toolUpSensorSaT3, sensorLeft := toolLeftSensorSaT3, sensorDown := toolDownSensorSaT3, sensorRight := toolRightSensorSaT3, forwardSignal := runFrontSaT3_ex, frontNotBusy := SaT4.isBusy, reachedSensorFront := sensorSaT4);
   SaT2(forwardSignal := runFrontSaT2_ex, sendDownSignal := sendDownSaT2_ex, sensorRotRight := sensorRotRightSaT2, sensorRotLeft := sensorRotLeftSaT2, frontNotBusy := SbT1.isBusy, downNotBusy := SaT3.isBusy, reachedSensorFront := sensorSbT1, reachedSensor := sensorSaT2, reachedSensorDown := sensorSaT3);
   forwardSaT2 := SaT2.forwardMotor;
   forwardScT2 := ScT2.forwardMotor;
@@ -4944,17 +4956,8 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step47:
-    take(N);
-    resetWare(P0);
+    action0(S);
   END_STEP
-
-  ACTION take:
-    warehouseIn := initialPiece;
-  END_ACTION
-
-  ACTION resetWare:
-    warehouseIn := 0;
-  END_ACTION
 
   TRANSITION FROM Step47 TO Step46
     := sensorAT1_ex;
@@ -4970,6 +4973,7 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step28:
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step28 TO (Step27, Step30)
@@ -5157,7 +5161,6 @@ PROGRAM unloadProgram
 
   STEP Step30:
     warehouseBusy(R);
-    action0(R);
   END_STEP
 
   TRANSITION FROM Step30 TO Step0
@@ -5169,8 +5172,7 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step80:
-    take(N);
-    resetWare(P0);
+    action0(S);
   END_STEP
 
   TRANSITION FROM Step80 TO Step58
@@ -5187,6 +5189,7 @@ PROGRAM unloadProgram
   END_TRANSITION
 
   STEP Step57:
+    action0(R);
   END_STEP
 
   TRANSITION FROM Step57 TO (Step56, Step60)
@@ -5382,7 +5385,6 @@ PROGRAM unloadProgram
 
   STEP Step60:
     warehouseBusy(R);
-    action0(R);
   END_STEP
 
   TRANSITION FROM Step60 TO Step0

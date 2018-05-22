@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2018-04-02T01:08:32"/>
-  <contentHeader name="Unnamed" modificationDateTime="2018-05-22T01:10:47">
+  <contentHeader name="Unnamed" modificationDateTime="2018-05-22T01:52:03">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>
@@ -11094,6 +11094,11 @@ cell3Final := finalPiece;]]></xhtml:p>
       <pou name="Machine" pouType="functionBlock">
         <interface>
           <inputVars>
+            <variable name="machineType">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
             <variable name="reachedSensor">
               <type>
                 <BOOL/>
@@ -12501,13 +12506,11 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOutAction>
             </step>
             <transition localId="46" height="2" width="20" executionOrderId="0">
-              <position x="1799" y="496"/>
+              <position x="1803" y="474"/>
               <connectionPointIn>
                 <relPosition x="10" y="0"/>
                 <connection refLocalId="45">
-                  <position x="1809" y="496"/>
-                  <position x="1809" y="460"/>
-                  <position x="1813" y="460"/>
+                  <position x="1813" y="474"/>
                   <position x="1813" y="438"/>
                 </connection>
               </connectionPointIn>
@@ -12541,12 +12544,14 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </action>
             </actionBlock>
             <step localId="52" name="Step2" initialStep="false" height="27" width="49">
-              <position x="1785" y="539"/>
+              <position x="1791" y="501"/>
               <connectionPointIn>
                 <relPosition x="24" y="0"/>
                 <connection refLocalId="46">
-                  <position x="1809" y="539"/>
-                  <position x="1809" y="498"/>
+                  <position x="1815" y="501"/>
+                  <position x="1815" y="491"/>
+                  <position x="1813" y="491"/>
+                  <position x="1813" y="476"/>
                 </connection>
               </connectionPointIn>
               <connectionPointOut formalParameter="">
@@ -12697,7 +12702,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOutAction>
             </step>
             <step localId="63" name="Step6" initialStep="false" height="27" width="49">
-              <position x="1785" y="539"/>
+              <position x="1791" y="501"/>
               <connectionPointIn>
                 <relPosition x="24" y="0"/>
               </connectionPointIn>
@@ -15217,11 +15222,13 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               <position x="4397" y="832"/>
               <connectionPointIn>
                 <relPosition x="28" y="0"/>
-                <connection refLocalId="248">
+                <connection refLocalId="252">
                   <position x="4425" y="832"/>
-                  <position x="4425" y="770"/>
-                  <position x="3570" y="770"/>
-                  <position x="3570" y="708"/>
+                  <position x="4425" y="822"/>
+                  <position x="4252" y="822"/>
+                  <position x="4252" y="852"/>
+                  <position x="4080" y="852"/>
+                  <position x="4080" y="842"/>
                 </connection>
               </connectionPointIn>
               <connectionPointOut formalParameter="">
@@ -15304,22 +15311,6 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </inline>
               </condition>
             </transition>
-            <actionBlock localId="194" height="30" width="135" executionOrderId="0">
-              <position x="4499" y="821"/>
-              <connectionPointIn>
-                <relPosition x="0" y="15"/>
-                <connection refLocalId="190">
-                  <position x="4499" y="836"/>
-                  <position x="4489" y="836"/>
-                  <position x="4489" y="845"/>
-                  <position x="4454" y="845"/>
-                </connection>
-              </connectionPointIn>
-              <action localId="0">
-                <relPosition x="0" y="0"/>
-                <reference name="currentAsInitial"/>
-              </action>
-            </actionBlock>
             <step localId="195" name="Step35" initialStep="false" height="27" width="57" executionOrderId="0">
               <position x="4295" y="1061"/>
               <connectionPointIn>
@@ -16304,8 +16295,8 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 <connection refLocalId="52">
                   <position x="2961" y="609"/>
                   <position x="2961" y="587"/>
-                  <position x="1809" y="587"/>
-                  <position x="1809" y="566"/>
+                  <position x="1815" y="587"/>
+                  <position x="1815" y="528"/>
                 </connection>
               </connectionPointIn>
               <connectionPointOut formalParameter="">
@@ -16344,14 +16335,14 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </condition>
             </transition>
             <actionBlock localId="249" height="30" width="100">
-              <position x="1911" y="533"/>
+              <position x="1917" y="495"/>
               <connectionPointIn>
                 <relPosition x="0" y="15"/>
                 <connection refLocalId="52">
-                  <position x="1911" y="548"/>
-                  <position x="1872" y="548"/>
-                  <position x="1872" y="552"/>
-                  <position x="1834" y="552"/>
+                  <position x="1917" y="510"/>
+                  <position x="1878" y="510"/>
+                  <position x="1878" y="514"/>
+                  <position x="1840" y="514"/>
                 </connection>
               </connectionPointIn>
               <action localId="0" qualifier="S">
@@ -16359,6 +16350,114 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 <reference name="isBusy"/>
               </action>
             </actionBlock>
+            <selectionDivergence localId="250" height="1" width="206">
+              <position x="3706" y="818"/>
+              <connectionPointIn>
+                <relPosition x="103" y="0"/>
+                <connection refLocalId="251">
+                  <position x="3809" y="818"/>
+                  <position x="3809" y="800"/>
+                  <position x="3700" y="800"/>
+                  <position x="3700" y="783"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut formalParameter="">
+                <relPosition x="0" y="1"/>
+              </connectionPointOut>
+              <connectionPointOut formalParameter="">
+                <relPosition x="206" y="1"/>
+              </connectionPointOut>
+            </selectionDivergence>
+            <step localId="251" name="Step46" initialStep="false" height="27" width="57">
+              <position x="3672" y="756"/>
+              <connectionPointIn>
+                <relPosition x="28" y="0"/>
+                <connection refLocalId="248">
+                  <position x="3700" y="756"/>
+                  <position x="3700" y="732"/>
+                  <position x="3570" y="732"/>
+                  <position x="3570" y="708"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut formalParameter="">
+                <relPosition x="28" y="27"/>
+              </connectionPointOut>
+              <connectionPointOutAction formalParameter="">
+                <relPosition x="57" y="13"/>
+              </connectionPointOutAction>
+            </step>
+            <transition localId="252" height="2" width="20">
+              <position x="4070" y="840"/>
+              <connectionPointIn>
+                <relPosition x="10" y="0"/>
+                <connection refLocalId="250">
+                  <position x="4080" y="840"/>
+                  <position x="4080" y="829"/>
+                  <position x="3912" y="829"/>
+                  <position x="3912" y="819"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="10" y="2"/>
+              </connectionPointOut>
+              <condition>
+                <inline name="">
+                  <ST>
+                    <xhtml:p><![CDATA[machineType = 1]]></xhtml:p>
+                  </ST>
+                </inline>
+              </condition>
+            </transition>
+            <transition localId="253" height="2" width="20">
+              <position x="3697" y="852"/>
+              <connectionPointIn>
+                <relPosition x="10" y="0"/>
+                <connection refLocalId="250">
+                  <position x="3707" y="852"/>
+                  <position x="3707" y="842"/>
+                  <position x="3706" y="842"/>
+                  <position x="3706" y="819"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="10" y="2"/>
+              </connectionPointOut>
+              <condition>
+                <inline name="">
+                  <ST>
+                    <xhtml:p><![CDATA[machineType = 0]]></xhtml:p>
+                  </ST>
+                </inline>
+              </condition>
+            </transition>
+            <actionBlock localId="194" height="30" width="135" executionOrderId="0">
+              <position x="3908" y="742"/>
+              <connectionPointIn>
+                <relPosition x="0" y="15"/>
+                <connection refLocalId="251">
+                  <position x="3908" y="757"/>
+                  <position x="3818" y="757"/>
+                  <position x="3818" y="769"/>
+                  <position x="3729" y="769"/>
+                </connection>
+              </connectionPointIn>
+              <action localId="0">
+                <relPosition x="0" y="0"/>
+                <reference name="currentAsInitial"/>
+              </action>
+            </actionBlock>
+            <jumpStep localId="254" targetName="sendToNext" height="13" width="12">
+              <position x="3663" y="910"/>
+              <connectionPointIn>
+                <relPosition x="6" y="0"/>
+                <connection refLocalId="253">
+                  <position x="3669" y="910"/>
+                  <position x="3669" y="882"/>
+                  <position x="3707" y="882"/>
+                  <position x="3707" y="854"/>
+                </connection>
+              </connectionPointIn>
+            </jumpStep>
           </SFC>
         </body>
         <documentation>
@@ -26724,15 +26823,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOut>
               <expression>pushToRollCT6_ex</expression>
             </inVariable>
-            <block localId="225" typeName="Machine" instanceName="SaT3" executionOrderId="0" height="340" width="251">
+            <block localId="225" typeName="Machine" instanceName="SaT3" executionOrderId="0" height="360" width="251">
               <position x="2209" y="753"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="226">
+                    <connection refLocalId="403">
                       <position x="2209" y="783"/>
-                      <position x="2046" y="783"/>
+                      <position x="2172" y="783"/>
+                      <position x="2172" y="772"/>
+                      <position x="2136" y="772"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="226">
+                      <position x="2209" y="803"/>
+                      <position x="2046" y="803"/>
                       <position x="2046" y="704"/>
                       <position x="1884" y="704"/>
                     </connection>
@@ -26740,10 +26850,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="402">
-                      <position x="2209" y="803"/>
-                      <position x="1968" y="803"/>
+                      <position x="2209" y="823"/>
+                      <position x="1968" y="823"/>
                       <position x="1968" y="790"/>
                       <position x="1728" y="790"/>
                     </connection>
@@ -26751,10 +26861,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="134">
-                      <position x="2209" y="823"/>
-                      <position x="1944" y="823"/>
+                      <position x="2209" y="843"/>
+                      <position x="1944" y="843"/>
                       <position x="1944" y="825"/>
                       <position x="1704" y="825"/>
                     </connection>
@@ -26762,19 +26872,21 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="280">
-                      <position x="2209" y="843"/>
+                      <position x="2209" y="863"/>
+                      <position x="1993" y="863"/>
+                      <position x="1993" y="843"/>
                       <position x="1778" y="843"/>
                     </connection>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="240">
-                      <position x="2209" y="863"/>
-                      <position x="2102" y="863"/>
+                      <position x="2209" y="883"/>
+                      <position x="2102" y="883"/>
                       <position x="2102" y="765"/>
                       <position x="1899" y="765"/>
                     </connection>
@@ -26782,10 +26894,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="228">
-                      <position x="2209" y="883"/>
-                      <position x="2141" y="883"/>
+                      <position x="2209" y="903"/>
+                      <position x="2141" y="903"/>
                       <position x="2141" y="895"/>
                       <position x="1884" y="895"/>
                     </connection>
@@ -26793,10 +26905,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="230">
-                      <position x="2209" y="903"/>
-                      <position x="2104" y="903"/>
+                      <position x="2209" y="923"/>
+                      <position x="2104" y="923"/>
                       <position x="2104" y="837"/>
                       <position x="2080" y="837"/>
                     </connection>
@@ -26804,10 +26916,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="231">
-                      <position x="2209" y="923"/>
-                      <position x="2150" y="923"/>
+                      <position x="2209" y="943"/>
+                      <position x="2150" y="943"/>
                       <position x="2150" y="869"/>
                       <position x="2089" y="869"/>
                     </connection>
@@ -26815,10 +26927,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="232">
-                      <position x="2209" y="943"/>
-                      <position x="2155" y="943"/>
+                      <position x="2209" y="963"/>
+                      <position x="2155" y="963"/>
                       <position x="2155" y="903"/>
                       <position x="2099" y="903"/>
                     </connection>
@@ -26826,10 +26938,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="233">
-                      <position x="2209" y="963"/>
-                      <position x="2165" y="963"/>
+                      <position x="2209" y="983"/>
+                      <position x="2165" y="983"/>
                       <position x="2165" y="935"/>
                       <position x="2101" y="935"/>
                     </connection>
@@ -26837,15 +26949,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="244">
-                      <position x="2209" y="1003"/>
-                      <position x="2149" y="1003"/>
+                      <position x="2209" y="1023"/>
+                      <position x="2149" y="1023"/>
                       <position x="2149" y="979"/>
                       <position x="1946" y="979"/>
                     </connection>
@@ -26853,17 +26965,17 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="241" formalParameter="isBusy">
-                      <position x="2209" y="1043"/>
-                      <position x="2168" y="1043"/>
+                      <position x="2209" y="1063"/>
                       <position x="2168" y="1063"/>
-                      <position x="2529" y="1063"/>
+                      <position x="2168" y="1030"/>
+                      <position x="2529" y="1030"/>
                       <position x="2529" y="1260"/>
                       <position x="2460" y="1260"/>
                     </connection>
@@ -26871,10 +26983,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="242">
-                      <position x="2209" y="1063"/>
-                      <position x="2028" y="1063"/>
+                      <position x="2209" y="1083"/>
+                      <position x="2028" y="1083"/>
                       <position x="2028" y="1155"/>
                       <position x="1847" y="1155"/>
                     </connection>
@@ -26882,7 +26994,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -27220,15 +27332,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointIn>
               <expression>forwardSaT4</expression>
             </outVariable>
-            <block localId="257" typeName="Machine" instanceName="SaT5" executionOrderId="0" height="340" width="251">
+            <block localId="257" typeName="Machine" instanceName="SaT5" executionOrderId="0" height="360" width="251">
               <position x="2180" y="1754"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="258">
+                    <connection refLocalId="406">
                       <position x="2180" y="1784"/>
-                      <position x="2017" y="1784"/>
+                      <position x="2150" y="1784"/>
+                      <position x="2150" y="1748"/>
+                      <position x="2121" y="1748"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="258">
+                      <position x="2180" y="1804"/>
+                      <position x="2017" y="1804"/>
                       <position x="2017" y="1705"/>
                       <position x="1855" y="1705"/>
                     </connection>
@@ -27236,10 +27359,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="225" formalParameter="currentPiece">
-                      <position x="2180" y="1804"/>
-                      <position x="2123" y="1804"/>
+                      <position x="2180" y="1824"/>
+                      <position x="2123" y="1824"/>
                       <position x="2123" y="1313"/>
                       <position x="2470" y="1313"/>
                       <position x="2470" y="823"/>
@@ -27249,10 +27372,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="134">
-                      <position x="2180" y="1824"/>
-                      <position x="1714" y="1824"/>
+                      <position x="2180" y="1844"/>
+                      <position x="1714" y="1844"/>
                       <position x="1714" y="825"/>
                       <position x="1704" y="825"/>
                     </connection>
@@ -27260,10 +27383,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="131" formalParameter="readyToReceive">
-                      <position x="2180" y="1844"/>
-                      <position x="2142" y="1844"/>
+                      <position x="2180" y="1864"/>
+                      <position x="2142" y="1864"/>
                       <position x="2142" y="2218"/>
                       <position x="2450" y="2218"/>
                       <position x="2450" y="2592"/>
@@ -27273,10 +27396,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="272">
-                      <position x="2180" y="1864"/>
-                      <position x="2073" y="1864"/>
+                      <position x="2180" y="1884"/>
+                      <position x="2073" y="1884"/>
                       <position x="2073" y="1766"/>
                       <position x="1870" y="1766"/>
                     </connection>
@@ -27284,10 +27407,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="260">
-                      <position x="2180" y="1884"/>
-                      <position x="2043" y="1884"/>
+                      <position x="2180" y="1904"/>
+                      <position x="2043" y="1904"/>
                       <position x="2043" y="1803"/>
                       <position x="1982" y="1803"/>
                     </connection>
@@ -27295,10 +27418,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="262">
-                      <position x="2180" y="1904"/>
-                      <position x="2075" y="1904"/>
+                      <position x="2180" y="1924"/>
+                      <position x="2075" y="1924"/>
                       <position x="2075" y="1838"/>
                       <position x="2051" y="1838"/>
                     </connection>
@@ -27306,10 +27429,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="263">
-                      <position x="2180" y="1924"/>
-                      <position x="2121" y="1924"/>
+                      <position x="2180" y="1944"/>
+                      <position x="2121" y="1944"/>
                       <position x="2121" y="1870"/>
                       <position x="2060" y="1870"/>
                     </connection>
@@ -27317,10 +27440,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="264">
-                      <position x="2180" y="1944"/>
-                      <position x="2126" y="1944"/>
+                      <position x="2180" y="1964"/>
+                      <position x="2126" y="1964"/>
                       <position x="2126" y="1904"/>
                       <position x="2070" y="1904"/>
                     </connection>
@@ -27328,10 +27451,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="265">
-                      <position x="2180" y="1964"/>
-                      <position x="2136" y="1964"/>
+                      <position x="2180" y="1984"/>
+                      <position x="2136" y="1984"/>
                       <position x="2136" y="1936"/>
                       <position x="2072" y="1936"/>
                     </connection>
@@ -27339,15 +27462,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="246">
-                      <position x="2180" y="2004"/>
-                      <position x="2103" y="2004"/>
+                      <position x="2180" y="2024"/>
+                      <position x="2103" y="2024"/>
                       <position x="2103" y="1994"/>
                       <position x="2026" y="1994"/>
                     </connection>
@@ -27355,15 +27478,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="131" formalParameter="isBusy">
-                      <position x="2180" y="2044"/>
-                      <position x="2122" y="2044"/>
+                      <position x="2180" y="2064"/>
+                      <position x="2122" y="2064"/>
                       <position x="2122" y="2328"/>
                       <position x="2474" y="2328"/>
                       <position x="2474" y="2692"/>
@@ -27373,10 +27496,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="107">
-                      <position x="2180" y="2064"/>
-                      <position x="1978" y="2064"/>
+                      <position x="2180" y="2084"/>
+                      <position x="1978" y="2084"/>
                       <position x="1978" y="2362"/>
                       <position x="1777" y="2362"/>
                     </connection>
@@ -27384,7 +27507,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -27718,15 +27841,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOut>
               <expression>cell2Final</expression>
             </inVariable>
-            <block localId="248" typeName="Machine" instanceName="SbT3" executionOrderId="0" height="340" width="251">
+            <block localId="248" typeName="Machine" instanceName="SbT3" executionOrderId="0" height="360" width="251">
               <position x="3790" y="826"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="249">
+                    <connection refLocalId="275">
                       <position x="3790" y="856"/>
-                      <position x="3627" y="856"/>
+                      <position x="3750" y="856"/>
+                      <position x="3750" y="816"/>
+                      <position x="3710" y="816"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="249">
+                      <position x="3790" y="876"/>
+                      <position x="3627" y="876"/>
                       <position x="3627" y="777"/>
                       <position x="3465" y="777"/>
                     </connection>
@@ -27734,10 +27868,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="314">
-                      <position x="3790" y="876"/>
-                      <position x="3643" y="876"/>
+                      <position x="3790" y="896"/>
+                      <position x="3643" y="896"/>
                       <position x="3643" y="855"/>
                       <position x="3253" y="855"/>
                     </connection>
@@ -27745,10 +27879,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="247">
-                      <position x="3790" y="896"/>
-                      <position x="3525" y="896"/>
+                      <position x="3790" y="916"/>
+                      <position x="3525" y="916"/>
                       <position x="3525" y="893"/>
                       <position x="3261" y="893"/>
                     </connection>
@@ -27756,19 +27890,21 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="317">
-                      <position x="3790" y="916"/>
+                      <position x="3790" y="936"/>
+                      <position x="3574" y="936"/>
+                      <position x="3574" y="916"/>
                       <position x="3359" y="916"/>
                     </connection>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="290">
-                      <position x="3790" y="936"/>
-                      <position x="3683" y="936"/>
+                      <position x="3790" y="956"/>
+                      <position x="3683" y="956"/>
                       <position x="3683" y="838"/>
                       <position x="3481" y="838"/>
                     </connection>
@@ -27776,10 +27912,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="251">
-                      <position x="3790" y="956"/>
-                      <position x="3722" y="956"/>
+                      <position x="3790" y="976"/>
+                      <position x="3722" y="976"/>
                       <position x="3722" y="968"/>
                       <position x="3466" y="968"/>
                     </connection>
@@ -27787,10 +27923,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="253">
-                      <position x="3790" y="976"/>
-                      <position x="3685" y="976"/>
+                      <position x="3790" y="996"/>
+                      <position x="3685" y="996"/>
                       <position x="3685" y="910"/>
                       <position x="3662" y="910"/>
                     </connection>
@@ -27798,10 +27934,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="254">
-                      <position x="3790" y="996"/>
-                      <position x="3731" y="996"/>
+                      <position x="3790" y="1016"/>
+                      <position x="3731" y="1016"/>
                       <position x="3731" y="942"/>
                       <position x="3671" y="942"/>
                     </connection>
@@ -27809,10 +27945,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="255">
-                      <position x="3790" y="1016"/>
-                      <position x="3736" y="1016"/>
+                      <position x="3790" y="1036"/>
+                      <position x="3736" y="1036"/>
                       <position x="3736" y="976"/>
                       <position x="3680" y="976"/>
                     </connection>
@@ -27820,10 +27956,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="256">
-                      <position x="3790" y="1036"/>
-                      <position x="3746" y="1036"/>
+                      <position x="3790" y="1056"/>
+                      <position x="3746" y="1056"/>
                       <position x="3746" y="1008"/>
                       <position x="3682" y="1008"/>
                     </connection>
@@ -27831,15 +27967,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="294">
-                      <position x="3790" y="1076"/>
-                      <position x="3730" y="1076"/>
+                      <position x="3790" y="1096"/>
+                      <position x="3730" y="1096"/>
                       <position x="3730" y="1052"/>
                       <position x="3528" y="1052"/>
                     </connection>
@@ -27847,28 +27983,28 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="291" formalParameter="isBusy">
-                      <position x="3790" y="1116"/>
-                      <position x="3720" y="1116"/>
+                      <position x="3790" y="1136"/>
+                      <position x="3720" y="1136"/>
                       <position x="3720" y="1195"/>
                       <position x="4088" y="1195"/>
-                      <position x="4088" y="1345"/>
-                      <position x="4041" y="1345"/>
+                      <position x="4088" y="1333"/>
+                      <position x="4041" y="1333"/>
                     </connection>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="292">
-                      <position x="3790" y="1136"/>
-                      <position x="3750" y="1136"/>
+                      <position x="3790" y="1156"/>
+                      <position x="3750" y="1156"/>
                       <position x="3750" y="1228"/>
                       <position x="3428" y="1228"/>
                     </connection>
@@ -27876,7 +28012,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -28228,15 +28364,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOut>
               <expression>runFrontSbT5_ex</expression>
             </inVariable>
-            <block localId="297" typeName="Machine" instanceName="SbT5" executionOrderId="0" height="340" width="251">
+            <block localId="297" typeName="Machine" instanceName="SbT5" executionOrderId="0" height="360" width="251">
               <position x="3761" y="1827"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="298">
+                    <connection refLocalId="405">
                       <position x="3761" y="1857"/>
-                      <position x="3598" y="1857"/>
+                      <position x="3739" y="1857"/>
+                      <position x="3739" y="1820"/>
+                      <position x="3718" y="1820"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="298">
+                      <position x="3761" y="1877"/>
+                      <position x="3598" y="1877"/>
                       <position x="3598" y="1778"/>
                       <position x="3436" y="1778"/>
                     </connection>
@@ -28244,10 +28391,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="248" formalParameter="currentPiece">
-                      <position x="3761" y="1877"/>
-                      <position x="3704" y="1877"/>
+                      <position x="3761" y="1897"/>
+                      <position x="3704" y="1897"/>
                       <position x="3704" y="1386"/>
                       <position x="4079" y="1386"/>
                       <position x="4079" y="896"/>
@@ -28257,10 +28404,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="247">
-                      <position x="3761" y="1897"/>
-                      <position x="3294" y="1897"/>
+                      <position x="3761" y="1917"/>
+                      <position x="3294" y="1917"/>
                       <position x="3294" y="893"/>
                       <position x="3261" y="893"/>
                     </connection>
@@ -28268,10 +28415,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="108" formalParameter="readyToReceive">
-                      <position x="3761" y="1917"/>
-                      <position x="3673" y="1917"/>
+                      <position x="3761" y="1937"/>
+                      <position x="3673" y="1937"/>
                       <position x="3673" y="2255"/>
                       <position x="4046" y="2255"/>
                       <position x="4046" y="2594"/>
@@ -28281,10 +28428,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="312">
-                      <position x="3761" y="1937"/>
-                      <position x="3654" y="1937"/>
+                      <position x="3761" y="1957"/>
+                      <position x="3654" y="1957"/>
                       <position x="3654" y="1839"/>
                       <position x="3452" y="1839"/>
                     </connection>
@@ -28292,10 +28439,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="300">
-                      <position x="3761" y="1957"/>
-                      <position x="3624" y="1957"/>
+                      <position x="3761" y="1977"/>
+                      <position x="3624" y="1977"/>
                       <position x="3624" y="1876"/>
                       <position x="3564" y="1876"/>
                     </connection>
@@ -28303,10 +28450,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="302">
-                      <position x="3761" y="1977"/>
-                      <position x="3656" y="1977"/>
+                      <position x="3761" y="1997"/>
+                      <position x="3656" y="1997"/>
                       <position x="3656" y="1917"/>
                       <position x="3504" y="1917"/>
                     </connection>
@@ -28314,10 +28461,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="303">
-                      <position x="3761" y="1997"/>
-                      <position x="3702" y="1997"/>
+                      <position x="3761" y="2017"/>
+                      <position x="3702" y="2017"/>
                       <position x="3702" y="1943"/>
                       <position x="3642" y="1943"/>
                     </connection>
@@ -28325,10 +28472,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="304">
-                      <position x="3761" y="2017"/>
-                      <position x="3707" y="2017"/>
+                      <position x="3761" y="2037"/>
+                      <position x="3707" y="2037"/>
                       <position x="3707" y="1977"/>
                       <position x="3651" y="1977"/>
                     </connection>
@@ -28336,10 +28483,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="305">
-                      <position x="3761" y="2037"/>
-                      <position x="3717" y="2037"/>
+                      <position x="3761" y="2057"/>
+                      <position x="3717" y="2057"/>
                       <position x="3717" y="2009"/>
                       <position x="3653" y="2009"/>
                     </connection>
@@ -28347,15 +28494,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="296">
-                      <position x="3761" y="2077"/>
-                      <position x="3684" y="2077"/>
+                      <position x="3761" y="2097"/>
+                      <position x="3684" y="2097"/>
                       <position x="3684" y="2067"/>
                       <position x="3608" y="2067"/>
                     </connection>
@@ -28363,15 +28510,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="108" formalParameter="isBusy">
-                      <position x="3761" y="2117"/>
-                      <position x="3731" y="2117"/>
+                      <position x="3761" y="2137"/>
+                      <position x="3731" y="2137"/>
                       <position x="3731" y="2405"/>
                       <position x="4030" y="2405"/>
                       <position x="4030" y="2694"/>
@@ -28381,10 +28528,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="140">
-                      <position x="3761" y="2137"/>
-                      <position x="3538" y="2137"/>
+                      <position x="3761" y="2157"/>
+                      <position x="3538" y="2157"/>
                       <position x="3538" y="2396"/>
                       <position x="3315" y="2396"/>
                     </connection>
@@ -28392,7 +28539,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -28706,15 +28853,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOut>
               <expression>cell3Final</expression>
             </inVariable>
-            <block localId="322" typeName="Machine" instanceName="ScT3" executionOrderId="0" height="340" width="251">
+            <block localId="322" typeName="Machine" instanceName="ScT3" executionOrderId="0" height="360" width="251">
               <position x="5283" y="777"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="323">
+                    <connection refLocalId="278">
                       <position x="5283" y="807"/>
-                      <position x="5120" y="807"/>
+                      <position x="5265" y="807"/>
+                      <position x="5265" y="776"/>
+                      <position x="5247" y="776"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="323">
+                      <position x="5283" y="827"/>
+                      <position x="5120" y="827"/>
                       <position x="5120" y="728"/>
                       <position x="4958" y="728"/>
                     </connection>
@@ -28722,10 +28880,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="361">
-                      <position x="5283" y="827"/>
-                      <position x="5136" y="827"/>
+                      <position x="5283" y="847"/>
+                      <position x="5136" y="847"/>
                       <position x="5136" y="806"/>
                       <position x="4746" y="806"/>
                     </connection>
@@ -28733,10 +28891,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="321">
-                      <position x="5283" y="847"/>
-                      <position x="5018" y="847"/>
+                      <position x="5283" y="867"/>
+                      <position x="5018" y="867"/>
                       <position x="5018" y="844"/>
                       <position x="4754" y="844"/>
                     </connection>
@@ -28744,19 +28902,21 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="364">
-                      <position x="5283" y="867"/>
+                      <position x="5283" y="887"/>
+                      <position x="5067" y="887"/>
+                      <position x="5067" y="867"/>
                       <position x="4852" y="867"/>
                     </connection>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="337">
-                      <position x="5283" y="887"/>
-                      <position x="5189" y="887"/>
+                      <position x="5283" y="907"/>
+                      <position x="5189" y="907"/>
                       <position x="5189" y="789"/>
                       <position x="4974" y="789"/>
                     </connection>
@@ -28764,10 +28924,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="325">
-                      <position x="5283" y="907"/>
-                      <position x="5215" y="907"/>
+                      <position x="5283" y="927"/>
+                      <position x="5215" y="927"/>
                       <position x="5215" y="919"/>
                       <position x="4959" y="919"/>
                     </connection>
@@ -28775,10 +28935,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="327">
-                      <position x="5283" y="927"/>
-                      <position x="5212" y="927"/>
+                      <position x="5283" y="947"/>
+                      <position x="5212" y="947"/>
                       <position x="5212" y="833"/>
                       <position x="5076" y="833"/>
                     </connection>
@@ -28786,10 +28946,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="328">
-                      <position x="5283" y="947"/>
-                      <position x="5224" y="947"/>
+                      <position x="5283" y="967"/>
+                      <position x="5224" y="967"/>
                       <position x="5224" y="893"/>
                       <position x="5164" y="893"/>
                     </connection>
@@ -28797,10 +28957,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="329">
-                      <position x="5283" y="967"/>
-                      <position x="5229" y="967"/>
+                      <position x="5283" y="987"/>
+                      <position x="5229" y="987"/>
                       <position x="5229" y="927"/>
                       <position x="5173" y="927"/>
                     </connection>
@@ -28808,10 +28968,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="330">
-                      <position x="5283" y="987"/>
-                      <position x="5239" y="987"/>
+                      <position x="5283" y="1007"/>
+                      <position x="5239" y="1007"/>
                       <position x="5239" y="959"/>
                       <position x="5175" y="959"/>
                     </connection>
@@ -28819,15 +28979,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="341">
-                      <position x="5283" y="1027"/>
-                      <position x="5223" y="1027"/>
+                      <position x="5283" y="1047"/>
+                      <position x="5223" y="1047"/>
                       <position x="5223" y="1003"/>
                       <position x="5021" y="1003"/>
                     </connection>
@@ -28835,28 +28995,28 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="338" formalParameter="isBusy">
-                      <position x="5283" y="1067"/>
-                      <position x="5213" y="1067"/>
+                      <position x="5283" y="1087"/>
+                      <position x="5213" y="1087"/>
                       <position x="5213" y="1146"/>
                       <position x="5581" y="1146"/>
-                      <position x="5581" y="1296"/>
-                      <position x="5534" y="1296"/>
+                      <position x="5581" y="1284"/>
+                      <position x="5534" y="1284"/>
                     </connection>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="339">
-                      <position x="5283" y="1087"/>
-                      <position x="5243" y="1087"/>
+                      <position x="5283" y="1107"/>
+                      <position x="5243" y="1107"/>
                       <position x="5243" y="1179"/>
                       <position x="4921" y="1179"/>
                     </connection>
@@ -28864,7 +29024,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -29216,15 +29376,26 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               </connectionPointOut>
               <expression>runFrontScT5_ex</expression>
             </inVariable>
-            <block localId="344" typeName="Machine" instanceName="ScT5" executionOrderId="0" height="340" width="251">
+            <block localId="344" typeName="Machine" instanceName="ScT5" executionOrderId="0" height="360" width="251">
               <position x="5254" y="1778"/>
               <inputVariables>
-                <variable formalParameter="reachedSensor">
+                <variable formalParameter="machineType">
                   <connectionPointIn>
                     <relPosition x="0" y="30"/>
-                    <connection refLocalId="345">
+                    <connection refLocalId="404">
                       <position x="5254" y="1808"/>
-                      <position x="5091" y="1808"/>
+                      <position x="5236" y="1808"/>
+                      <position x="5236" y="1776"/>
+                      <position x="5219" y="1776"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="reachedSensor">
+                  <connectionPointIn>
+                    <relPosition x="0" y="50"/>
+                    <connection refLocalId="345">
+                      <position x="5254" y="1828"/>
+                      <position x="5091" y="1828"/>
                       <position x="5091" y="1729"/>
                       <position x="4929" y="1729"/>
                     </connection>
@@ -29232,10 +29403,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="initialPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="50"/>
+                    <relPosition x="0" y="70"/>
                     <connection refLocalId="322" formalParameter="currentPiece">
-                      <position x="5254" y="1828"/>
-                      <position x="5197" y="1828"/>
+                      <position x="5254" y="1848"/>
+                      <position x="5197" y="1848"/>
                       <position x="5197" y="1337"/>
                       <position x="5572" y="1337"/>
                       <position x="5572" y="847"/>
@@ -29245,10 +29416,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="finalPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="70"/>
+                    <relPosition x="0" y="90"/>
                     <connection refLocalId="321">
-                      <position x="5254" y="1848"/>
-                      <position x="4787" y="1848"/>
+                      <position x="5254" y="1868"/>
+                      <position x="4787" y="1868"/>
                       <position x="4787" y="844"/>
                       <position x="4754" y="844"/>
                     </connection>
@@ -29256,10 +29427,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="nextReadyToReceive">
                   <connectionPointIn>
-                    <relPosition x="0" y="90"/>
+                    <relPosition x="0" y="110"/>
                     <connection refLocalId="146" formalParameter="readyToReceive">
-                      <position x="5254" y="1868"/>
-                      <position x="5198" y="1868"/>
+                      <position x="5254" y="1888"/>
+                      <position x="5198" y="1888"/>
                       <position x="5198" y="2231"/>
                       <position x="5511" y="2231"/>
                       <position x="5511" y="2594"/>
@@ -29269,10 +29440,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolPiece">
                   <connectionPointIn>
-                    <relPosition x="0" y="110"/>
+                    <relPosition x="0" y="130"/>
                     <connection refLocalId="359">
-                      <position x="5254" y="1888"/>
-                      <position x="5147" y="1888"/>
+                      <position x="5254" y="1908"/>
+                      <position x="5147" y="1908"/>
                       <position x="5147" y="1790"/>
                       <position x="4945" y="1790"/>
                     </connection>
@@ -29280,10 +29451,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="toolSensor">
                   <connectionPointIn>
-                    <relPosition x="0" y="130"/>
+                    <relPosition x="0" y="150"/>
                     <connection refLocalId="347">
-                      <position x="5254" y="1908"/>
-                      <position x="5117" y="1908"/>
+                      <position x="5254" y="1928"/>
+                      <position x="5117" y="1928"/>
                       <position x="5117" y="1827"/>
                       <position x="5057" y="1827"/>
                     </connection>
@@ -29291,10 +29462,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorUp">
                   <connectionPointIn>
-                    <relPosition x="0" y="150"/>
+                    <relPosition x="0" y="170"/>
                     <connection refLocalId="349">
-                      <position x="5254" y="1928"/>
-                      <position x="5149" y="1928"/>
+                      <position x="5254" y="1948"/>
+                      <position x="5149" y="1948"/>
                       <position x="5149" y="1868"/>
                       <position x="4997" y="1868"/>
                     </connection>
@@ -29302,10 +29473,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorLeft">
                   <connectionPointIn>
-                    <relPosition x="0" y="170"/>
+                    <relPosition x="0" y="190"/>
                     <connection refLocalId="350">
-                      <position x="5254" y="1948"/>
-                      <position x="5195" y="1948"/>
+                      <position x="5254" y="1968"/>
+                      <position x="5195" y="1968"/>
                       <position x="5195" y="1894"/>
                       <position x="5135" y="1894"/>
                     </connection>
@@ -29313,10 +29484,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorDown">
                   <connectionPointIn>
-                    <relPosition x="0" y="190"/>
+                    <relPosition x="0" y="210"/>
                     <connection refLocalId="351">
-                      <position x="5254" y="1968"/>
-                      <position x="5200" y="1968"/>
+                      <position x="5254" y="1988"/>
+                      <position x="5200" y="1988"/>
                       <position x="5200" y="1928"/>
                       <position x="5144" y="1928"/>
                     </connection>
@@ -29324,10 +29495,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="sensorRight">
                   <connectionPointIn>
-                    <relPosition x="0" y="210"/>
+                    <relPosition x="0" y="230"/>
                     <connection refLocalId="352">
-                      <position x="5254" y="1988"/>
-                      <position x="5210" y="1988"/>
+                      <position x="5254" y="2008"/>
+                      <position x="5210" y="2008"/>
                       <position x="5210" y="1960"/>
                       <position x="5146" y="1960"/>
                     </connection>
@@ -29335,15 +29506,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="230"/>
+                    <relPosition x="0" y="250"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="forwardSignal">
                   <connectionPointIn>
-                    <relPosition x="0" y="250"/>
+                    <relPosition x="0" y="270"/>
                     <connection refLocalId="343">
-                      <position x="5254" y="2028"/>
-                      <position x="5177" y="2028"/>
+                      <position x="5254" y="2048"/>
+                      <position x="5177" y="2048"/>
                       <position x="5177" y="2018"/>
                       <position x="5101" y="2018"/>
                     </connection>
@@ -29351,15 +29522,15 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="backNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="270"/>
+                    <relPosition x="0" y="290"/>
                   </connectionPointIn>
                 </variable>
                 <variable formalParameter="frontNotBusy">
                   <connectionPointIn>
-                    <relPosition x="0" y="290"/>
+                    <relPosition x="0" y="310"/>
                     <connection refLocalId="146" formalParameter="isBusy">
-                      <position x="5254" y="2068"/>
-                      <position x="5154" y="2068"/>
+                      <position x="5254" y="2088"/>
+                      <position x="5154" y="2088"/>
                       <position x="5154" y="2381"/>
                       <position x="5589" y="2381"/>
                       <position x="5589" y="2694"/>
@@ -29369,10 +29540,10 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorFront">
                   <connectionPointIn>
-                    <relPosition x="0" y="310"/>
+                    <relPosition x="0" y="330"/>
                     <connection refLocalId="152">
-                      <position x="5254" y="2088"/>
-                      <position x="5090" y="2088"/>
+                      <position x="5254" y="2108"/>
+                      <position x="5090" y="2108"/>
                       <position x="5090" y="2331"/>
                       <position x="4747" y="2331"/>
                     </connection>
@@ -29380,7 +29551,7 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 </variable>
                 <variable formalParameter="reachedSensorBack">
                   <connectionPointIn>
-                    <relPosition x="0" y="330"/>
+                    <relPosition x="0" y="350"/>
                   </connectionPointIn>
                 </variable>
               </inputVariables>
@@ -30222,6 +30393,48 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 <relPosition x="79" y="13"/>
               </connectionPointOut>
               <expression>cell1Initial</expression>
+            </inVariable>
+            <inVariable localId="403" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="2118" y="759"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>0</expression>
+            </inVariable>
+            <inVariable localId="275" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="3692" y="803"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>0</expression>
+            </inVariable>
+            <inVariable localId="278" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="5229" y="763"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>0</expression>
+            </inVariable>
+            <inVariable localId="404" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="5201" y="1763"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>1</expression>
+            </inVariable>
+            <inVariable localId="405" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="3700" y="1807"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>1</expression>
+            </inVariable>
+            <inVariable localId="406" executionOrderId="0" height="27" width="18" negated="false">
+              <position x="2103" y="1735"/>
+              <connectionPointOut>
+                <relPosition x="18" y="13"/>
+              </connectionPointOut>
+              <expression>1</expression>
             </inVariable>
           </FBD>
         </body>
