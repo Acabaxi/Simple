@@ -226,6 +226,7 @@ typedef struct {
   __DECLARE_VAR(BOOL,EN)
   __DECLARE_VAR(BOOL,ENO)
   __DECLARE_VAR(BOOL,MOTORZUP)
+  __DECLARE_VAR(BOOL,MOTORZUP0)
   __DECLARE_VAR(BOOL,MOTORZDOWN)
   __DECLARE_VAR(BOOL,MOTORYUP)
   __DECLARE_VAR(BOOL,MOTORYDOWN)
@@ -321,6 +322,7 @@ typedef struct {
   __DECLARE_VAR(BOOL,EN)
   __DECLARE_VAR(BOOL,ENO)
   __DECLARE_VAR(BOOL,SENDUPRIGHTSIGNAL)
+  __DECLARE_VAR(BOOL,SENDRIGHTDOWNSIGNAL)
   __DECLARE_VAR(BOOL,SENDRIGHTUPSIGNAL)
   __DECLARE_VAR(BOOL,RECEIVEPIECE)
   __DECLARE_VAR(BOOL,BACKSIGNAL)
@@ -347,12 +349,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[36];
+  STEP __step_list[41];
   UINT __nb_steps;
   ACTION __action_list[8];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[42];
-  __IEC_BOOL_t __debug_transition_list[42];
+  __IEC_BOOL_t __transition_list[48];
+  __IEC_BOOL_t __debug_transition_list[48];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -537,6 +539,8 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,SENDRIGHTDOWNCT2_EX)
+  __DECLARE_EXTERNAL(BOOL,SENDLEFTDOWNCT8_EX)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTCT7_EX)
   __DECLARE_EXTERNAL(BOOL,PUSHUPCT6_EX)
   __DECLARE_EXTERNAL(BOOL,SENDRIGHTUPCT8_EX)
@@ -986,10 +990,11 @@ typedef struct {
   __DECLARE_LOCATED(BOOL,SENSORPIECEGANTRY)
   LINEARCONVEYOR MT4;
   LINEARCONVEYOR MT3;
+  __DECLARE_VAR(BOOL,NOT432_OUT)
   __DECLARE_VAR(BOOL,NOT427_OUT)
+  __DECLARE_VAR(BOOL,OR209_OUT)
   __DECLARE_VAR(BOOL,OR425_OUT)
   __DECLARE_VAR(BOOL,OR210_OUT)
-  __DECLARE_VAR(BOOL,OR209_OUT)
 
 } FACTORYFLOORPROGRAM;
 
@@ -1238,6 +1243,9 @@ typedef struct {
 
   // PROGRAM private variables - TEMP, private and located variables
   __DECLARE_LOCATED(INT,WAREHOUSEIN)
+  __DECLARE_EXTERNAL(BOOL,RUNFRONTCT6_EX)
+  __DECLARE_EXTERNAL(BOOL,SENSORCT6_EX)
+  __DECLARE_EXTERNAL(BOOL,SENDRIGHTDOWNCT2_EX)
   __DECLARE_LOCATED(BOOL,SENSORAT1)
   __DECLARE_LOCATED(INT,PM)
   __DECLARE_VAR(INT,INITIALPIECE)
@@ -1338,12 +1346,12 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[28];
+  STEP __step_list[39];
   UINT __nb_steps;
-  ACTION __action_list[13];
+  ACTION __action_list[19];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[26];
-  __IEC_BOOL_t __debug_transition_list[26];
+  __IEC_BOOL_t __transition_list[38];
+  __IEC_BOOL_t __debug_transition_list[38];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -1474,7 +1482,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
   STEP __step_list[67];
   UINT __nb_steps;
-  ACTION __action_list[24];
+  ACTION __action_list[25];
   UINT __nb_actions;
   __IEC_BOOL_t __transition_list[64];
   __IEC_BOOL_t __debug_transition_list[64];
