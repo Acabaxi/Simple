@@ -187,12 +187,6 @@ public class SendOrder extends Modbus implements Runnable {
 							}
 							//Reset coils and registers written
 							reset();
-							//delay
-							try {
-								sleep(500);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
 
 							//Check if load order is on the line to manage Stock
 							reqLoadP1 = new ReadCoilsRequest(9, 1);
@@ -241,14 +235,13 @@ public class SendOrder extends Modbus implements Runnable {
 
 							//if it can receive orders
 							if (idle == 0) {
-								System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
+								//System.out.println(ANSI_BLUE + "Line Free " + ANSI_RESET);
 								Order order = getOrder();
 								//Check if there are orders
 								if (order != null) {
 									//Send transform order based on transform priority (faster orders first)
 									if (order.getDo().equals("T")) {
 										Transform transform = (Transform) order;
-										System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 
 										String orderFrom = transform.getFrom();
 										int valFrom = Integer.parseInt((orderFrom.substring(1)));
@@ -351,9 +344,9 @@ public class SendOrder extends Modbus implements Runnable {
 														} catch (ModbusException e) {
 															e.printStackTrace();
 														}
-														//20 ms for line to respond
+														//50 ms for line to respond
 														try {
-															sleep(20);
+															sleep(50);
 														} catch (InterruptedException e) {
 															e.printStackTrace();
 														}
@@ -366,19 +359,26 @@ public class SendOrder extends Modbus implements Runnable {
 														} catch (ModbusException e) {
 															e.printStackTrace();
 														}
-														//20 ms for line to respond
+														//50 ms for line to respond
 														try {
-															sleep(20);
+															sleep(50);
 														} catch (InterruptedException e) {
 															e.printStackTrace();
 														}
 													}
 													break;
 											}
-
+											// for line to respond
+											try {
+												sleep(2000);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
 											//decrease quantity
 											transform.decreaseQuantity();
 											Main.stock.increaseQuantity(transform.getTo());
+											System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
+											System.out.println("");
 											//Remove order if quantity equals zero
 											if (transform.getQuantity() == 0) {
 												//TODO send to DB
@@ -436,12 +436,13 @@ public class SendOrder extends Modbus implements Runnable {
 											}
 											//ms for line to receive
 											try {
-												sleep(1000);
+												sleep(2000);
 											} catch (InterruptedException e) {
 												e.printStackTrace();
 											}
 											unLoad.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
+											System.out.println("");
 											//Remove Order and Send completed time to data base
 											if (unLoad.getQuantity() == 0) {
 												Main.ordersReceived.remove(unLoad);
@@ -497,6 +498,7 @@ public class SendOrder extends Modbus implements Runnable {
 											//Decrease quantity
 											mount.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity() + ANSI_RESET);
+											System.out.println("");
 											//Remove Order and Send completed time to data base
 											if (mount.getQuantity() == 0) {
 												Main.ordersReceived.remove(mount);
@@ -508,9 +510,9 @@ public class SendOrder extends Modbus implements Runnable {
 							//if it can't receive orders
 							else if (idle == 1) {
 								//Sleep for power saving purposes
-								System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
+								//System.out.println(ANSI_BLUE + "Line occupied " + ANSI_RESET);
 								try {
-									sleep(2000);
+									sleep(1000);
 								} catch (InterruptedException e) {
 									e.printStackTrace();
 								}
