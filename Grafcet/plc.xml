@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2018-04-02T01:08:32"/>
-  <contentHeader name="Unnamed" modificationDateTime="2018-05-22T00:57:22">
+  <contentHeader name="Unnamed" modificationDateTime="2018-05-22T01:10:47">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>
@@ -34878,10 +34878,6 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 <relPosition x="0" y="0"/>
                 <reference name="warehouseBusy"/>
               </action>
-              <action localId="0" qualifier="R">
-                <relPosition x="0" y="0"/>
-                <reference name="action0"/>
-              </action>
             </actionBlock>
             <actionBlock localId="222" height="44" width="133" executionOrderId="0">
               <position x="1435" y="661"/>
@@ -34897,10 +34893,6 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
               <action localId="0" qualifier="R">
                 <relPosition x="0" y="0"/>
                 <reference name="warehouseBusy"/>
-              </action>
-              <action localId="0" qualifier="R">
-                <relPosition x="0" y="0"/>
-                <reference name="action0"/>
               </action>
             </actionBlock>
             <actionBlock localId="223" height="66" width="133" executionOrderId="0">
@@ -34989,46 +34981,6 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                 <relPosition x="28" y="27"/>
               </connectionPointOut>
             </step>
-            <actionBlock localId="68" height="44" width="108" executionOrderId="0">
-              <position x="1463" y="419"/>
-              <connectionPointIn>
-                <relPosition x="0" y="15"/>
-                <connection refLocalId="123">
-                  <position x="1463" y="434"/>
-                  <position x="1417" y="434"/>
-                  <position x="1417" y="422"/>
-                  <position x="1372" y="422"/>
-                </connection>
-              </connectionPointIn>
-              <action localId="0">
-                <relPosition x="0" y="0"/>
-                <reference name="take"/>
-              </action>
-              <action localId="0" qualifier="P0">
-                <relPosition x="0" y="0"/>
-                <reference name="resetWare"/>
-              </action>
-            </actionBlock>
-            <actionBlock localId="124" height="44" width="108" executionOrderId="0">
-              <position x="1028" y="388"/>
-              <connectionPointIn>
-                <relPosition x="0" y="15"/>
-                <connection refLocalId="205">
-                  <position x="1028" y="403"/>
-                  <position x="993" y="403"/>
-                  <position x="993" y="410"/>
-                  <position x="958" y="410"/>
-                </connection>
-              </connectionPointIn>
-              <action localId="0">
-                <relPosition x="0" y="0"/>
-                <reference name="take"/>
-              </action>
-              <action localId="0" qualifier="P0">
-                <relPosition x="0" y="0"/>
-                <reference name="resetWare"/>
-              </action>
-            </actionBlock>
             <actionBlock localId="230" height="30" width="100">
               <position x="1806" y="408"/>
               <connectionPointIn>
@@ -35054,6 +35006,70 @@ finalPiece_saved := finalPiece;]]></xhtml:p>
                   <position x="1740" y="634"/>
                   <position x="1740" y="649"/>
                   <position x="1690" y="649"/>
+                </connection>
+              </connectionPointIn>
+              <action localId="0" qualifier="R">
+                <relPosition x="0" y="0"/>
+                <reference name="action0"/>
+              </action>
+            </actionBlock>
+            <actionBlock localId="68" height="30" width="100" executionOrderId="0">
+              <position x="1437" y="415"/>
+              <connectionPointIn>
+                <relPosition x="0" y="15"/>
+                <connection refLocalId="123">
+                  <position x="1437" y="430"/>
+                  <position x="1404" y="430"/>
+                  <position x="1404" y="422"/>
+                  <position x="1372" y="422"/>
+                </connection>
+              </connectionPointIn>
+              <action localId="0" qualifier="S">
+                <relPosition x="0" y="0"/>
+                <reference name="action0"/>
+              </action>
+            </actionBlock>
+            <actionBlock localId="124" height="30" width="100" executionOrderId="0">
+              <position x="1062" y="393"/>
+              <connectionPointIn>
+                <relPosition x="0" y="15"/>
+                <connection refLocalId="205">
+                  <position x="1062" y="408"/>
+                  <position x="1010" y="408"/>
+                  <position x="1010" y="410"/>
+                  <position x="958" y="410"/>
+                </connection>
+              </connectionPointIn>
+              <action localId="0" qualifier="S">
+                <relPosition x="0" y="0"/>
+                <reference name="action0"/>
+              </action>
+            </actionBlock>
+            <actionBlock localId="218" height="30" width="100" executionOrderId="0">
+              <position x="1214" y="637"/>
+              <connectionPointIn>
+                <relPosition x="0" y="15"/>
+                <connection refLocalId="7">
+                  <position x="1214" y="652"/>
+                  <position x="1193" y="652"/>
+                  <position x="1193" y="704"/>
+                  <position x="1172" y="704"/>
+                </connection>
+              </connectionPointIn>
+              <action localId="0" qualifier="R">
+                <relPosition x="0" y="0"/>
+                <reference name="action0"/>
+              </action>
+            </actionBlock>
+            <actionBlock localId="228" height="30" width="100" executionOrderId="0">
+              <position x="555" y="597"/>
+              <connectionPointIn>
+                <relPosition x="0" y="15"/>
+                <connection refLocalId="149">
+                  <position x="555" y="612"/>
+                  <position x="528" y="612"/>
+                  <position x="528" y="665"/>
+                  <position x="502" y="665"/>
                 </connection>
               </connectionPointIn>
               <action localId="0" qualifier="R">
