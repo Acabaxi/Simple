@@ -2960,6 +2960,7 @@ PROGRAM factoryFloorProgram
     MT3 : LinearConveyor;
     NOT432_OUT : BOOL;
     NOT427_OUT : BOOL;
+    OR434_OUT : BOOL;
     OR209_OUT : BOOL;
     OR425_OUT : BOOL;
     OR210_OUT : BOOL;
@@ -2999,7 +3000,8 @@ PROGRAM factoryFloorProgram
   MT6(sendUpRightSignal := sendUpRightMT6_ex, backSignal := runBackMT6_ex, sendDownSignal := sendDownMT6_ex, sensorRotRight := sensorRotRightMT6, sensorRotLeft := sensorRotLeftMT6, backNotBusy := MT5.isBusy, frontNotBusy := CT7.isBusy, reachedSensorFront := sensorCT7, reachedSensor := sensorMT6, reachedSensorBack := sensorMT5);
   NOT427_OUT := NOT(MT6.readyToReceive);
   MT4(receivePiece := receivePieceMT4_ex, reachedSensor := sensorMT4, forwardSignal := runFrontMT4_ex, frontNotBusy := NOT427_OUT, reachedSensorFront := sensorMT6);
-  MT3(receivePiece := receivePieceMT3_ex, reachedSensor := sensorMT3, forwardSignal := runFrontMT3_ex, frontNotBusy := MT4.isBusy, reachedSensorFront := sensorMT4);
+  OR434_OUT := OR(sensorMT4, MT4.isBusy);
+  MT3(receivePiece := receivePieceMT3_ex, reachedSensor := sensorMT3, forwardSignal := runFrontMT3_ex, frontNotBusy := OR434_OUT, reachedSensorFront := sensorMT4);
   MT2(receivePiece := receivePieceMT2_ex, forwardSignal := runFrontMT2_ex, sendDownSignal := sendDownMT2_ex, sensorRotRight := sensorRotRightMT2, sensorRotLeft := sensorRotLeftMT2, frontNotBusy := CT1.isBusy, downNotBusy := MT3.isBusy, reachedSensorFront := sensorCT1, reachedSensor := sensorMT2, reachedSensorDown := sensorMT3);
   MT1(receivePiece := receivePieceMT1_ex, reachedSensor := sensorMT1, forwardSignal := runFrontMT1_ex, frontNotBusy := MT2.isBusy, reachedSensorFront := sensorMT2);
   ScT5(machineType := 1, reachedSensor := sensorScT5, initialPiece := ScT3.currentPiece, finalPiece := cell3Final, nextReadyToReceive := ScT6.readyToReceive, toolPiece := toolPieceScT5_ex, toolSensor := toolSensorScT5, sensorUp := toolUpSensorScT5, sensorLeft := toolLeftSensorScT5, sensorDown := toolDownSensorScT5, sensorRight := toolRightSensorScT5, forwardSignal := runFrontScT5_ex, frontNotBusy := ScT6.isBusy, reachedSensorFront := sensorScT6);
@@ -4960,10 +4962,10 @@ PROGRAM gantryProgram
     warehouseIn AT %IW0.0.2.0 : INT;
     sensorAT1 AT %IX0.0.0.0 : BOOL;
     PM AT %IW0.1.1.2 : INT;
-    bottomPiece AT %IW0.1.1.5 : INT;
-    topPiece AT %IW0.1.1.1 : INT;
   END_VAR
   VAR
+    bottomPiece : INT := 2;
+    topPiece : INT := 5;
     pieceToUnload : INT := 1;
   END_VAR
   VAR
@@ -5281,7 +5283,74 @@ PROGRAM gantryProgram
   STEP Step64:
   END_STEP
 
-  TRANSITION FROM Step64 TO Step65
+  TRANSITION FROM Step64 TO Step88
+    := not gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step88:
+  END_STEP
+
+  TRANSITION FROM (Step88, Step90) TO Step97
+    := not gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step97:
+    X1Y3_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step97 TO Step98
+    := gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step98:
+  END_STEP
+
+  TRANSITION FROM Step98 TO Step91
+    := not gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step91:
+    pickPiece_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step91 TO Step92
+    := gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step92:
+  END_STEP
+
+  TRANSITION FROM Step92 TO Step93
+    := not gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step93:
+    X0Y3_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step93 TO Step94
+    := gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step94:
+  END_STEP
+
+  TRANSITION FROM Step94 TO Step95
+    := not gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step95:
+    releasePiece_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step95 TO Step96
+    := gantryBusy_ex;
+  END_TRANSITION
+
+  STEP Step96:
+  END_STEP
+
+  TRANSITION FROM Step96 TO Step65
     := not gantryBusy_ex;
   END_TRANSITION
 
@@ -5427,11 +5496,16 @@ PROGRAM gantryProgram
   END_STEP
 
   STEP Step14:
+    unloadTop(N);
     action0(R);
   END_STEP
 
+  ACTION unloadTop:
+    pieceToUnload := topPiece;
+  END_ACTION
+
   TRANSITION FROM Step14 TO sendTop
-    := false;
+    := true;
   END_TRANSITION
 
   STEP sendTop:
@@ -5534,7 +5608,7 @@ PROGRAM gantryProgram
   END_TRANSITION
 
   STEP Step37:
-    receivePieceMT1_ex(N);
+    runFrontMT1_ex(N);
   END_STEP
 
   TRANSITION FROM Step37 TO Step38
@@ -5549,14 +5623,66 @@ PROGRAM gantryProgram
   END_TRANSITION
 
   STEP Step40:
+    sendDownMT2_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step40 TO Step84
+    := not sensorMT1_ex;
+  END_TRANSITION
+
+  STEP Step84:
+  END_STEP
+
+  TRANSITION FROM Step84 TO Step85
+    := sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step85:
+    runFrontMT3_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step85 TO Step86
+    := not sensorMT2_ex;
+  END_TRANSITION
+
+  STEP Step86:
+  END_STEP
+
+  TRANSITION FROM Step86 TO Step87
+    := sensorMT3_ex;
+  END_TRANSITION
+
+  STEP Step87:
+    receivePieceMT4_ex(N);
+  END_STEP
+
+  TRANSITION FROM Step87 TO Step89
+    := not sensorMT3_ex;
+  END_TRANSITION
+
+  STEP Step89:
+  END_STEP
+
+  TRANSITION FROM Step89 TO Step90
+    := sensorMT4_ex;
+  END_TRANSITION
+
+  STEP Step90:
   END_STEP
 
   STEP Step44:
     warehouseBusy(R);
+  END_STEP
+
+  TRANSITION FROM Step44 TO Step83
+    := true;
+  END_TRANSITION
+
+  STEP Step83:
     action0(R);
   END_STEP
 
-  TRANSITION FROM Step44 TO Step9
+  TRANSITION FROM Step83 TO Step9
     := true;
   END_TRANSITION
 
