@@ -2,6 +2,7 @@ package Communication;
 
 import MES.*;
 import Communication.*;
+import jdk.nashorn.internal.scripts.JD;
 import net.wimpi.modbus.ModbusException;
 import net.wimpi.modbus.io.ModbusTCPTransaction;
 import net.wimpi.modbus.msg.*;
@@ -11,6 +12,7 @@ import net.wimpi.modbus.procimg.SimpleRegister;
 import java.awt.*;
 import java.io.IOException;
 import java.net.*;
+import java.sql.SQLException;
 import java.util.*;
 
 import static java.lang.Thread.sleep;
@@ -114,6 +116,31 @@ public class SendOrder extends Modbus implements Runnable {
 			e.printStackTrace();
 		}
 	}
+
+	public void DecreaseValueOnDataBase(int position){
+		String valueString = null;
+		try {
+			valueString = JDBC.ReadFromDataBase("SELECT n_tipo_peca FROM armazem WHERE tipo_peca =" + position, "n_tipo_peca");
+			int valueInt = Integer.parseInt(valueString);
+			valueInt--;
+			JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca = " + valueInt + ",n_inicial_tipo_peca = '27' WHERE tipo_peca =" + position);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void IncreaseValueOnDataBase(int position){
+		String valueString = null;
+		try {
+			valueString = JDBC.ReadFromDataBase("SELECT n_tipo_peca FROM armazem WHERE tipo_peca =" + position, "n_tipo_peca");
+			int valueInt = Integer.parseInt(valueString);
+			valueInt++;
+			JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca = " + valueInt + ",n_inicial_tipo_peca = '27' WHERE tipo_peca =" + position);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 
 	private Order getOrder() {
 		Vector<Order> v = Main.ordersReceived;
@@ -274,6 +301,10 @@ public class SendOrder extends Modbus implements Runnable {
 											//decrease quantity
 											transform.decreaseQuantity();
 
+											//Update DataBase remove initial piece
+											DecreaseValueOnDataBase(valFrom);
+
+
 											Main.stock.increaseQuantity(transform.getTo());
 											System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 											System.out.println("");
@@ -287,6 +318,9 @@ public class SendOrder extends Modbus implements Runnable {
 										}
 										//500 ms for line to respond
 										sleepMethod(500);
+
+										//Add result of transform to data base
+										IncreaseValueOnDataBase(valTo);
 									}
 									//Check if there are unload orders on queue to send
 									else if (order.getDo().equals("U")) {
@@ -308,6 +342,10 @@ public class SendOrder extends Modbus implements Runnable {
 											sleepMethod(50);
 											//Send unLoad command to PLC Boolean
 											WriteCoil(1,true);
+
+											//Data Base remove from stock
+											DecreaseValueOnDataBase(valT);
+
 											//ms for line to receive
 											sleepMethod(5000);
 											unLoad.decreaseQuantity();
@@ -350,6 +388,11 @@ public class SendOrder extends Modbus implements Runnable {
 											mount.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity() + ANSI_RESET);
 											System.out.println("");
+
+											//DataBase update stock
+											DecreaseValueOnDataBase(valBot);
+											DecreaseValueOnDataBase(valTop);
+
 											//Remove Order and Send completed time to data base
 											if (mount.getQuantity() == 0) {
 												Main.ordersReceived.remove(mount);

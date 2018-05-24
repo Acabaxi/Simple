@@ -4,8 +4,12 @@ import MES.*;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import MES.Order;
+import Communication.JDBC;
 
 public class UDPServer implements Runnable{
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -68,6 +72,13 @@ public class UDPServer implements Runnable{
                         if (!msg.isEmpty()) {
                             Parser p = new Parser();
                             Order o = p.parseFile(msg, timeReceived);
+
+                            //Send received order to Data Base
+                            //Date current_time = new Date();
+                            //SimpleDateFormat formatDB = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            //JDBC.WriteStringToDataBase("INSERT into ordem (id_ordem, estado_ordem, h_ordem) VALUES (" + o.getNumber() +  ",1, " + timestamp + ")");
+
                             if (o != null) {
                                 o.setPending(true);
                                 Main.ordersReceived.add(o);

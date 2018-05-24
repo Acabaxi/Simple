@@ -32,7 +32,7 @@ public class JDBC {
     }
     //Function for database
 
-    public static String queryStringReturn(String select, String line) throws SQLException {
+    public static String ReadFromDataBase(String select, String line) throws SQLException {
         //String select = "SELECT n_tipo_peca FROM armazem WHERE tipo_peca = '2'";
         Statement stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(select);
@@ -44,7 +44,7 @@ public class JDBC {
         return read;
     }
 
-    public static void writeString(String write){
+    public static void WriteStringToDataBase(String write){
         try {
             Statement myStmt = con.createStatement();
             myStmt.executeUpdate(write);
@@ -53,7 +53,7 @@ public class JDBC {
         }
     }
 
-    public static void writeTimeStamp(Timestamp time, String tableName, String typeOfTime) throws SQLException {
+    public static void WriteTimeStampToDataBase(Timestamp time, String tableName, String typeOfTime) throws SQLException {
         Statement myStmt = con.createStatement();
 
     }

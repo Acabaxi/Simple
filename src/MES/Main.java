@@ -5,6 +5,7 @@ import Communication.Modbus;
 import Communication.UDPServer;
 import Communication.SendOrder;
 
+import java.awt.print.PrinterGraphics;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.SQLException;
@@ -29,12 +30,15 @@ public class Main{
     public static void main(String args[]) throws Exception {
 
         Main m = new Main();
+        JDBC.connect();
         UDPServer server = new UDPServer(54321);
         //temporary block
         for (int i = 1; i <= 9; i++) {
                 String type = "P" + i;
                 //Add quantity from data base
-                m.stock.setQuantity(type, 20);
+                String stock = JDBC.ReadFromDataBase("SELECT n_tipo_peca FROM armazem WHERE tipo_peca =" + i, "n_tipo_peca");
+                int stockInt = Integer.parseInt(stock);
+                m.stock.setQuantity(type, stockInt);
             }
         //end of block
         m.MainMenu(server);
@@ -44,8 +48,12 @@ public class Main{
         Scanner ss = new Scanner(System.in);
         System.out.println(ANSI_RED + "\nChoose an option: " + ANSI_RESET);
         if(!startedUdp) {
-            System.out.println("1 - Start UDP and DataBase");
+            System.out.println("1 - Start UDP");
             String resp = ss.next();
+
+            //update values on database when program starts
+            JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca = '27'");
+
             switch (resp) {
                 case "1":
                     ControlUDP(server);
@@ -97,7 +105,6 @@ public class Main{
     }
     public void ControlUDP(UDPServer server){
         try {
-            JDBC.connect();
             server.listen();
             startedUdp = true;
         } catch (Exception e) {
@@ -159,10 +166,13 @@ public class Main{
     }
 
     private void DataBaseQuery(UDPServer server){
-        System.out.println(ANSI_BLUE + "Select test from data base" +ANSI_RESET);
+        System.out.println(ANSI_BLUE + "Select test from data base");
+        String help = null;
         try {
-            String help = JDBC.queryStringReturn("SELECT n_tipo_peca FROM armazem WHERE tipo_peca = '2'", "n_tipo_peca");
-            System.out.println(help);
+            help = JDBC.ReadFromDataBase("SELECT n_tipo_peca FROM armazem WHERE tipo_peca = '1'", "n_tipo_peca");
+            int helpInt = Integer.parseInt(help);
+            helpInt--;
+            JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca =" + helpInt +  ",n_inicial_tipo_peca = '27' WHERE tipo_peca = '1'");
         } catch (SQLException e) {
             e.printStackTrace();
         }
