@@ -205,8 +205,7 @@ public class SendOrder extends Modbus implements Runnable {
 							resLoadP1 = (ReadCoilsResponse) trans.getResponse();
 							loadP1 = Integer.parseInt(resLoadP1.getCoils().toString().trim());
 							reqLoadP2 = new ReadCoilsRequest(10, 1);
-							trans.setRequest(reqLoadP2);
-							try {
+						 	try {
 								trans.execute();
 							} catch (ModbusException e) {
 								e.printStackTrace();

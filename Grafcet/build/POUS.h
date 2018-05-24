@@ -349,12 +349,12 @@ typedef struct {
 
   // FB private variables - TEMP, private and located variables
   __DECLARE_VAR(BOOL,FORWARDTIMERON)
-  STEP __step_list[41];
+  STEP __step_list[43];
   UINT __nb_steps;
-  ACTION __action_list[8];
+  ACTION __action_list[7];
   UINT __nb_actions;
-  __IEC_BOOL_t __transition_list[48];
-  __IEC_BOOL_t __debug_transition_list[48];
+  __IEC_BOOL_t __transition_list[50];
+  __IEC_BOOL_t __debug_transition_list[50];
   UINT __nb_transitions;
   TIME __lasttick_time;
 
@@ -1487,7 +1487,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSBT5_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT3_EX)
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
-  STEP __step_list[83];
+  STEP __step_list[84];
   UINT __nb_steps;
   ACTION __action_list[25];
   UINT __nb_actions;
@@ -1573,6 +1573,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,SENSORMT2_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT1_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT2_EX)
+  __DECLARE_EXTERNAL(BOOL,SENSORCT3_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT4_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT5_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT6_EX)

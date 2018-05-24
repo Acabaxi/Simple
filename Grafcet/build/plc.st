@@ -1059,7 +1059,6 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP moveFrontStep:
-    forwardTimerOn(N);
     forwardMotor(S);
   END_STEP
 
@@ -1103,7 +1102,6 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP moveBackStep:
-    forwardTimerOn(N);
     backMotor(S);
   END_STEP
 
@@ -1147,24 +1145,33 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP notBusyFront2:
+    isBusy(S);
   END_STEP
 
   TRANSITION FROM notBusyFront2 TO rotatingLeft2
-    := not upNotBusy;
+    := not downNotBusy;
   END_TRANSITION
 
   STEP rotatingLeft2:
     forwardMotor(N);
   END_STEP
 
-  TRANSITION FROM rotatingLeft2 TO Step3
+  TRANSITION FROM rotatingLeft2 TO rotatingLeft3
     := reachedSensorDown;
   END_TRANSITION
 
-  STEP Step3:
+  STEP rotatingLeft3:
+    leftRotMotor(N);
   END_STEP
 
-  TRANSITION FROM Step3 TO initLinearStep
+  TRANSITION FROM rotatingLeft3 TO notBusyBack2
+    := sensorRotLeft;
+  END_TRANSITION
+
+  STEP notBusyBack2:
+  END_STEP
+
+  TRANSITION FROM notBusyBack2 TO initLinearStep
     := true;
   END_TRANSITION
 
@@ -1189,6 +1196,7 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP notBusyFront1:
+    isBusy(S);
   END_STEP
 
   TRANSITION FROM notBusyFront1 TO rotatingLeft1
@@ -1199,14 +1207,22 @@ FUNCTION_BLOCK RotaryConveyor
     backMotor(N);
   END_STEP
 
-  TRANSITION FROM rotatingLeft1 TO Step0
+  TRANSITION FROM rotatingLeft1 TO rotatingLeft4
     := reachedSensorUp;
   END_TRANSITION
 
-  STEP Step0:
+  STEP rotatingLeft4:
+    leftRotMotor(N);
   END_STEP
 
-  TRANSITION FROM Step0 TO initLinearStep
+  TRANSITION FROM rotatingLeft4 TO notBusyBack3
+    := sensorRotLeft;
+  END_TRANSITION
+
+  STEP notBusyBack3:
+  END_STEP
+
+  TRANSITION FROM notBusyBack3 TO initLinearStep
     := true;
   END_TRANSITION
 
@@ -1301,7 +1317,6 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP moveBackStep0:
-    forwardTimerOn(N);
     backMotor(S);
   END_STEP
 
@@ -1346,7 +1361,6 @@ FUNCTION_BLOCK RotaryConveyor
   END_TRANSITION
 
   STEP moveFrontStep0:
-    forwardTimerOn(N);
     forwardMotor(S);
   END_STEP
 
@@ -5696,9 +5710,12 @@ PROGRAM gantryProgram
     action0(R);
   END_STEP
 
-  TRANSITION FROM Step83 TO Step9
+  TRANSITION FROM Step83 TO Step0
     := true;
   END_TRANSITION
+
+  STEP Step0:
+  END_STEP
 
 END_PROGRAM
 
@@ -5774,6 +5791,7 @@ PROGRAM unloadProgram
     sensorMT2_ex : BOOL;
     sensorCT1_ex : BOOL;
     sensorCT2_ex : BOOL;
+    sensorCT3_ex : BOOL;
     sensorCT4_ex : BOOL;
     sensorCT5_ex : BOOL;
     sensorCT6_ex : BOOL;
@@ -5966,7 +5984,7 @@ PROGRAM unloadProgram
   END_STEP
 
   TRANSITION FROM Step20 TO Step21
-    := sensorCT1_ex AND (not isLoadingP1);
+    := sensorCT1_ex AND (not isLoadingP1) AND (not sensorCT3_ex);
   END_TRANSITION
 
   STEP Step21:
@@ -6170,7 +6188,7 @@ PROGRAM unloadProgram
   END_STEP
 
   TRANSITION FROM Step44 TO Step45
-    := sensorCT1_ex AND (not isLoadingP1);
+    := sensorCT1_ex AND (not isLoadingP1) AND (not sensorCT3_ex);
   END_TRANSITION
 
   STEP Step45:
@@ -6386,7 +6404,7 @@ PROGRAM unloadProgram
   END_STEP
 
   TRANSITION FROM Step74 TO Step75
-    := sensorCT1_ex AND (not isLoadingP1);
+    := sensorCT1_ex AND (not isLoadingP1) AND (not sensorCT3_ex);
   END_TRANSITION
 
   STEP Step75:
