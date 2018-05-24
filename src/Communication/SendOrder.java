@@ -230,6 +230,7 @@ public class SendOrder extends Modbus implements Runnable {
 							if (loadP1 == 1) {
 								if (loadP1 != reLoadP1) {
 									Main.stock.increaseQuantity("P1");
+									IncreaseValueOnDataBase(1);
 								}
 							}
 							reLoadP1 = loadP1;
@@ -237,6 +238,7 @@ public class SendOrder extends Modbus implements Runnable {
 							if (loadP2 == 1) {
 								if (loadP2 != reLoadP2) {
 									Main.stock.increaseQuantity("P2");
+									IncreaseValueOnDataBase(2);
 								}
 							}
 							reLoadP2 = loadP2;
