@@ -4758,11 +4758,11 @@ PROGRAM gantryProgram
     warehouseIn AT %IW0.0.2.0 : INT;
     sensorAT1 AT %IX0.0.0.0 : BOOL;
     PM AT %IW0.1.1.2 : INT;
+    bottomPiece AT %IW0.1.1.5 : INT;
+    topPiece AT %IW0.1.1.1 : INT;
   END_VAR
   VAR
-    bottomPiece : INT := 2;
-    topPiece : INT := 5;
-    pieceToUnload : INT := 1;
+    pieceToUnload : INT;
   END_VAR
   VAR
     warehouseBusy AT %QX0.1.0.0 : BOOL;

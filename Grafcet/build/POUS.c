@@ -17274,9 +17274,11 @@ void GANTRYPROGRAM_init__(GANTRYPROGRAM *data__, BOOL retain) {
   __INIT_LOCATED_VALUE(data__->SENSORAT1,__BOOL_LITERAL(FALSE))
   __INIT_LOCATED(INT,__IW0_1_1_2,data__->PM,retain)
   __INIT_LOCATED_VALUE(data__->PM,0)
-  __INIT_VAR(data__->BOTTOMPIECE,2,retain)
-  __INIT_VAR(data__->TOPPIECE,5,retain)
-  __INIT_VAR(data__->PIECETOUNLOAD,1,retain)
+  __INIT_LOCATED(INT,__IW0_1_1_5,data__->BOTTOMPIECE,retain)
+  __INIT_LOCATED_VALUE(data__->BOTTOMPIECE,0)
+  __INIT_LOCATED(INT,__IW0_1_1_1,data__->TOPPIECE,retain)
+  __INIT_LOCATED_VALUE(data__->TOPPIECE,0)
+  __INIT_VAR(data__->PIECETOUNLOAD,0,retain)
   __INIT_LOCATED(BOOL,__QX0_1_0_0,data__->WAREHOUSEBUSY,retain)
   __INIT_LOCATED_VALUE(data__->WAREHOUSEBUSY,__BOOL_LITERAL(FALSE))
   __INIT_EXTERNAL(BOOL,RUNFRONTAT1_EX,data__->RUNFRONTAT1_EX,retain)
@@ -19760,11 +19762,11 @@ void GANTRYPROGRAM_body__(GANTRYPROGRAM *data__) {
   }
 
   if(__GET_VAR(data__->__action_list[__SFC_UNLOADBOTTOM].state)) {
-    __SET_VAR(data__->,PIECETOUNLOAD,,__GET_VAR(data__->BOTTOMPIECE,));
+    __SET_VAR(data__->,PIECETOUNLOAD,,__GET_LOCATED(data__->BOTTOMPIECE,));
   }
 
   if(__GET_VAR(data__->__action_list[__SFC_UNLOADTOP].state)) {
-    __SET_VAR(data__->,PIECETOUNLOAD,,__GET_VAR(data__->TOPPIECE,));
+    __SET_VAR(data__->,PIECETOUNLOAD,,__GET_LOCATED(data__->TOPPIECE,));
   }
 
 

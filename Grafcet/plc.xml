@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <project xmlns:ns1="http://www.plcopen.org/xml/tc6_0201" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.plcopen.org/xml/tc6_0201">
   <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2018-04-02T01:08:32"/>
-  <contentHeader name="Unnamed" modificationDateTime="2018-05-24T15:27:33">
+  <contentHeader name="Unnamed" modificationDateTime="2018-05-24T15:53:21">
     <coordinateInfo>
       <fbd>
         <scaling x="0" y="0"/>
@@ -10800,34 +10800,25 @@ cell3Final := finalPiece;]]></xhtml:p>
                 <INT/>
               </type>
             </variable>
-          </localVars>
-          <localVars>
-            <variable name="bottomPiece">
+            <variable name="bottomPiece" address="%IW0.1.1.5">
               <type>
                 <INT/>
               </type>
-              <initialValue>
-                <simpleValue value="2"/>
-              </initialValue>
               <documentation>
                 <xhtml:p><![CDATA[O MES altera este valor para o tipo de peca pretendido na descarga]]></xhtml:p>
               </documentation>
             </variable>
-            <variable name="topPiece">
+            <variable name="topPiece" address="%IW0.1.1.1">
               <type>
                 <INT/>
               </type>
-              <initialValue>
-                <simpleValue value="5"/>
-              </initialValue>
             </variable>
+          </localVars>
+          <localVars>
             <variable name="pieceToUnload">
               <type>
                 <INT/>
               </type>
-              <initialValue>
-                <simpleValue value="1"/>
-              </initialValue>
             </variable>
           </localVars>
           <localVars>
