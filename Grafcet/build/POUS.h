@@ -539,6 +539,8 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,ISLOADINGP1)
+  __DECLARE_EXTERNAL(BOOL,ISLOADINGP2)
   __DECLARE_EXTERNAL(BOOL,SENDRIGHTDOWNCT2_EX)
   __DECLARE_EXTERNAL(BOOL,SENDLEFTDOWNCT8_EX)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTCT7_EX)
@@ -991,6 +993,8 @@ typedef struct {
   LINEARCONVEYOR MT4;
   LINEARCONVEYOR MT3;
   __DECLARE_VAR(BOOL,NOT432_OUT)
+  __DECLARE_VAR(BOOL,OR438_OUT)
+  __DECLARE_VAR(BOOL,OR436_OUT)
   __DECLARE_VAR(BOOL,NOT427_OUT)
   __DECLARE_VAR(BOOL,OR434_OUT)
   __DECLARE_VAR(BOOL,OR209_OUT)
@@ -1243,6 +1247,8 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,ISLOADINGP1)
+  __DECLARE_EXTERNAL(BOOL,ISLOADINGP2)
   __DECLARE_LOCATED(INT,WAREHOUSEIN)
   __DECLARE_EXTERNAL(BOOL,RUNFRONTCT6_EX)
   __DECLARE_EXTERNAL(BOOL,SENSORCT6_EX)
@@ -1349,7 +1355,7 @@ typedef struct {
   __DECLARE_EXTERNAL(BOOL,READYTOSENDSCT5_EX)
   STEP __step_list[39];
   UINT __nb_steps;
-  ACTION __action_list[19];
+  ACTION __action_list[21];
   UINT __nb_actions;
   __IEC_BOOL_t __transition_list[38];
   __IEC_BOOL_t __debug_transition_list[38];
@@ -1501,6 +1507,7 @@ typedef struct {
   // PROGRAM Interface - IN, OUT, IN_OUT variables
 
   // PROGRAM private variables - TEMP, private and located variables
+  __DECLARE_EXTERNAL(BOOL,ISLOADINGP1)
   __DECLARE_EXTERNAL(INT,PIECENUM)
   __DECLARE_EXTERNAL(BOOL,TAKEPIECE)
   __DECLARE_LOCATED(INT,WAREHOUSEIN)

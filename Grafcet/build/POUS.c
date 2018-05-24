@@ -9520,6 +9520,8 @@ __end:
 
 
 void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
+  __INIT_EXTERNAL(BOOL,ISLOADINGP1,data__->ISLOADINGP1,retain)
+  __INIT_EXTERNAL(BOOL,ISLOADINGP2,data__->ISLOADINGP2,retain)
   __INIT_EXTERNAL(BOOL,SENDRIGHTDOWNCT2_EX,data__->SENDRIGHTDOWNCT2_EX,retain)
   __INIT_EXTERNAL(BOOL,SENDLEFTDOWNCT8_EX,data__->SENDLEFTDOWNCT8_EX,retain)
   __INIT_EXTERNAL(BOOL,RUNFRONTCT7_EX,data__->RUNFRONTCT7_EX,retain)
@@ -10240,6 +10242,8 @@ void FACTORYFLOORPROGRAM_init__(FACTORYFLOORPROGRAM *data__, BOOL retain) {
   LINEARCONVEYOR_init__(&data__->MT4,retain);
   LINEARCONVEYOR_init__(&data__->MT3,retain);
   __INIT_VAR(data__->NOT432_OUT,__BOOL_LITERAL(FALSE),retain)
+  __INIT_VAR(data__->OR438_OUT,__BOOL_LITERAL(FALSE),retain)
+  __INIT_VAR(data__->OR436_OUT,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->NOT427_OUT,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->OR434_OUT,__BOOL_LITERAL(FALSE),retain)
   __INIT_VAR(data__->OR209_OUT,__BOOL_LITERAL(FALSE),retain)
@@ -10270,6 +10274,12 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_VAR(data__->PM3.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORPM3,));
   ROLL_body__(&data__->PM3);
   __SET_VAR(data__->,NOT432_OUT,,!(__GET_LOCATED(data__->SENSORROTRIGHTCT8,)));
+  __SET_VAR(data__->,OR438_OUT,,OR__BOOL__BOOL(
+    (BOOL)__BOOL_LITERAL(TRUE),
+    NULL,
+    (UINT)2,
+    (BOOL)__GET_VAR(data__->NOT432_OUT,),
+    (BOOL)__GET_EXTERNAL(data__->ISLOADINGP2,)));
   __SET_VAR(data__->CT6.,ROLLBUSY,,__GET_VAR(data__->PM3.HASPIECE,));
   __SET_VAR(data__->CT6.,PUSHSIGNAL,,__GET_EXTERNAL(data__->PUSHTOROLLCT6_EX,));
   __SET_VAR(data__->CT6.,PUSHUPSIGNAL,,__GET_EXTERNAL(data__->PUSHUPCT6_EX,));
@@ -10279,7 +10289,7 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_VAR(data__->CT6.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT8,));
   __SET_VAR(data__->CT6.,SENSORPUSHFORWARD,,__GET_LOCATED(data__->SENSORPUSHFORWARDCT6,));
   __SET_VAR(data__->CT6.,SENSORPUSHBACK,,__GET_LOCATED(data__->SENSORPUSHBACKCT6,));
-  __SET_VAR(data__->CT6.,FRONTNOTBUSY,,__GET_VAR(data__->NOT432_OUT,));
+  __SET_VAR(data__->CT6.,FRONTNOTBUSY,,__GET_VAR(data__->OR438_OUT,));
   PUSHER_body__(&data__->CT6);
   __SET_VAR(data__->CT5.,ROLLBUSY,,__GET_VAR(data__->PM2.HASPIECE,));
   __SET_VAR(data__->CT5.,PUSHSIGNAL,,__GET_EXTERNAL(data__->PUSHTOROLLCT5_EX,));
@@ -10312,9 +10322,15 @@ void FACTORYFLOORPROGRAM_body__(FACTORYFLOORPROGRAM *data__) {
   __SET_VAR(data__->CT2.,REACHEDSENSORDOWN,,__GET_LOCATED(data__->SENSORCT4,));
   ROTARYCONVEYOR_body__(&data__->CT2);
   __SET_LOCATED(data__->,BACKCT2,,__GET_VAR(data__->CT2.BACKMOTOR,));
+  __SET_VAR(data__->,OR436_OUT,,OR__BOOL__BOOL(
+    (BOOL)__BOOL_LITERAL(TRUE),
+    NULL,
+    (UINT)2,
+    (BOOL)__GET_EXTERNAL(data__->ISLOADINGP1,),
+    (BOOL)__GET_VAR(data__->CT2.ISBUSY,)));
   __SET_VAR(data__->CT1.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORCT1,));
   __SET_VAR(data__->CT1.,FORWARDSIGNAL,,__GET_EXTERNAL(data__->RUNFRONTCT1_EX,));
-  __SET_VAR(data__->CT1.,FRONTNOTBUSY,,__GET_VAR(data__->CT2.ISBUSY,));
+  __SET_VAR(data__->CT1.,FRONTNOTBUSY,,__GET_VAR(data__->OR436_OUT,));
   __SET_VAR(data__->CT1.,REACHEDSENSORFRONT,,__GET_LOCATED(data__->SENSORCT2,));
   LINEARCONVEYOR_body__(&data__->CT1);
   __SET_VAR(data__->AT2.,REACHEDSENSOR,,__GET_LOCATED(data__->SENSORAT2,));
@@ -15792,6 +15808,8 @@ __end:
 
 
 void LOADPROGRAM_init__(LOADPROGRAM *data__, BOOL retain) {
+  __INIT_EXTERNAL(BOOL,ISLOADINGP1,data__->ISLOADINGP1,retain)
+  __INIT_EXTERNAL(BOOL,ISLOADINGP2,data__->ISLOADINGP2,retain)
   __INIT_LOCATED(INT,__IW0_0_2_0,data__->WAREHOUSEIN,retain)
   __INIT_LOCATED_VALUE(data__->WAREHOUSEIN,0)
   __INIT_EXTERNAL(BOOL,RUNFRONTCT6_EX,data__->RUNFRONTCT6_EX,retain)
@@ -15914,7 +15932,7 @@ void LOADPROGRAM_init__(LOADPROGRAM *data__, BOOL retain) {
   }
   __SET_VAR(data__->,__step_list[0].X,,1);
   __SET_VAR(data__->,__step_list[35].X,,1);
-  data__->__nb_actions = 19;
+  data__->__nb_actions = 21;
   static const ACTION temp_action = {0, {0, 0}, 0, 0, {0, 0}, {0, 0}};
   for(i = 0; i < data__->__nb_actions; i++) {
     data__->__action_list[i] = temp_action;
@@ -16005,24 +16023,26 @@ void LOADPROGRAM_init__(LOADPROGRAM *data__, BOOL retain) {
 
 // Actions definitions
 #define __SFC_RUNBACKCT3_EX 0
-#define __SFC_SENDRIGHTDOWNCT2_EX 1
-#define __SFC_RUNFRONTCT4_EX 2
-#define __SFC_RUNFRONTCT5_EX 3
-#define __SFC_RUNFRONTCT6_EX 4
-#define __SFC_SENDLEFTDOWNCT8_EX 5
-#define __SFC_RUNBACKCT7_EX 6
-#define __SFC_RUNBACKMT6_EX 7
-#define __SFC_RUNBACKMT5_EX 8
-#define __SFC_RUNBACKSCT6_EX 9
-#define __SFC_RUNBACKSCT7_EX 10
-#define __SFC_RUNBACKSBT6_EX 11
-#define __SFC_RUNBACKSBT7_EX 12
-#define __SFC_RUNBACKSAT6_EX 13
-#define __SFC_RUNBACKSAT7_EX 14
-#define __SFC_PUTPIECEINSIGNAL_EX 15
-#define __SFC_CELL3BUSY 16
-#define __SFC_RUNBACKCT8_EX 17
-#define __SFC_RUNBACKCT9_EX 18
+#define __SFC_ISLOADINGP1 1
+#define __SFC_SENDRIGHTDOWNCT2_EX 2
+#define __SFC_RUNFRONTCT4_EX 3
+#define __SFC_RUNFRONTCT5_EX 4
+#define __SFC_RUNFRONTCT6_EX 5
+#define __SFC_SENDLEFTDOWNCT8_EX 6
+#define __SFC_RUNBACKCT7_EX 7
+#define __SFC_RUNBACKMT6_EX 8
+#define __SFC_ISLOADINGP2 9
+#define __SFC_RUNBACKMT5_EX 10
+#define __SFC_RUNBACKSCT6_EX 11
+#define __SFC_RUNBACKSCT7_EX 12
+#define __SFC_RUNBACKSBT6_EX 13
+#define __SFC_RUNBACKSBT7_EX 14
+#define __SFC_RUNBACKSAT6_EX 15
+#define __SFC_RUNBACKSAT7_EX 16
+#define __SFC_PUTPIECEINSIGNAL_EX 17
+#define __SFC_CELL3BUSY 18
+#define __SFC_RUNBACKCT8_EX 19
+#define __SFC_RUNBACKCT9_EX 20
 
 // Code part
 void LOADPROGRAM_body__(LOADPROGRAM *data__) {
@@ -16811,6 +16831,8 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
     if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT3_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT3_EX,,0);};
 
+    if (active)       {data__->__action_list[__SFC_ISLOADINGP1].set = 1;}
+
   }
 
   // STEP8 action associations
@@ -16843,6 +16865,8 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
 
     if (active)       {__SET_EXTERNAL(data__->,RUNFRONTCT5_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,RUNFRONTCT5_EX,,0);};
+
+    if (active)       {data__->__action_list[__SFC_ISLOADINGP1].reset = 1;}
 
   }
 
@@ -16887,6 +16911,8 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
 
     if (active)       {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKMT6_EX,,0);};
+
+    if (active)       {data__->__action_list[__SFC_ISLOADINGP2].reset = 1;}
 
   }
 
@@ -16989,6 +17015,8 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
     if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT8_EX,,0);};
 
+    if (active)       {data__->__action_list[__SFC_ISLOADINGP2].set = 1;}
+
     if (active)       {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,1);};
     if (desactivated) {__SET_EXTERNAL(data__->,RUNBACKCT9_EX,,0);};
 
@@ -17014,6 +17042,12 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
   }
   else if (data__->__action_list[__SFC_RUNBACKCT3_EX].set) {
     __SET_EXTERNAL(data__->,RUNBACKCT3_EX,,1);
+  }
+  if (data__->__action_list[__SFC_ISLOADINGP1].reset) {
+    __SET_EXTERNAL(data__->,ISLOADINGP1,,0);
+  }
+  else if (data__->__action_list[__SFC_ISLOADINGP1].set) {
+    __SET_EXTERNAL(data__->,ISLOADINGP1,,1);
   }
   if (data__->__action_list[__SFC_SENDRIGHTDOWNCT2_EX].reset) {
     __SET_EXTERNAL(data__->,SENDRIGHTDOWNCT2_EX,,0);
@@ -17056,6 +17090,12 @@ void LOADPROGRAM_body__(LOADPROGRAM *data__) {
   }
   else if (data__->__action_list[__SFC_RUNBACKMT6_EX].set) {
     __SET_EXTERNAL(data__->,RUNBACKMT6_EX,,1);
+  }
+  if (data__->__action_list[__SFC_ISLOADINGP2].reset) {
+    __SET_EXTERNAL(data__->,ISLOADINGP2,,0);
+  }
+  else if (data__->__action_list[__SFC_ISLOADINGP2].set) {
+    __SET_EXTERNAL(data__->,ISLOADINGP2,,1);
   }
   if (data__->__action_list[__SFC_RUNBACKMT5_EX].reset) {
     __SET_EXTERNAL(data__->,RUNBACKMT5_EX,,0);
@@ -17213,6 +17253,7 @@ __end:
 
 // Actions undefinitions
 #undef __SFC_RUNBACKCT3_EX
+#undef __SFC_ISLOADINGP1
 #undef __SFC_SENDRIGHTDOWNCT2_EX
 #undef __SFC_RUNFRONTCT4_EX
 #undef __SFC_RUNFRONTCT5_EX
@@ -17220,6 +17261,7 @@ __end:
 #undef __SFC_SENDLEFTDOWNCT8_EX
 #undef __SFC_RUNBACKCT7_EX
 #undef __SFC_RUNBACKMT6_EX
+#undef __SFC_ISLOADINGP2
 #undef __SFC_RUNBACKMT5_EX
 #undef __SFC_RUNBACKSCT6_EX
 #undef __SFC_RUNBACKSCT7_EX
@@ -19977,6 +20019,7 @@ __end:
 
 
 void UNLOADPROGRAM_init__(UNLOADPROGRAM *data__, BOOL retain) {
+  __INIT_EXTERNAL(BOOL,ISLOADINGP1,data__->ISLOADINGP1,retain)
   __INIT_EXTERNAL(INT,PIECENUM,data__->PIECENUM,retain)
   __INIT_EXTERNAL(BOOL,TAKEPIECE,data__->TAKEPIECE,retain)
   __INIT_LOCATED(INT,__IW0_0_2_0,data__->WAREHOUSEIN,retain)
@@ -20571,14 +20614,14 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
     __SET_VAR(data__->,__transition_list[19],,0);
   }
   if (__GET_VAR(data__->STEP20.X)) {
-    __SET_VAR(data__->,__transition_list[20],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+    __SET_VAR(data__->,__transition_list[20],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[20],,__GET_VAR(data__->__transition_list[20]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[20],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+      __SET_VAR(data__->,__debug_transition_list[20],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     }
     __SET_VAR(data__->,__transition_list[20],,0);
   }
@@ -20895,14 +20938,14 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
     __SET_VAR(data__->,__transition_list[46],,0);
   }
   if (__GET_VAR(data__->STEP44.X)) {
-    __SET_VAR(data__->,__transition_list[47],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+    __SET_VAR(data__->,__transition_list[47],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[47],,__GET_VAR(data__->__transition_list[47]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[47],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+      __SET_VAR(data__->,__debug_transition_list[47],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     }
     __SET_VAR(data__->,__transition_list[47],,0);
   }
@@ -21243,14 +21286,14 @@ void UNLOADPROGRAM_body__(UNLOADPROGRAM *data__) {
     __SET_VAR(data__->,__transition_list[75],,0);
   }
   if (__GET_VAR(data__->STEP74.X)) {
-    __SET_VAR(data__->,__transition_list[76],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+    __SET_VAR(data__->,__transition_list[76],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     if (__DEBUG) {
       __SET_VAR(data__->,__debug_transition_list[76],,__GET_VAR(data__->__transition_list[76]));
     }
   }
   else {
     if (__DEBUG) {
-      __SET_VAR(data__->,__debug_transition_list[76],,__GET_EXTERNAL(data__->SENSORCT1_EX,));
+      __SET_VAR(data__->,__debug_transition_list[76],,(__GET_EXTERNAL(data__->SENSORCT1_EX,) && !(__GET_EXTERNAL(data__->ISLOADINGP1,))));
     }
     __SET_VAR(data__->,__transition_list[76],,0);
   }
