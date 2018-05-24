@@ -134,6 +134,7 @@ public class Main{
                             System.out.println("destination: " + u.getDestination());
                             System.out.println("quantity: " + u.getQuantity());
                             System.out.println("time received: " + f.format(u.getTimeReceived()).toString() + ANSI_RESET);
+                            System.out.println("");
                             break;
                         case "T":
                             Transform t = (Transform) o1;
@@ -142,6 +143,7 @@ public class Main{
                             System.out.println("to: " + t.getTo());
                             System.out.println("quantity: " + t.getQuantity());
                             System.out.println("time received: " + f.format(t.getTimeReceived()).toString() + ANSI_RESET);
+                            System.out.println("");
                             break;
                         case "M":
                             Mount m = (Mount) o1;
@@ -150,6 +152,7 @@ public class Main{
                             System.out.println("Bottom: " + m.getTop());
                             System.out.println("quantity: " + m.getQuantity());
                             System.out.println("time received: " + f.format(m.getTimeReceived()).toString() + ANSI_RESET);
+                            System.out.println("");
                             break;
                     }
                 }
@@ -190,6 +193,7 @@ public class Main{
                             System.out.println("destination: " + u.getDestination());
                             System.out.println("quantity: " + u.getQuantity());
                             System.out.println("time completed: " + f.format(u.getTimeFinished()).toString() + ANSI_RESET);
+                            System.out.println("");
                             break;
                         case "T":
                             Transform t = (Transform) o1;
@@ -198,6 +202,7 @@ public class Main{
                             System.out.println("to: " + t.getTo());
                             System.out.println("quantity: " + t.getQuantity());
                             System.out.println("time completed: " + f.format(t.getTimeFinished()).toString() + ANSI_RESET);
+                            System.out.println("");
 
                             break;
                         case "M":
@@ -207,6 +212,7 @@ public class Main{
                             System.out.println("Bottom: " + m.getTop());
                             System.out.println("quantity: " + m.getQuantity());
                             System.out.println("time completed: " + f.format(m.getTimeFinished()).toString() + ANSI_RESET);
+                            System.out.println("");
                             break;
                     }
                 }
