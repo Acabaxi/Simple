@@ -9,6 +9,7 @@ import java.awt.print.PrinterGraphics;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Vector;
@@ -20,6 +21,7 @@ public class Main{
     public static final String ANSI_BLUE = "\u001B[34m";
 
     public static Vector<Order> ordersReceived = new Vector<>();
+    public static Vector<Order> ordersCompleted = new Vector<>();
     public static final Modbus modbus = new Modbus();
     public static final SendOrder sendOrder = new SendOrder();
     public static boolean startedUdp = false;
@@ -84,14 +86,14 @@ public class Main{
 
         else if(startedSendOrders && startedUdp){
             System.out.println("1 - Check Orders");
-            System.out.println("2 - Query Database");
+            System.out.println("2 - Check Completed Orders");
             String resp = ss.next();
             switch (resp) {
                 case "1":
                     CheckOrders(server);
                     break;
                 case "2":
-                    DataBaseQuery(server);
+                    PrintCompletedOrders(server);
                     break;
                 default: System.out.println("Wrong option");
                     MainMenu(server);
@@ -115,7 +117,9 @@ public class Main{
 
     public void CheckOrders(UDPServer server){
     	sorting.insertionSort(ordersReceived);
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
         Order o1 = null;
+        System.out.println(ANSI_BLUE + "List of orders Received" +ANSI_RESET);
         if (!ordersReceived.isEmpty()) {
             System.out.println(ordersReceived.size() + " orders");
             for (int i = 0; i < ordersReceived.size(); i++) {
@@ -128,21 +132,24 @@ public class Main{
                             System.out.println(ANSI_BLUE + "Order number " + u.getNumber() + " - unload");
                             System.out.println("type: " + u.getType());
                             System.out.println("destination: " + u.getDestination());
-                            System.out.println("quantity: " + u.getQuantity() + ANSI_RESET);
+                            System.out.println("quantity: " + u.getQuantity());
+                            System.out.println("time received: " + f.format(u.getTimeReceived()).toString() + ANSI_RESET);
                             break;
                         case "T":
                             Transform t = (Transform) o1;
                             System.out.println(ANSI_BLUE + "Order number " + t.getNumber() + " - transform");
                             System.out.println("from: " + t.getFrom());
                             System.out.println("to: " + t.getTo());
-                            System.out.println("quantity: " + t.getQuantity() + ANSI_RESET);
+                            System.out.println("quantity: " + t.getQuantity());
+                            System.out.println("time received: " + f.format(t.getTimeReceived()).toString() + ANSI_RESET);
                             break;
                         case "M":
                             Mount m = (Mount) o1;
                             System.out.println(ANSI_BLUE + "Order number " + m.getNumber() + " - mount");
                             System.out.println("Top: " + m.getBottom());
                             System.out.println("Bottom: " + m.getTop());
-                            System.out.println("quantity: " + m.getQuantity() + ANSI_RESET);
+                            System.out.println("quantity: " + m.getQuantity());
+                            System.out.println("time received: " + f.format(m.getTimeReceived()).toString() + ANSI_RESET);
                             break;
                     }
                 }
@@ -165,16 +172,49 @@ public class Main{
         MainMenu(server);
     }
 
-    private void DataBaseQuery(UDPServer server){
-        System.out.println(ANSI_BLUE + "Select test from data base");
-        String help = null;
-        try {
-            help = JDBC.ReadFromDataBase("SELECT n_tipo_peca FROM armazem WHERE tipo_peca = '1'", "n_tipo_peca");
-            int helpInt = Integer.parseInt(help);
-            helpInt--;
-            JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca =" + helpInt +  ",n_inicial_tipo_peca = '27' WHERE tipo_peca = '1'");
-        } catch (SQLException e) {
-            e.printStackTrace();
+    private void PrintCompletedOrders(UDPServer server){
+        SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-DD HH:mm:ss");
+        Order o1 = null;
+        System.out.println(ANSI_BLUE + "List of Completed Orders" +ANSI_RESET);
+        if (!ordersCompleted.isEmpty()) {
+            System.out.println(ordersCompleted.size() + " orders");
+            for (int i = 0; i < ordersCompleted.size(); i++) {
+                o1 = ordersCompleted.get(i);
+
+                if (o1 != null) {
+                    switch (o1.getDo()) {
+                        case "U":
+                            Unload u = (Unload) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + u.getNumber() + " - unload");
+                            System.out.println("type: " + u.getType());
+                            System.out.println("destination: " + u.getDestination());
+                            System.out.println("quantity: " + u.getQuantity());
+                            System.out.println("time completed: " + f.format(u.getTimeFinished()).toString() + ANSI_RESET);
+                            break;
+                        case "T":
+                            Transform t = (Transform) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + t.getNumber() + " - transform");
+                            System.out.println("from: " + t.getFrom());
+                            System.out.println("to: " + t.getTo());
+                            System.out.println("quantity: " + t.getQuantity());
+                            System.out.println("time completed: " + f.format(t.getTimeFinished()).toString() + ANSI_RESET);
+
+                            break;
+                        case "M":
+                            Mount m = (Mount) o1;
+                            System.out.println(ANSI_BLUE + "Order number " + m.getNumber() + " - mount");
+                            System.out.println("Top: " + m.getBottom());
+                            System.out.println("Bottom: " + m.getTop());
+                            System.out.println("quantity: " + m.getQuantity());
+                            System.out.println("time completed: " + f.format(m.getTimeFinished()).toString() + ANSI_RESET);
+                            break;
+                    }
+                }
+            }
         }
+        else {
+            System.out.println(ANSI_BLUE + "No orders completed" +ANSI_RESET);
+        }
+        MainMenu(server);
     }
     }

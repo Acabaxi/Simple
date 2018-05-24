@@ -315,6 +315,9 @@ public class SendOrder extends Modbus implements Runnable {
 												//TODO send to DB
 												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('id ordem', '')");
 												//Add time stamp end order
+												Date d = new Date();
+												transform.setTimeFinished(d);
+												Main.ordersCompleted.add(transform);
 												Main.ordersReceived.remove(transform);
 											}
 										}
@@ -357,6 +360,9 @@ public class SendOrder extends Modbus implements Runnable {
 											if (unLoad.getQuantity() == 0) {
 												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('2')");
 												//Add time stamp end time
+												Date d = new Date();
+												unLoad.setTimeFinished(d);
+												Main.ordersCompleted.add(unLoad);
 												Main.ordersReceived.remove(unLoad);
 											}
 										}
@@ -397,6 +403,9 @@ public class SendOrder extends Modbus implements Runnable {
 
 											//Remove Order and Send completed time to data base
 											if (mount.getQuantity() == 0) {
+												Date d = new Date();
+												mount.setTimeFinished(d);
+												Main.ordersCompleted.add(mount);
 												Main.ordersReceived.remove(mount);
 											}
 										}
