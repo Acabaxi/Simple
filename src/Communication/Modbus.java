@@ -36,7 +36,6 @@ public class Modbus {
         }
         return con;
     }
-
     public TCPMasterConnection getCon() {
         return con;
     }

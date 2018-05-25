@@ -129,8 +129,6 @@ public class CreateXML {
             StreamResult result = new StreamResult(new File("/home/sobaca/Downloads/stores.xml"));
             transformer.transform(source, result);
 
-            //Send XML over UDP
-
             // Output to console for testing
             StreamResult consoleResult = new StreamResult(System.out);
             transformer.transform(source, consoleResult);

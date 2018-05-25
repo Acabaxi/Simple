@@ -4,8 +4,12 @@ import MES.*;
 
 import java.io.*;
 import java.net.*;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import MES.Order;
+import Communication.JDBC;
 
 public class UDPServer implements Runnable{
     public static final String ANSI_BLUE = "\u001B[34m";
@@ -59,6 +63,7 @@ public class UDPServer implements Runnable{
                         e.printStackTrace();
                     }
                     InetAddress IPAddress = packet.getAddress();
+                    int portaux = packet.getPort();
                     msg = new String(packet.getData()).trim();
                     Date timeReceived = new Date();
                     String[] splited = msg.split("]>");
@@ -67,6 +72,13 @@ public class UDPServer implements Runnable{
                         if (!msg.isEmpty()) {
                             Parser p = new Parser();
                             Order o = p.parseFile(msg, timeReceived);
+
+                            //Send received order to Data Base
+                            //Date current_time = new Date();
+                            //SimpleDateFormat formatDB = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            //JDBC.WriteStringToDataBase("INSERT into ordem (id_ordem, estado_ordem, h_ordem) VALUES (" + o.getNumber() +  ",1, " + timestamp + ")");
+
                             if (o != null) {
                                 o.setPending(true);
                                 Main.ordersReceived.add(o);
@@ -98,18 +110,13 @@ public class UDPServer implements Runnable{
                                 }
                                 //System.out.println(list);
                                 byte[] listBuff = list.getBytes();
-                                DatagramPacket sendXML = new DatagramPacket(listBuff, listBuff.length, IPAddress, port);
+                                DatagramPacket sendXML = new DatagramPacket(listBuff, listBuff.length, IPAddress, portaux);
                                 try {
                                     udpSocket.send(sendXML);
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             }
-
-                            //Order o1 = Main.ordersReceived.peek();
-                            //System.out.println("heeeeey! we parsed order number " + o1.getNumber());
-                            //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg2);
-                            //System.out.println("Message from " + packet.getAddress().getHostAddress() + ": " + msg);
                         }
                     }
                 }
