@@ -31,21 +31,29 @@ public class MachineC extends Machine {
 	public void p7_p8() {
 		this.P7_P8 ++;
 		this.plusTime(20);
+		//String ID = this.getId() + "c";
+		//IncreaseMachineTimeOnDB(ID, 20);
 	}
 	
 	public void p8_p7() {
 		this.P8_P7 ++;
 		this.plusTime(20);
+		//String ID = this.getId() + "c";
+		//IncreaseMachineTimeOnDB(ID, 20);
 	}
 	
 	public void p7_p9() {
 		this.P7_P9 ++;
 		this.plusTime(20);
+		//String ID = this.getId() + "c";
+		//IncreaseMachineTimeOnDB(ID, 20);
 	}
 	
 	public void p8_p9() {
 		this.P8_P9 ++;
 		this.plusTime(20);
+		//String ID = this.getId() + "c";
+		//IncreaseMachineTimeOnDB(ID, 20);
 	}
 	
 	public void printInfo() {

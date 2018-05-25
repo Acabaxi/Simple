@@ -27,16 +27,22 @@ public class MachineB extends Machine {
 	public void p2_p4() {
 		this.P2_P4 ++;
 		this.plusTime(10);
+		//String ID = this.getId() + "b";
+		//IncreaseMachineTimeOnDB(ID, 10);
 	}
 	
 	public void p4_p6() {
 		this.P4_P6 ++;
 		this.plusTime(5);
+		//String ID = this.getId() + "b";
+		//IncreaseMachineTimeOnDB(ID, 5);
 	}
 	
 	public void p6_p8() {
 		this.P6_P8 ++;
 		this.plusTime(5);
+		//String ID = this.getId() + "b";
+		//IncreaseMachineTimeOnDB(ID, 5);
 	}
 	
 	public void printInfo() {
