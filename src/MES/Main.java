@@ -34,6 +34,9 @@ public class Main{
     public static MachineC m1c = new MachineC(1);
     public static MachineC m2c = new MachineC(2);
     public static MachineC m3c = new MachineC(3);
+    public static StatisticsUnload zone1 = new StatisticsUnload(1);
+    public static StatisticsUnload zone2 = new StatisticsUnload(2);
+    public static StatisticsUnload zone3 = new StatisticsUnload(3);
 
     public static void main(String args[]) throws Exception {
 
@@ -120,7 +123,11 @@ public class Main{
     }
     
     public void PrintMachines(UDPServer server) {
-    	System.out.println("Transform machines:");
+    	System.out.println("\nUnload:");
+    	this.zone1.PrintStat();
+    	this.zone2.PrintStat();
+    	this.zone3.PrintStat();
+    	System.out.println("\nTransform machines:");
     	this.m1a.printInfo();
     	this.m2a.printInfo();
     	this.m3b.printInfo();

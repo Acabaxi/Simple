@@ -380,6 +380,17 @@ public class SendOrder extends Modbus implements Runnable {
 
 											//ms for line to receive
 											sleepMethod(5000);
+											switch(valD) {
+											case 1:
+												Main.zone1.increaseP(unLoad.getType());
+												break;
+											case 2:
+												Main.zone2.increaseP(unLoad.getType());
+												break;
+											case 3:
+												Main.zone3.increaseP(unLoad.getType());
+												break;
+											}
 											unLoad.decreaseQuantity();
 											System.out.println(ANSI_BLUE + "Unload number " + unLoad.getNumber() + ", Quantity " + unLoad.getQuantity() + ANSI_RESET);
 											System.out.println("");
