@@ -431,6 +431,8 @@ public class SendOrder extends Modbus implements Runnable {
 
 											//Decrease quantity
 											mount.decreaseQuantity();
+											Main.zone3.increaseP(mount.getTop());
+											Main.zone3.increaseP(mount.getBottom());
 											System.out.println(ANSI_BLUE + "Mount number " + mount.getNumber() + ", Quantity " + mount.getQuantity() + ANSI_RESET);
 											System.out.println("");
 
