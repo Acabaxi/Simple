@@ -20,7 +20,7 @@ public class JDBC {
         }
 
         try {
-            con = DriverManager.getConnection( host, username, password );
+            con = DriverManager.getConnection(host, username, password);
             System.out.println(ANSI_BLUE + "-- DataBase connected " + host + "--" + ANSI_RESET);
 
             //Example Read
@@ -38,23 +38,18 @@ public class JDBC {
         ResultSet rs = stmt.executeQuery(select);
         String read = "";
 
-        while(rs.next()) {
-             read = rs.getString(line);
+        while (rs.next()) {
+            read = rs.getString(line);
         }
         return read;
     }
 
-    public static void WriteStringToDataBase(String write){
+    public static void WriteStringToDataBase(String write) {
         try {
             Statement myStmt = con.createStatement();
             myStmt.executeUpdate(write);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void WriteTimeStampToDataBase(Timestamp time, String tableName, String typeOfTime) throws SQLException {
-        Statement myStmt = con.createStatement();
-
     }
 }

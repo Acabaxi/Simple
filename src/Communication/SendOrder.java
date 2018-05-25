@@ -141,7 +141,6 @@ public class SendOrder extends Modbus implements Runnable {
 		}
 	}
 
-
 	private Order getOrder() {
 		Vector<Order> v = Main.ordersReceived;
 		Main.sorting.insertionSort(v);
