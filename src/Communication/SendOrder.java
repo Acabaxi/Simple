@@ -334,13 +334,14 @@ public class SendOrder extends Modbus implements Runnable {
 												Main.m3c.increaseP(transform.getFrom(), transform.getTo());
 												break;
 											}
+
 											System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 											System.out.println("");
 											//Remove order if quantity equals zero
 											if (transform.getQuantity() == 0) {
-												//TODO send to DB
 												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('id ordem', '')");
 												//Add time stamp end order
+												JDBC.WriteStringToDataBase("UPDATE ordem SET idordem = "+transform.getNumber()+", estado_ordem = '2', h_fim = now()");
 												Date d = new Date();
 												transform.setTimeFinished(d);
 												Main.ordersCompleted.add(transform);
@@ -378,7 +379,7 @@ public class SendOrder extends Modbus implements Runnable {
 											DecreaseValueOnDataBase(valT);
 
 											//ms for line to receive
-											sleepMethod(5000);
+											sleepMethod(3000);
 											switch(valD) {
 											case 1:
 												Main.zone1.increaseP(unLoad.getType());
@@ -397,6 +398,7 @@ public class SendOrder extends Modbus implements Runnable {
 											if (unLoad.getQuantity() == 0) {
 												//JDBC.writeString("insert into ordem" + "(estado_ordem)" + "values ('2')");
 												//Add time stamp end time
+												JDBC.WriteStringToDataBase("UPDATE ordem SET idordem = "+unLoad.getNumber()+", estado_ordem = '2', h_fim = now()");
 												Date d = new Date();
 												unLoad.setTimeFinished(d);
 												Main.ordersCompleted.add(unLoad);
@@ -442,6 +444,7 @@ public class SendOrder extends Modbus implements Runnable {
 
 											//Remove Order and Send completed time to data base
 											if (mount.getQuantity() == 0) {
+												JDBC.WriteStringToDataBase("UPDATE ordem SET idordem = "+mount.getNumber()+", estado_ordem = '2', h_fim = now()");
 												Date d = new Date();
 												mount.setTimeFinished(d);
 												Main.ordersCompleted.add(mount);

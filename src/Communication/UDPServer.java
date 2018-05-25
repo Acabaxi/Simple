@@ -74,10 +74,7 @@ public class UDPServer implements Runnable{
                             Order o = p.parseFile(msg, timeReceived);
 
                             //Send received order to Data Base
-                            //Date current_time = new Date();
-                            //SimpleDateFormat formatDB = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                            //JDBC.WriteStringToDataBase("INSERT into ordem (id_ordem, estado_ordem, h_ordem) VALUES (" + o.getNumber() +  ",1, " + timestamp + ")");
+                            JDBC.WriteStringToDataBase("INSERT into ordem (idordem, estado_ordem, h_ordem) VALUES (" + o.getNumber() +  ",1, now())");
 
                             if (o != null) {
                                 o.setPending(true);

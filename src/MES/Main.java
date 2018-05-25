@@ -64,6 +64,7 @@ public class Main{
 
             //update values on database when program starts
             JDBC.WriteStringToDataBase("UPDATE armazem SET n_tipo_peca = '27'");
+            JDBC.WriteStringToDataBase("DELETE FROM ordem WHERE idordem <> 0");
 
             switch (resp) {
                 case "1":
@@ -134,7 +135,6 @@ public class Main{
     	this.m1c.printInfo();
     	this.m2c.printInfo();
     	this.m3c.printInfo();
-    	
     	MainMenu(server);
     }
     public void ControlUDP(UDPServer server){
