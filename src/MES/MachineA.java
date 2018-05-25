@@ -27,16 +27,23 @@ public class MachineA extends Machine {
 	public void p1_p3() {
 		this.P1_P3 ++;
 		this.plusTime(5);
+		//in every procedure like this (in classes MachineA/B/C)
+		//String ID = this.getId() + "a";
+		//IncreaseMachineTimeOnDB(ID, 5);
 	}
 	
 	public void p3_p5() {
 		this.P3_P5 ++;
 		this.plusTime(10);
+		//String ID = this.getId() + "a";
+		//IncreaseMachineTimeOnDB(ID, 10);
 	}
 	
 	public void p5_p7() {
 		this.P5_P7 ++;
 		this.plusTime(5);
+		//String ID = this.getId() + "a";
+		//IncreaseMachineTimeOnDB(ID, 5);
 	}
 	
 	public void printInfo() {
