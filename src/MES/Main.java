@@ -28,6 +28,12 @@ public class Main{
     public static boolean startedSendOrders = false;
     public static Stock stock = new Stock();
     public static Sorting sorting = new Sorting();
+    public static MachineA m1a = new MachineA(1);
+    public static MachineA m2a = new MachineA(2);
+    public static MachineB m3b = new MachineB(3);
+    public static MachineC m1c = new MachineC(1);
+    public static MachineC m2c = new MachineC(2);
+    public static MachineC m3c = new MachineC(3);
 
     public static void main(String args[]) throws Exception {
 
@@ -69,6 +75,7 @@ public class Main{
         else if (!startedSendOrders){
             System.out.println("1 - Check Orders");
             System.out.println("2 - Send Orders");
+            System.out.println("3 - Print Statistics");
 
             String resp = ss.next();
             switch (resp) {
@@ -78,15 +85,19 @@ public class Main{
                 case "2":
                     SendOrders(server);
                     break;
-                    default: System.out.println("Wrong option");
-                        MainMenu(server);
-                        break;
+                case "3":
+                	PrintMachines(server);
+                default: 
+                	System.out.println("Wrong option");
+                    MainMenu(server);
+                    break;
             }
         }
 
         else if(startedSendOrders && startedUdp){
             System.out.println("1 - Check Orders");
             System.out.println("2 - Check Completed Orders");
+            System.out.println("3 - Print Statistics");
             String resp = ss.next();
             switch (resp) {
                 case "1":
@@ -95,6 +106,8 @@ public class Main{
                 case "2":
                     PrintCompletedOrders(server);
                     break;
+                case "3":
+                	PrintMachines(server);
                 default: System.out.println("Wrong option");
                     MainMenu(server);
                     break;
@@ -104,6 +117,18 @@ public class Main{
         else{
             System.out.println("1 - Check Orders");
         }
+    }
+    
+    public void PrintMachines(UDPServer server) {
+    	System.out.println("Transform machines:");
+    	this.m1a.printInfo();
+    	this.m2a.printInfo();
+    	this.m3b.printInfo();
+    	this.m1c.printInfo();
+    	this.m2c.printInfo();
+    	this.m3c.printInfo();
+    	
+    	MainMenu(server);
     }
     public void ControlUDP(UDPServer server){
         try {

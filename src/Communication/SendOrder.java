@@ -271,31 +271,38 @@ public class SendOrder extends Modbus implements Runnable {
 											sleepMethod(50);
 
 											//Choose place where to transform Cell 1, 2 or 3s
+											String mach = "";
 											String machine = transform.getMachine();
 											switch (machine) {
 												case "b":
 													//send it to cell 3
 													WriteCoil(4, true);
+													mach = "3b";
 													break;
 												case "a":
 													if (checkCell(6)) {
 														//send to cell 2
 														WriteCoil(3, true);
+														mach = "2a";
 													} else {
 														//send to cell 1
 														WriteCoil(2, true);
+														mach = "1a";
 													}
 													break;
 												case "c":
 													if (checkCell(7)) {
 														//send to cell 3
 														WriteCoil(4, true);
+														mach = "3c";
 													} else if (checkCell(6)) {
 														//send to cell 2
 														WriteCoil(3, true);
+														mach = "2c";
 													} else {
 														//send to cell 1
 														WriteCoil(2, true);
+														mach = "1c";
 													}
 													break;
 											}
@@ -308,6 +315,26 @@ public class SendOrder extends Modbus implements Runnable {
 
 
 											Main.stock.increaseQuantity(transform.getTo());
+											switch(mach) {
+											case "1a": 
+												Main.m1a.increaseP(transform.getFrom());
+												break;
+											case "2a":
+												Main.m2a.increaseP(transform.getFrom());
+												break;
+											case "3b":
+												Main.m3b.increaseP(transform.getFrom());
+												break;
+											case "1c":
+												Main.m1c.increaseP(transform.getFrom(), transform.getTo());
+												break;
+											case "2c":
+												Main.m2c.increaseP(transform.getFrom(), transform.getTo());
+												break;
+											case "3c":
+												Main.m3c.increaseP(transform.getFrom(), transform.getTo());
+												break;
+											}
 											System.out.println(ANSI_BLUE + "Transform number " + transform.getNumber() + ", Quantity " + transform.getQuantity() + ANSI_RESET);
 											System.out.println("");
 											//Remove order if quantity equals zero
